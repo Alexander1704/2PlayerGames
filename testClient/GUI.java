@@ -92,12 +92,13 @@ public class GUI implements KeyListener{
 
     public void login(String ip, int port){
         userClient = new UserClient(this, ip, port);
-
-        userClientTest = new UserClient(this, ip, port);
-        userClientTest.setProcessingMessages(false);
         connectToGame();
-        userClient.send("CONNECT SEARCHGAME");
-        userClientTest.send("CONNECT SEARCHGAME");
+        
+        // userClientTest = new UserClient(this, ip, port);
+        // userClientTest.setProcessingMessages(false);
+        
+        // userClient.send("CONNECT SEARCHGAME");
+        // userClientTest.send("CONNECT SEARCHGAME");
     }
     public void connectToGame(){
         switchPage(loadingPage);        
