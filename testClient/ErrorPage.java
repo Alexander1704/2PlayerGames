@@ -57,7 +57,7 @@ public class ErrorPage extends Page{
             @Override
             public void actionPerformed(ActionEvent event){
                 if(event.getSource() == retryButton) {
-                    if(gui.getUserClient().hasConnected())gui.switchPage(gui.getMenuPage());
+                    if(gui.getUserClient() != null && gui.getUserClient().hasConnected())gui.switchPage(gui.getMenuPage());
                     else gui.switchPage(gui.getLoginPage());
                     
                 }

@@ -32,7 +32,13 @@ public class LoginPage extends Page{
         connectButton.addActionListener(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e){
-                    gui.login(ipText.getText(), Integer.parseInt(portText.getText()));
+                    Thread loginThread = new Thread(new Runnable() {
+                        @Override
+                        public void run(){
+                            gui.login(ipText.getText(), Integer.parseInt(portText.getText()));
+                        }
+                    });
+                    loginThread.start();
                 }
             });
         add (connectButton);

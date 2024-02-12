@@ -23,8 +23,8 @@ public class UserClient extends Client{
         switch(pMessage){
             case "+SPIELER OK" ->{
                     this.connected = true;
-                    if(!processMessages)  return;
-                    gui.switchPage(gui.getMenuPage());
+                    // if(!processMessages)  return;
+                    // gui.switchPage(gui.getMenuPage());
                 }
             case "+GAME FOUND" ->{
                     inGame = true;
