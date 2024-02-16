@@ -11,12 +11,14 @@ import java.util.ArrayList;
 public class GamePage extends Page implements KeyListener{
     private class Player extends JLabel implements Healthy{ 
         ImageRendering ir;
+        String name;
         double x; 
         double y;
         int health;
         String texture;
         boolean witched;
         boolean rightSided;
+        int animation;
         Player(){
             ir = new ImageRendering();
             x = 0;
@@ -25,6 +27,8 @@ public class GamePage extends Page implements KeyListener{
             texture = "";
             witched = false;
             rightSided = true;
+            name = "Player";
+            animation = 1;
 
             Thread test = new Thread (new Runnable() {
                         public void run(){
@@ -76,6 +80,14 @@ public class GamePage extends Page implements KeyListener{
         public int getHealth(){
             return health;
         }
+        
+        public void setAnimation(int pAnimationNum){
+            this.animation = pAnimationNum;
+        }
+        
+        public int getAnimation(){
+            return animation;
+        }
 
         public void setWitched(boolean b){
             witched = b;
@@ -91,6 +103,10 @@ public class GamePage extends Page implements KeyListener{
 
         public String getTexture(){
             return texture;
+        }
+        
+        public String getName(){
+            return name;
         }
 
         public int getScaleWidth(){
@@ -283,7 +299,7 @@ public class GamePage extends Page implements KeyListener{
     }
 
     public void setCharacter(int pNum, String character){
-        player[pNum].setTexture(character + ".png");
+        player[pNum].setTexture("animations/" + character + "/a (1).png");
         componentResized();
     }
 
@@ -347,18 +363,7 @@ public class GamePage extends Page implements KeyListener{
         gamePanel.setSize(panelSize * 16, panelSize* 9);
         gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth() - 20) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight() - 40) / 2);
 
-        double scaleImg = (gamePanel.getHeight() * 0.125) / 170.0;
-        for(int i = 0; i < player.length; i++){
-            try{
-                if(player[i].isWitched()) player[i].setIcon(getScaledIcon("player/Frog.png", scaleImg, scaleImg));
-                else player[i].setIcon(getScaledIcon("player/" + player[i].getTexture(), scaleImg, scaleImg));
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            if(! player[i].rightSided) player[i].turnImage();
-            player[i].setSize(player[i].getPreferredSize());
-            healthbar[i].scale();
-        }
+        scalePlayers();
         double scaleBullet = (gamePanel.getHeight() * 0.5) / 170.0;
         for(int i = 0; i < bulletList.size(); i++){
             try{
@@ -405,6 +410,21 @@ public class GamePage extends Page implements KeyListener{
         }
 
     }
+    
+    private void scalePlayers(){
+        double scaleImg = (gamePanel.getHeight() * 0.10) / 170.0;
+        for(int i = 0; i < player.length; i++){
+            try{
+                if(player[i].isWitched()) player[i].setIcon(getScaledIcon("player_test/Frog.png", scaleImg, scaleImg));
+                else player[i].setIcon(getScaledIcon("player/" + player[i].getName() + "/animation" + player[i].getAnimation() + ".png", scaleImg, scaleImg));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            if(! player[i].rightSided) player[i].turnImage();
+            player[i].setSize(player[i].getPreferredSize());
+            healthbar[i].scale();
+        }
+    }
 
     public void witchPlayer(int pNum, boolean b){
         player[pNum].setWitched(b);
@@ -424,9 +444,14 @@ public class GamePage extends Page implements KeyListener{
         return  new ImageIcon(ImageIO.read(new File("assets/" + path))); 
     }
 
-    public void setPosition(int pNum, double x, double y){
+    public void setPosition(int pNum, double x, double y, int pAnimation){
         player[pNum] .setX(x);
         player[pNum] .setY(y);
+        int temp = player[pNum].getAnimation();
+        player[pNum] .setAnimation(pAnimation);
+        if(temp != pAnimation){
+            scalePlayers();
+        }
     }
 
     public void setPosition(Positionable o){

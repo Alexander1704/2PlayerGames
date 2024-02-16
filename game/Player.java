@@ -60,6 +60,7 @@ public class Player extends JLabel implements Healthy{
     private double xPos, yPos;
     private double xVelo, yVelo;
     private int health;
+    private int animationNum;
     private final int id;
     private GameFrame gamePanel;
     private ImageRendering ir;
@@ -78,7 +79,21 @@ public class Player extends JLabel implements Healthy{
         this.reloadingBullet = false;
         this.ir = new ImageRendering();
         this.id = id;
+        this.animationNum = 1;
         scaleImage();
+        
+        final int MAX_ANIMATION = 9;
+        Thread animationThread = new Thread(new Runnable(){
+            @Override 
+            public void run(){
+                while(true){
+                    animationNum += 1;
+                    if(animationNum > MAX_ANIMATION) animationNum = 1;
+                    warte(1000/ 20);
+                }
+            }
+        });
+        animationThread.start();
     }
     public boolean rightSided(){
         return rightSided;
@@ -100,7 +115,7 @@ public class Player extends JLabel implements Healthy{
     }
     @Override
     public String toString(){
-        return xPos + " " + yPos + " " + health + " " + witched;
+        return xPos + " " + yPos + " " + health + " " + witched + " " + animationNum;
     }
     public String getCharacter(){
         return "angel";
@@ -155,8 +170,8 @@ public class Player extends JLabel implements Healthy{
     public void scaleImage(){
         try{
             double scaleImg = (gamePanel.getGamePanel().getHeight() * 0.125) / 170.0;
-            if(witched) this.setIcon(ir.getScaledIcon("player/Frog.png", scaleImg, scaleImg));
-            else this.setIcon(ir.getScaledIcon("player/" + playerInfo.getTexture(), scaleImg, scaleImg));
+            if(witched) this.setIcon(ir.getScaledIcon("player_test/Frog.png", scaleImg, scaleImg));
+            else this.setIcon(ir.getScaledIcon("player/Player/animation1.png", scaleImg, scaleImg));  //this.setIcon(ir.getScaledIcon("player/" + playerInfo.getName() + "/a (1).png", scaleImg, scaleImg));
             this.setSize(this.getPreferredSize());
         }catch (Exception e){
             e.printStackTrace();
@@ -181,10 +196,18 @@ public class Player extends JLabel implements Healthy{
                 yVelo = 0;
                 if(gamePanel.checkBottom(this)){
                     falling = false;
-                    while(gamePanel.checkBottom(this)){
+                    int j = 0; 
+                    while(j < 5 && gamePanel.checkBottom(this)){
                         yPos+= POS_ACCURACY / 5;
                         gamePanel.setLocation(this);
+                        j++;
                     }
+                    if(gamePanel.checkBottom(this)) {
+                        // yPos 
+                    }else{
+                        yPos -= POS_ACCURACY / 5;
+                    }
+                   
                     // for(int j = 0; j < 5; j++){
                         // if(gamePanel.checkBottom(this)){
                             // yPos += POS_ACCURACY / 5;

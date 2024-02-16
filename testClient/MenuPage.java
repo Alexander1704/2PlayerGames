@@ -18,17 +18,12 @@ public class MenuPage extends Page {
     private JButton playButton;
     private JButton nextPlayerButton;
     private JButton previousPlayerButton;
-
-    private JLabel ipLabel;
-    private JTextField ipText;
-    private JLabel portLabel;
-    private JTextField portText;
     public MenuPage(GUI gui) {
         setLayout(null);
         setBackground(new Color(94, 144, 252));
         this.gui = gui;
 
-        character = "Sword Man";
+        character = "Player";
         characterList = gui.getDBController().getPlayerNames();
 
         characterName = new JLabel(character);
@@ -63,19 +58,6 @@ public class MenuPage extends Page {
         previousPlayerButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
         previousPlayerButton.setFont(loadFont("assets/LilitaOne-Regular.ttf",25));
         add(previousPlayerButton);
-        
-        ipLabel = new JLabel ("IP:");
-        ipLabel.setSize(ipLabel.getPreferredSize());
-        // add(ipLabel);
-        ipText = new JTextField("192.168.2.158");
-        ipText.setSize(300, 50);
-        // add(ipText);
-        portLabel = new JLabel("PORT:");
-        portLabel.setSize(portLabel.getPreferredSize());
-        // add(portLabel);
-        portText = new JTextField("55555");
-        portText.setSize(300, 50);
-        // add(portText);
 
         nextPlayerButton.addActionListener(new ActionListener(){
                 @Override
@@ -150,11 +132,6 @@ public class MenuPage extends Page {
         playButton.setLocation((frameWidth - playButton.getWidth())/ 2, (characterImage.getY() + characterImage.getHeight()) + 15);
         nextPlayerButton.setLocation(characterImage.getX() + characterImage.getWidth() + 10, characterName.getY());
         previousPlayerButton.setLocation(characterImage.getX() - previousPlayerButton.getWidth() - 10, characterName.getY());
-        
-        ipLabel.setLocation((int) (frameWidth * 0.1), (int) (frameHeight* 0.1));
-        ipText.setLocation((int) (frameWidth * 0.1), ipLabel.getY() + 20);
-        portLabel.setLocation((int) (frameWidth * 0.1), ipLabel.getY() + 100);
-        portText.setLocation((int) (frameWidth * 0.1), ipLabel.getY() + 120);
     }
 
     public void resizeElements() {
@@ -163,12 +140,16 @@ public class MenuPage extends Page {
 
         characterImage.setSize((int) (frameWidth / 3.0), frameHeight / 2);
         try {
-            Dimension imgSize = getImageSize("player/" + character + ".png");
+            String imgPath = "player/" + character + "/animation1.png";
+            ImageIcon icon = cropIcon(new ImageIcon("assets/" + imgPath), 0, 0, 0, 0);
+            // Dimension imgSize = getImageSize("player/" + character + "/a (1).png");
+            Dimension imgSize = new Dimension(icon.getIconWidth(), icon.getIconHeight());
             int border = frameHeight/ 10;
             double scaling = Math.min((characterImage.getWidth() - border) * 1.0 /imgSize.getWidth(), (characterImage.getHeight() - border) * 1.0 / imgSize.getHeight());
-            characterImage.setIcon(getScaledIcon("player/" + character + ".png", scaling, scaling));
+            characterImage.setIcon(cropIcon(getScaledIcon(imgPath, scaling, scaling), 0, 0, 0, 0));
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println(character +"::: " + "player/" + character + "/a (1).png");
         }
 
         characterName.setSize(characterImage.getWidth(), 50);
@@ -179,10 +160,6 @@ public class MenuPage extends Page {
         int characterChoosingWidth = frameWidth > 900 ? 65 : 40;
         nextPlayerButton.setSize(characterChoosingWidth, characterImage.getY() + characterImage.getHeight() - characterName.getY());
         previousPlayerButton.setSize(characterChoosingWidth, characterImage.getY() + characterImage.getHeight() - characterName.getY());
-        
-        int textFieldWidth = previousPlayerButton.getX() - ipText.getX() - 50 > 300 ? 300 : previousPlayerButton.getX() - ipText.getX() - 50;
-        ipText.setSize(textFieldWidth, ipText.getHeight());
-        portText.setSize(textFieldWidth, portText.getHeight());
     }
 
     public void reloadData() {

@@ -22,7 +22,7 @@ public class DBController{
         return qr.getData()[0];
     }
     public ArrayList getPlayerNames(){
-        database.executeStatement("SELECT name, unlocked, finished FROM PlayerInfo");
+        database.executeStatement("SELECT name, unlocked, finished FROM PlayerInfo WHERE unlocked = 'true' AND finished = 'true'");
         QueryResult qr = database.getCurrentQueryResult();
         if(qr == null){
             System.err.println(database.getErrorMessage());
@@ -30,9 +30,9 @@ public class DBController{
         }
         ArrayList<String> temp = new ArrayList();
         for(int i = 0; i < qr.getData().length; i++){
-            if( qr.getData()[i][1].equals("true") &&  qr.getData()[i][2].equals("true")){
+            // if( qr.getData()[i][1].equals("true") &&  qr.getData()[i][2].equals("true")){
                 temp.add(qr.getData()[i][0]);
-            }
+            // }
             
         }
         return temp;

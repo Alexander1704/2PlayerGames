@@ -114,7 +114,7 @@ public class UserClient extends Client{
             case "GAME" ->{
                     switch(args[1]){
                         case "POSITION" ->{
-                                gui.getGamePage().setPosition(Integer.parseInt(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4]));
+                                gui.getGamePage().setPosition(Integer.parseInt(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4]), Integer.parseInt(args[7]));
                                 
                                 // gui..setPosition(Integer.parseInt(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2]));                        
                             }

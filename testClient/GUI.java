@@ -91,18 +91,6 @@ public class GUI implements KeyListener{
     }
 
     public void login(String ip, int port){
-        connectToGame();
-                        userClient = new UserClient(this, ip, port);
-        
-        
-        
-        // userClientTest = new UserClient(this, ip, port);
-        // userClientTest.setProcessingMessages(false);
-        
-        // userClient.send("CONNECT SEARCHGAME");
-        // userClientTest.send("CONNECT SEARCHGAME");
-    }
-    public void connectToGame(){
         switchPage(loadingPage);   
         Thread connectToGame = new Thread(new Runnable() {
                     public void run(){
@@ -117,6 +105,11 @@ public class GUI implements KeyListener{
                     }
                 });
         connectToGame.start();
+        
+        userClient = new UserClient(this, ip, port);
+        userClientTest = new UserClient(this, ip, port);
+        userClientTest.setProcessingMessages(false);
+        userClientTest.send("CONNECT SEARCHGAME");
     }
 
     public void renderFrame(){

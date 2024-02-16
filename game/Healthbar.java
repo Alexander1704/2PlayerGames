@@ -35,7 +35,7 @@ public class Healthbar extends JPanel implements Positionable{
     }
 
     public void scale(){
-        int size = player.getWidth() * 2;
+        int size = 100;
         setSize((int) (size), (int) (size/ 10));
     }
     

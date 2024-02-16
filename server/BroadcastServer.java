@@ -52,11 +52,32 @@ public class BroadcastServer extends Server{
                                 warte(10);
                             }
                             System.out.println("GAME WAS INIT");
-                            while(true){
+                            
+                            final int TARGET_FPS = 30;
+                            final long TARGET_TIME = 1000000000 / TARGET_FPS; // nanoseconds per frame
+                    
+                            long lastLoopTime = System.nanoTime();
+                    
+                            while (running) {
+                                long currentTime = System.nanoTime();
+                                long elapsedTime = currentTime - lastLoopTime;
+                                lastLoopTime = currentTime;
+                    
+                                // Perform your game logic or operations here
                                 for(int i = 0; i < clients.length; i++){
-                                    if(gameFrame.getPlayer(1 + i).isMoving()) sendMessage("GAME POSITION " + i + " " + gameFrame.getPlayer(1 + i).toString());
+                                    if(gameFrame.getPlayer(1 + i).isMoving() || true) sendMessage("GAME POSITION " + i + " " + gameFrame.getPlayer(1 + i).toString());
                                 }
-                                warte(1000/ 60);
+                    
+                                // Calculate time to sleep to maintain desired FPS
+                                long sleepTime = TARGET_TIME - elapsedTime;
+                    
+                                if (sleepTime > 0) {
+                                    try {
+                                        Thread.sleep(sleepTime / 1000000); // Convert nanoseconds to milliseconds
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                         }
                     });

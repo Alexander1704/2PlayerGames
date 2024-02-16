@@ -34,27 +34,21 @@ public abstract class Page extends JPanel{
             Image scaledImg = img.getScaledInstance(x_scale, y_scale, Image.SCALE_SMOOTH);
             return new ImageIcon(scaledImg);
     }
-    public BufferedImage scaleImage(BufferedImage originalImage, int newWidth, int newHeight) {
-        // Create a new buffered image with the desired width and height
-        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-        
-        // Get the Graphics2D object of the resized image
-        Graphics2D g2d = resizedImage.createGraphics();
-        
-        // Scale and draw the original image onto the resized image
-        g2d.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-        
-        // Dispose the Graphics2D object
-        g2d.dispose();
-        
-        return resizedImage;
-    }
     public ImageIcon getScaledIcon(String path, double x_scale, double y_scale) throws IOException {
         ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File("assets/" + path))); 
         Image image = imageIcon.getImage(); 
         Image newimg = image.getScaledInstance((int)(imageIcon.getIconWidth() * x_scale), (int) (imageIcon.getIconHeight()*y_scale),  java.awt.Image.SCALE_SMOOTH); 
         imageIcon = new ImageIcon(newimg);  
         return imageIcon;
+    }
+    public ImageIcon cropIcon(ImageIcon originalIcon, int leftCrop, int rightCrop, int topCrop, int bottomCrop){
+        // Zuschneiden des Bildes
+        BufferedImage originalImage = new BufferedImage(originalIcon.getIconWidth(), originalIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = originalImage.createGraphics();
+        g2d.drawImage(originalIcon.getImage(), 0, 0, null);
+        BufferedImage croppedImage = originalImage.getSubimage(leftCrop, topCrop, originalImage.getWidth() - leftCrop - rightCrop, originalImage.getHeight() - topCrop - bottomCrop);
+        return new ImageIcon(croppedImage);
+        
     }
     public Font loadFont(String fontPath, int size) {
         Font customFont = null;
