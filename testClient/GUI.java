@@ -57,8 +57,8 @@ public class GUI implements KeyListener{
         errorPage = new ErrorPage(this);
         // infoPage = new InfoPage(this);
         
-        animationPage = new AnimationPage(this);
-        panelTest2 = new PanelTest2(this);
+        // animationPage = new AnimationPage(this);
+        // panelTest2 = new PanelTest2(this);
         currentPage = loginPage;
         switchPage(currentPage);
 

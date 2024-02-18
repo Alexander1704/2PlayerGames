@@ -1,4 +1,4 @@
-package game;
+package serverGame;                                               
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,7 @@ public class Healthbar extends JPanel implements Positionable{
         g.setColor(this.getForeground());
         g.fillRect(0, 0, getWidth() * player.getHealth() / 100, getHeight());
     }
-
+ 
     public double getXPos(){
         if(player == null) return 0;
         return player.getXPos() - (1.0 * getWidth() / gamePanel.getWidth()/ 4);
@@ -35,7 +35,7 @@ public class Healthbar extends JPanel implements Positionable{
     }
 
     public void scale(){
-        int size = 100;
+        int size = (int) (gamePanel.getHeight() * 0.1);
         setSize((int) (size), (int) (size/ 10));
     }
     

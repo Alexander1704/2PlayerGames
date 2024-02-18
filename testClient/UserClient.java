@@ -44,7 +44,7 @@ public class UserClient extends Client{
             return;
         }
 
-        System.out.println("[Client]" + pMessage);
+        // System.out.println("[Client]" + pMessage);
         
         // String[] message = pMessage.split(" ");
         // switch(pMessage){
@@ -125,6 +125,9 @@ public class UserClient extends Client{
                             }
                             gui.getGamePage().setCharacter(Integer.parseInt(args[2]), args[3]);
                         }
+                        case "MAP" -> {
+                            gui.getGamePage().setMap(Integer.parseInt(args[2]));
+                        }
                         case "WITCH" -> {
                             gui.getGamePage().witchPlayer(Integer.parseInt(args[2]), (Boolean.parseBoolean(args[3])));
                         }
@@ -133,6 +136,7 @@ public class UserClient extends Client{
                             gui.getGamePage().setHealth(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                         }
                         case "RIGHTSIDED" -> {
+                            System.out.println("[Client]" + pMessage);
                             gui.getGamePage().setRightSided(Integer.parseInt(args[2]), Boolean.parseBoolean(args[3]));
                         }
                         case "PLAYERNUM" -> {

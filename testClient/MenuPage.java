@@ -140,7 +140,7 @@ public class MenuPage extends Page {
 
         characterImage.setSize((int) (frameWidth / 3.0), frameHeight / 2);
         try {
-            String imgPath = "player/" + character + "/animation1.png";
+            String imgPath = "player/" + character + "/animation10.png";
             ImageIcon icon = cropIcon(new ImageIcon("assets/" + imgPath), 0, 0, 0, 0);
             // Dimension imgSize = getImageSize("player/" + character + "/a (1).png");
             Dimension imgSize = new Dimension(icon.getIconWidth(), icon.getIconHeight());

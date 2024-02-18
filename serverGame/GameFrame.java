@@ -1,4 +1,4 @@
-package game;
+package serverGame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -70,9 +70,11 @@ public class GameFrame implements KeyListener{
         // gamePanel.add(test);
         // addBullet();
 
+        int mapNum = (int) (Math.random() * 2) + 1;
         mapLabel = new JLabel(); 
-        mapImgPath = "maps/World 1.png";
+        mapImgPath = "maps/World " + mapNum + ".png";
         gamePanel.add(mapLabel);
+        mI.interpretMessage("MAP " + mapNum);
 
         backgroundLabel = new JLabel();
         backgroundImgPath = "maps/background.png";
@@ -147,15 +149,15 @@ public class GameFrame implements KeyListener{
         int frameWidth = gamePanel.getWidth();
         int frameHeight = gamePanel.getHeight();
 
-        mapLabel.setLocation(0, gamePanel.getHeight() / 5);
+        mapLabel.setLocation(0, 0);
 
         player1.update();
         player2.update();
         for(int i = 0; i < bulletList.size(); i++){
             bulletList.get(i).update();
         }
-        setLocation(p1Health);
-        setLocation(p2Health);
+        // setLocation(p1Health);
+        // setLocation(p2Health);
     }
 
     public void removeBullet(Bullet bullet){

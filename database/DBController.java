@@ -19,6 +19,7 @@ public class DBController{
             System.err.println(database.getErrorMessage());
             return new String[0];
         }
+        if(qr.getData().length == 0) return new String[0];
         return qr.getData()[0];
     }
     public ArrayList getPlayerNames(){

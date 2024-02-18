@@ -2,7 +2,7 @@ package server;
 
 import java.util.ArrayList;
 import java.awt.*;
-import game.*;
+import serverGame.*;
 
 public class BroadcastServer extends Server{
     private class Client{

@@ -1,4 +1,4 @@
-package game;
+ package serverGame;
 
 import database.*;
 import javax.swing.*;
@@ -19,7 +19,8 @@ public class Player extends JLabel implements Healthy{
         String bullet_direction;
         PlayerInfo(String name){
             dbc = new DBController();
-            String[] info = dbc.getPlayerInfo(name);
+            System.out.println("---" + name);
+            String[] info = dbc.getPlayerInfo("Player");
             init(name, info[1], info[2], info[3], info[4]);
             System.out.println(info[4]);
         }
@@ -82,13 +83,20 @@ public class Player extends JLabel implements Healthy{
         this.animationNum = 1;
         scaleImage();
         
+        // if(! rightSided) turnPlayerImage();
+        turnPlayerImage();
+        
         final int MAX_ANIMATION = 9;
         Thread animationThread = new Thread(new Runnable(){
             @Override 
             public void run(){
                 while(true){
-                    animationNum += 1;
-                    if(animationNum > MAX_ANIMATION) animationNum = 1;
+                    if(isMoving()){
+                        animationNum += 1;
+                        if(animationNum > MAX_ANIMATION) animationNum = 1;
+                    }else{
+                        animationNum = 10;
+                    } 
                     warte(1000/ 20);
                 }
             }
@@ -169,9 +177,9 @@ public class Player extends JLabel implements Healthy{
     }
     public void scaleImage(){
         try{
-            double scaleImg = (gamePanel.getGamePanel().getHeight() * 0.125) / 170.0;
+            double scaleImg = (gamePanel.getGamePanel().getHeight() * 0.1) / 170.0;
             if(witched) this.setIcon(ir.getScaledIcon("player_test/Frog.png", scaleImg, scaleImg));
-            else this.setIcon(ir.getScaledIcon("player/Player/animation1.png", scaleImg, scaleImg));  //this.setIcon(ir.getScaledIcon("player/" + playerInfo.getName() + "/a (1).png", scaleImg, scaleImg));
+            else this.setIcon(ir.getScaledIcon("player/Player/animation10.png", scaleImg, scaleImg)); 
             this.setSize(this.getPreferredSize());
         }catch (Exception e){
             e.printStackTrace();
@@ -196,17 +204,11 @@ public class Player extends JLabel implements Healthy{
                 yVelo = 0;
                 if(gamePanel.checkBottom(this)){
                     falling = false;
-                    int j = 0; 
-                    while(j < 5 && gamePanel.checkBottom(this)){
-                        yPos+= POS_ACCURACY / 5;
+                    while(gamePanel.checkBottom(this)){
+                        yPos += POS_ACCURACY / 5;
                         gamePanel.setLocation(this);
-                        j++;
                     }
-                    if(gamePanel.checkBottom(this)) {
-                        // yPos 
-                    }else{
-                        yPos -= POS_ACCURACY / 5;
-                    }
+                    yPos -= POS_ACCURACY;
                    
                     // for(int j = 0; j < 5; j++){
                         // if(gamePanel.checkBottom(this)){
@@ -327,6 +329,8 @@ public class Player extends JLabel implements Healthy{
     }
 
     public void turnPlayerImage(){
+        System.out.println("__ " + "RIGHTSIDED " + id  + " " + rightSided);
+        // rightSided = rightSided ? false : true;
         ImageIcon flippedIcon = ir.flipIcon(this.getIcon(), true, false);
         this.setIcon(flippedIcon);
         gamePanel.getMessageInterpreter().interpretMessage("RIGHTSIDED " + id  + " " + rightSided);

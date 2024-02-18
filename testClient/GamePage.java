@@ -1,6 +1,6 @@
 package testClient;
 
-import game.*;
+// import serverGame.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -8,202 +8,22 @@ import java.io.*;
 import javax.imageio.ImageIO;
 import java.util.ArrayList;
 
+import clientGame.*;
+import serverGame.Positionable;
+
 public class GamePage extends Page implements KeyListener{
-    private class Player extends JLabel implements Healthy{ 
-        ImageRendering ir;
-        String name;
-        double x; 
-        double y;
-        int health;
-        String texture;
-        boolean witched;
-        boolean rightSided;
-        int animation;
-        Player(){
-            ir = new ImageRendering();
-            x = 0;
-            y = 0;
-            health = 100;
-            texture = "";
-            witched = false;
-            rightSided = true;
-            name = "Player";
-            animation = 1;
-
-            Thread test = new Thread (new Runnable() {
-                        public void run(){
-                            // System.out.println("mark0");
-                            // System.out.println(gui.getUserClient() == null);
-                            // warteSolange(gui.getUserClient() == null);
-                            // System.out.println("mark1");
-                            while(true){
-                                if(gui.getUserClient() != null && gui.getCurrentPage() == gui.getGamePage()){
-                                    gui.getUserClient().send("USERINPUT jump");
-                                }
-                                gui.warte(500);
-                            }
-                        }
-                    });
-            // test.start();
-        }
-
-        public void turnImage(){
-            ImageIcon flippedIcon = ir.flipIcon(this.getIcon(), true, false);
-            this.setIcon(flippedIcon);
-            rightSided = rightSided ? false : true;
-        }
-
-        public void turn(boolean b){
-            if(rightSided != b) turnImage();
-        }
-
-        public double getXPos(){
-            return x;
-        }
-
-        public double getYPos(){
-            return y;
-        }
-
-        public void setX(double x){
-            this.x = x;
-        }
-
-        public void setY(double y){
-            this.y = y;
-        }
-
-        public void setHealth(int a){
-            health = a;
-        }
-
-        public int getHealth(){
-            return health;
-        }
-        
-        public void setAnimation(int pAnimationNum){
-            this.animation = pAnimationNum;
-        }
-        
-        public int getAnimation(){
-            return animation;
-        }
-
-        public void setWitched(boolean b){
-            witched = b;
-        }
-
-        public boolean isWitched(){
-            return witched;
-        }
-
-        public void setTexture(String str){
-            texture = str;
-        }
-
-        public String getTexture(){
-            return texture;
-        }
-        
-        public String getName(){
-            return name;
-        }
-
-        public int getScaleWidth(){
-            return getWidth();
-        }
-
-        public void setRightSided(boolean b){
-            rightSided = b;
-        }
-    }
-    private class Bullet extends JLabel implements Positionable{
-        final int ID;
-        final boolean rightSided;
-        String texture;
-        double x; 
-        double y;
-        Bullet(int id, String texture, double x, double y, boolean rightSided){
-            this.ID = id;
-            this.x = x;
-            this.y = y;
-            this.texture = texture;
-            double scaleImg = (gamePanel.getHeight() * 0.125) / 170.0;
-            this.rightSided = rightSided;
-        }
-
-        public double getXPos(){
-            return x;
-        }
-
-        public void setXPos(double a){
-            this.x = a;
-        }
-
-        public double getYPos(){
-            return y;
-        }
-
-        public void setYPos(double a){
-            this.y = a;
-        }
-
-        public int getID(){
-            return ID;
-        }
-
-        public void setTexture(String str){
-            texture = str;
-        }
-
-        public String getTexture(){
-            return texture;
-        }
-
-        void turnImage(){
-            ImageRendering ir = new ImageRendering();
-            ImageIcon flippedIcon = ir.flipIcon(this.getIcon(), true, false);
-            this.setIcon(flippedIcon);
-        }
-
-        @Override
-        public void setIcon(Icon ic){
-            super.setIcon(ic);
-        }
-
-        public void imageTurning(){
-            if(getIcon() != null && !rightSided) turnImage();
-        }
-
-        @Override 
-        public boolean equals(Object o){
-            if(o instanceof Bullet){
-                Bullet b = (Bullet) o;
-                if(b.getID() == getID()) return true;
-                return false;
-            }
-            if(o instanceof Integer){
-                Integer i = (Integer) o;
-                if(getID() == i) return true;
-                return false;
-            }
-            return false;
-        }
-
-        public int getScaleWidth(){
-            return getWidth();
-        }
-    }
+    
     private GUI gui;
     private JPanel gamePanel;
     private Player[] player;
-    private Healthbar[] healthbar;
+    private HealthPanel[] healthPanel;
     private JLabel backgroundLabel;
     private JLabel mapLabel;
     private boolean[] keyPressed;
     private ArrayList<Bullet> bulletList;
     private JLabel gameClosingLabel;
     private JLabel winnerLabel;
+    private int mapNum;
 
     GamePage(GUI gui){
         this.gui = gui;
@@ -216,17 +36,17 @@ public class GamePage extends Page implements KeyListener{
         add(gamePanel);
 
         player = new Player[2];
-        healthbar = new Healthbar[player.length];
+        healthPanel = new HealthPanel[player.length];
         for(int i = 0; i < player.length; i++){
-            player[i] = new Player();
-            player[i].setTexture("King.png");
+            player[i] = new Player(gamePanel);
             gamePanel.add(player[i]);
 
-            healthbar[i] = new Healthbar(gamePanel, player[i]);
-            healthbar[i].setForeground(Color.RED);
-            healthbar[i].scale();
-            gamePanel.add (healthbar[i]);
+            healthPanel[i] = new HealthPanel(gamePanel);
+            gamePanel.add (healthPanel[i]);
         }
+        
+        healthPanel[0].setPosition(0., 0); 
+        healthPanel[1].setPosition(1, 0);
 
         mapLabel = new JLabel(); 
         gamePanel.add(mapLabel);
@@ -251,6 +71,7 @@ public class GamePage extends Page implements KeyListener{
         gamePanel.add(winnerLabel);
         gamePanel.setComponentZOrder(winnerLabel, 0);
 
+        mapNum = 1;
         componentResized();
 
         keyPressed = new boolean[4];
@@ -260,7 +81,7 @@ public class GamePage extends Page implements KeyListener{
     }
 
     public void addBullet(Integer id, String texture, double x, double y, boolean rightSided){
-        Bullet bullet = new Bullet(id, texture, x, y, rightSided);
+        Bullet bullet = new Bullet(gamePanel, id, texture, x, y, rightSided);
 
         double scaleImg = (gamePanel.getHeight() * 0.5) / 170.0;
         try{
@@ -299,24 +120,35 @@ public class GamePage extends Page implements KeyListener{
     }
 
     public void setCharacter(int pNum, String character){
-        player[pNum].setTexture("animations/" + character + "/a (1).png");
         componentResized();
     }
 
     public void setYourPlayer(int pNum){
-        healthbar[pNum].setForeground(Color.BLUE);
+        healthPanel[pNum].setColor(new Color(94, 144, 252));
     }
 
     public String getDescription(){
         return "gamePage";
     }
 
+    public void setMap(int pMapNum){
+        this.mapNum = pMapNum;
+    }
+    
+    public void setHealth(int pNum, int health){
+        healthPanel[pNum].setHealth(health);
+    }
+
+    public void setRightSided(int pNum, boolean pRightSided){
+        player[pNum].setRightSided(pRightSided);
+    }
+
     public void positionElements(){
         gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth() - 20) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight() - 40) / 2);
-        mapLabel.setLocation(0, gamePanel.getHeight() / 5);
+        mapLabel.setLocation(0, 0);
         for(int i = 0; i < player.length; i++){
             setPosition(player[i]);
-            setPosition(healthbar[i]);
+            setPosition(healthPanel[i]);
         }
         for(int i = 0; i < bulletList.size(); i++){
             setPosition(bulletList.get(i));
@@ -325,15 +157,7 @@ public class GamePage extends Page implements KeyListener{
         if(gameClosingLabel.isVisible()) gameClosingLabel.setLocation((gamePanel.getWidth() - gameClosingLabel.getWidth() )/ 2, (int) ((gamePanel.getHeight() - gameClosingLabel.getHeight()) * 2.0/ 5));
         if(winnerLabel.isVisible()) winnerLabel.setLocation((gamePanel.getWidth() - winnerLabel.getWidth() )/ 2, gameClosingLabel.getY() + gameClosingLabel.getHeight() + 100);
     }
-
-    public void setHealth(int pNum, int health){
-        player[pNum].setHealth(health);
-    }
-
-    public void setRightSided(int pNum, boolean rightSided){
-        player[pNum].turn(rightSided);
-    }
-
+    
     public void resizeElements(){
     }
 
@@ -342,11 +166,12 @@ public class GamePage extends Page implements KeyListener{
         winnerLabel.setVisible(false);
  
         for(int i = 0; i < player.length; i++){
-            player[i].setTexture("King.png");
+            // player[i].setTexture("King.png");
             player[i].setHealth(100);
-            if(! player[i].rightSided) player[i].turnImage();
+            // if(! player[i].rightSided) player[i].turnImage();
             
-            healthbar[i].setForeground(Color.RED);
+            // healthbar[i].setForeground(Color.RED);
+            // healthbar[i].setVisible(false);
         }
         
         ArrayList<Integer> temp = new ArrayList<Integer>();
@@ -361,7 +186,7 @@ public class GamePage extends Page implements KeyListener{
     public void componentResized(){
         int panelSize = Math.min(gui.getFrame().getWidth()/16, gui.getFrame().getHeight()/ 9);
         gamePanel.setSize(panelSize * 16, panelSize* 9);
-        gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth() - 20) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight() - 40) / 2);
+        gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth()) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight()) / 2);
 
         scalePlayers();
         double scaleBullet = (gamePanel.getHeight() * 0.5) / 170.0;
@@ -388,7 +213,7 @@ public class GamePage extends Page implements KeyListener{
         }
 
         try{
-            String mapImgPath = "maps/World 1.png";
+            String mapImgPath = "maps/World " + mapNum + ".png";
             double mapWidth = getImageIcon(mapImgPath).getIconWidth();
             double mapHeight = getImageIcon(mapImgPath).getIconHeight();
             double mapScale = (mapWidth / 16 < mapHeight / 9) ?   gamePanel.getHeight() / mapHeight : gamePanel.getWidth() / mapWidth;
@@ -412,32 +237,15 @@ public class GamePage extends Page implements KeyListener{
     }
     
     private void scalePlayers(){
-        double scaleImg = (gamePanel.getHeight() * 0.10) / 170.0;
         for(int i = 0; i < player.length; i++){
-            try{
-                if(player[i].isWitched()) player[i].setIcon(getScaledIcon("player_test/Frog.png", scaleImg, scaleImg));
-                else player[i].setIcon(getScaledIcon("player/" + player[i].getName() + "/animation" + player[i].getAnimation() + ".png", scaleImg, scaleImg));
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            if(! player[i].rightSided) player[i].turnImage();
-            player[i].setSize(player[i].getPreferredSize());
-            healthbar[i].scale();
+            player[i].update();
+            healthPanel[i].update();
         }
     }
 
     public void witchPlayer(int pNum, boolean b){
         player[pNum].setWitched(b);
-
-        double scaleImg = (gamePanel.getHeight() * 0.125) / 170.0;
-        try{
-            if(player[pNum].isWitched()) player[pNum].setIcon(getScaledIcon("player/Frog.png", scaleImg, scaleImg));
-            else player[pNum].setIcon(getScaledIcon("player/" + player[pNum].getTexture(), scaleImg, scaleImg));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        player[pNum].setSize(player[pNum].getPreferredSize());
-        healthbar[pNum].scale();
+        player[pNum].update();
     }
 
     public ImageIcon getImageIcon (String path)  throws IOException {
