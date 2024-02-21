@@ -37,7 +37,7 @@ public class Player extends JLabel implements Positionable{
         if(scaleImg <= 0) return;
         // System.out.println(scaleImg);
         try{
-            this.setIcon(imageLoader.getScaledIcon("player/" + this.name + "/animation" + this.animation + ".png", scaleImg, scaleImg));
+            this.setIcon(ImageLoader.getScaledIcon("player/" + this.name + "/animation" + this.animation + ".png", scaleImg, scaleImg));
         }catch (Exception e){
             System.out.println("Error while loading PlayerImage, FileName: assets/player/" + this.name + "/animation" + this.animation + ".png");
             e.printStackTrace();

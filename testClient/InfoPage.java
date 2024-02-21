@@ -1,5 +1,6 @@
 package testClient;
 
+import assetLoader.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class InfoPage extends Page{
             gameLabel.setLocation(25, (getHeight() - gameLabel.getHeight()) / 2); 
             int panelSize = (int) (Math.min(getHeight() , getWidth() - (gameLabel.getWidth() + 75) ) * 0.7);
             try{
-               imageLabel.setIcon(getResizedIcon("lightning_background.png", panelSize, panelSize)); 
+               imageLabel.setIcon(ImageLoader.getResizedIcon("lightning_background.png", panelSize, panelSize)); 
             }catch (Exception e){
                 e.printStackTrace();
                 System.out.println("ERROR");
@@ -73,7 +74,7 @@ public class InfoPage extends Page{
             gameLabel.setLocation(25, (getHeight() - gameLabel.getHeight()) / 2); 
             int panelSize = (int) (Math.min(getHeight() , getWidth() - (gameLabel.getWidth() + 75) ) * 0.7);
             try{
-               imageLabel.setIcon(getResizedIcon("lightning_background.png", panelSize, panelSize)); 
+               imageLabel.setIcon(ImageLoader.getResizedIcon("lightning_background.png", panelSize, panelSize)); 
             }catch (Exception e){
                 e.printStackTrace();
                 System.out.println("ERROR");

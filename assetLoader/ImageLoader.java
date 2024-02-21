@@ -13,7 +13,7 @@ public class ImageLoader{
 
     }
     
-    public ImageIcon getResizedIcon(String path, int x_scale, int y_scale) throws IOException {
+    public static ImageIcon getResizedIcon(String path, int x_scale, int y_scale) throws IOException {
             // Lade das Bild von der Datei
             Image img = ImageIO.read(new File("assets/" + path));
             
@@ -21,7 +21,7 @@ public class ImageLoader{
             Image scaledImg = img.getScaledInstance(x_scale, y_scale, Image.SCALE_SMOOTH);
             return new ImageIcon(scaledImg);
     }
-    public ImageIcon getScaledIcon(String path, double x_scale, double y_scale) throws IOException {
+    public static ImageIcon getScaledIcon(String path, double x_scale, double y_scale) throws IOException {
         ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File("assets/" + path))); 
         Image image = imageIcon.getImage(); 
         Image newimg = image.getScaledInstance((int)(imageIcon.getIconWidth() * x_scale), (int) (imageIcon.getIconHeight()*y_scale),  java.awt.Image.SCALE_SMOOTH); 
@@ -29,7 +29,7 @@ public class ImageLoader{
         return imageIcon;
     }
 
-    public ImageIcon flipIcon(Icon originalIcon, boolean horizontal, boolean vertical) {
+    public static ImageIcon flipIcon(Icon originalIcon, boolean horizontal, boolean vertical) {
         int width = originalIcon.getIconWidth();
         int height = originalIcon.getIconHeight();
 
@@ -48,7 +48,7 @@ public class ImageLoader{
         return new ImageIcon(flippedImage);
     }
 
-    private BufferedImage flipBufferedImage(BufferedImage image, boolean horizontal, boolean vertical) {
+    private static BufferedImage flipBufferedImage(BufferedImage image, boolean horizontal, boolean vertical) {
         int width = image.getWidth();
         int height = image.getHeight();
 
@@ -73,7 +73,7 @@ public class ImageLoader{
         return flippedImage;
     }
 
-    public Icon rotateIcon(ImageIcon originalIcon, double angle) {
+    public static Icon rotateIcon(ImageIcon originalIcon, double angle) {
         Image image = originalIcon.getImage();
         double sin = Math.abs(Math.sin(angle));
         double cos = Math.abs(Math.cos(angle));
@@ -92,7 +92,7 @@ public class ImageLoader{
         return new ImageIcon(rotatedImage);
     }
 
-    public ImageIcon cropIcon(ImageIcon originalIcon, int leftCrop, int rightCrop, int topCrop, int bottomCrop){
+    public static ImageIcon cropIcon(ImageIcon originalIcon, int leftCrop, int rightCrop, int topCrop, int bottomCrop){
         // Zuschneiden des Bildes
         BufferedImage originalImage = new BufferedImage(originalIcon.getIconWidth(), originalIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = originalImage.createGraphics();

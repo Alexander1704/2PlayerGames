@@ -1,5 +1,6 @@
 package testClient;
 
+import assetLoader.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -64,7 +65,7 @@ public class PanelTest2 extends Page {
             //image code
             int panelSize = (int) (Math.min(getHeight() , getWidth() - (timeLabel.getWidth() + 75) ) * 0.7);
             try{
-               backgroundImageLabel.setIcon(getResizedIcon("lightning_background.png", panelSize, panelSize)); 
+               backgroundImageLabel.setIcon(ImageLoader.getResizedIcon("lightning_background.png", panelSize, panelSize)); 
             }catch (Exception e){
                 e.printStackTrace();
                 System.out.println("ERROR");

@@ -25,7 +25,7 @@ public class HealthPanel extends JPanel implements Positionable{
         healthLabel = new JLabel("100%");
         healthLabel.setLocation(0, 0);
         healthLabel.setSize(healthLabel.getPreferredSize());
-        healthLabel.setFont(fontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        healthLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         add(healthLabel);
         
         healthPanel = new JPanel();

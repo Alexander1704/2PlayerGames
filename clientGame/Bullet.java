@@ -51,8 +51,7 @@ public class Bullet extends JLabel implements Positionable{
     }
 
     void turnImage(){
-        ImageLoader il = new ImageLoader();
-        ImageIcon flippedIcon = il.flipIcon(this.getIcon(), true, false);
+        ImageIcon flippedIcon = ImageLoader.flipIcon(this.getIcon(), true, false);
         this.setIcon(flippedIcon);
     }
 

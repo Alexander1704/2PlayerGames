@@ -1,6 +1,6 @@
 package testClient;
 
-
+import assetLoader.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -45,7 +45,7 @@ public class LoadingPage extends Page{
         loadingLabel = new JLabel ("loading");
         loadingLabel.setForeground(new Color(93, 252, 153)); // Set the text color to green
         loadingLabel.setForeground(Color.WHITE);
-        loadingLabel.setFont(loadFont("assets/LilitaOne-Regular.ttf", 40)); // Set the font to plain monospaced
+        loadingLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf", 40)); // Set the font to plain monospaced
         loadingLabel.setBounds(0, 0, 0, 0);
         add (loadingLabel);
         
@@ -88,7 +88,7 @@ public class LoadingPage extends Page{
         
     }
     public void componentResized(){
-        warte (10);
+        FunctionLoader.warte(10);
     }
     public void positionElements(){
         int loadingWidth = (int) loadingLabel.getPreferredSize().getWidth();

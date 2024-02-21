@@ -1,7 +1,7 @@
 package testClient;
 
-import database.*;
 import assetLoader.*;
+import database.*;
 
 
 import javax.swing.*;
@@ -39,7 +39,7 @@ public class GUI implements KeyListener{
     private AnimationPage animationPage;
     public GUI(){
         System.out.println("Sys start");
-        frame = new JFrame("");
+        frame = new JFrame("2PlayerGames");
         frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.getContentPane().setBackground(Color.WHITE);
@@ -213,7 +213,6 @@ public class GUI implements KeyListener{
         currentPage = to;
         currentPage.reloadData();
         currentPage.componentResized();
-        frame.setTitle("2PlayerGames ALPHA - " + currentPage.getDescription());
         frame.validate();
         frame.repaint();
     }

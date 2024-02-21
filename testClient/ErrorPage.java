@@ -1,6 +1,6 @@
 package testClient;
 
-
+import assetLoader.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -28,7 +28,7 @@ public class ErrorPage extends Page{
         errorSign.setLocation(0, 0);
         errorSign.setSize(100, 100);
         try{
-           errorSign.setIcon(getScaledIcon("errorSign-removebg-preview.png", .4, .4)); 
+           errorSign.setIcon(ImageLoader.getScaledIcon("errorSign-removebg-preview.png", .4, .4)); 
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("ERROR");

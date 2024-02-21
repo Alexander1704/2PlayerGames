@@ -5,7 +5,7 @@ public class FunctionLoader{
         
     }
     
-    public void warte(int pTime){
+    public static void warte(int pTime){
         if(pTime < 0) return;
         try{
             Thread.sleep(pTime);
@@ -14,7 +14,7 @@ public class FunctionLoader{
             ie.printStackTrace();
         }
     }
-    public void warte(long pTime){
+    public static void warte(long pTime){
         if(pTime < 0) return;
         try{
             Thread.sleep(pTime);

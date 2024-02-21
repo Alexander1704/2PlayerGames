@@ -1,6 +1,6 @@
 package testClient;
 
-
+import assetLoader.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -21,12 +21,12 @@ public class LoginPage extends Page{
         this.gui = gui;
         setBackground(new Color(94, 144, 252));
         setLayout (null);
-        setFont(loadFont("assets/LilitaOne-Regular.ttf",25));
+        setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         
         
         connectButton = new JButton ("connect");
         connectButton.setSize(200, 50);
-        connectButton.setFont(loadFont("assets/LilitaOne-Regular.ttf",25));
+        connectButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         connectButton.setBackground(new Color(93, 252, 153));
         connectButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
         connectButton.addActionListener(new ActionListener(){
@@ -44,13 +44,13 @@ public class LoginPage extends Page{
         add (connectButton);
         
         ipLabel = new JLabel ("IP:");
-        ipLabel.setFont(loadFont("assets/LilitaOne-Regular.ttf",25));
+        ipLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         ipLabel.setSize(ipLabel.getPreferredSize());
         ipLabel.setForeground(Color.WHITE);
         add (ipLabel);
         
         portLabel = new JLabel ("PORT:");
-        portLabel.setFont(loadFont("assets/LilitaOne-Regular.ttf",25));
+        portLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         portLabel.setSize(portLabel.getPreferredSize());
         portLabel.setForeground(Color.WHITE);
         add (portLabel);
@@ -58,7 +58,7 @@ public class LoginPage extends Page{
         ipText = new JTextField (1);
         ipText.setText("localhost");
         ipText.setSize(300, 50);
-        ipText.setFont(loadFont("assets/LilitaOne-Regular.ttf",25));
+        ipText.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         ipText.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
         add (ipText);
         
@@ -66,7 +66,7 @@ public class LoginPage extends Page{
         portText.setText("55555");
         portText.setSize(300, 50);
         portText.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-        portText.setFont(loadFont("assets/LilitaOne-Regular.ttf",25));
+        portText.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         add (portText);
     }
     public String getDescription(){

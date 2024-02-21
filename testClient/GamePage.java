@@ -1,6 +1,6 @@
 package testClient;
 
-// import serverGame.*;
+import assetLoader.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -58,14 +58,14 @@ public class GamePage extends Page implements KeyListener{
         bulletList = new ArrayList<Bullet>();
 
         gameClosingLabel = new JLabel("GAME IS CLOSING...");
-        gameClosingLabel.setFont(loadFont("assets/LilitaOne-Regular.ttf",50));
+        gameClosingLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",50));
         gameClosingLabel.setVisible(false);
         gameClosingLabel.setForeground(Color.RED);
         gamePanel.add(gameClosingLabel);
         gamePanel.setComponentZOrder(gameClosingLabel, 0);
 
         winnerLabel = new JLabel("YOU WON");
-        winnerLabel.setFont(loadFont("assets/LilitaOne-Regular.ttf",50));
+        winnerLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",50));
         winnerLabel.setVisible(false);
         winnerLabel.setForeground(Color.YELLOW);
         gamePanel.add(winnerLabel);
@@ -85,7 +85,7 @@ public class GamePage extends Page implements KeyListener{
 
         double scaleImg = (gamePanel.getHeight() * 0.5) / 170.0;
         try{
-            bullet.setIcon(getScaledIcon("bullets/" + texture, scaleImg, scaleImg));
+            bullet.setIcon(ImageLoader.getScaledIcon("bullets/" + texture, scaleImg, scaleImg));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -192,7 +192,7 @@ public class GamePage extends Page implements KeyListener{
         double scaleBullet = (gamePanel.getHeight() * 0.5) / 170.0;
         for(int i = 0; i < bulletList.size(); i++){
             try{
-                bulletList.get(i).setIcon(getScaledIcon("bullets/" + bulletList.get(i).getTexture(), scaleBullet, scaleBullet));
+                bulletList.get(i).setIcon(ImageLoader.getScaledIcon("bullets/" + bulletList.get(i).getTexture(), scaleBullet, scaleBullet));
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -205,7 +205,7 @@ public class GamePage extends Page implements KeyListener{
             double backgroundWidth = getImageIcon(backgroundImgPath).getIconWidth();
             double backgroundHeight = getImageIcon(backgroundImgPath).getIconHeight();
             double backgroundScale = (backgroundWidth / 16 < backgroundHeight / 9) ? gamePanel.getWidth() / backgroundWidth :  gamePanel.getHeight() / backgroundHeight;
-            backgroundLabel.setIcon(getScaledIcon(backgroundImgPath, backgroundScale, backgroundScale));
+            backgroundLabel.setIcon(ImageLoader.getScaledIcon(backgroundImgPath, backgroundScale, backgroundScale));
             backgroundLabel.setSize(backgroundLabel.getPreferredSize());
         }
         catch (IOException ioe){
@@ -217,7 +217,7 @@ public class GamePage extends Page implements KeyListener{
             double mapWidth = getImageIcon(mapImgPath).getIconWidth();
             double mapHeight = getImageIcon(mapImgPath).getIconHeight();
             double mapScale = (mapWidth / 16 < mapHeight / 9) ?   gamePanel.getHeight() / mapHeight : gamePanel.getWidth() / mapWidth;
-            mapLabel.setIcon(getScaledIcon(mapImgPath, mapScale, mapScale));
+            mapLabel.setIcon(ImageLoader.getScaledIcon(mapImgPath, mapScale, mapScale));
             mapLabel.setSize(mapLabel.getPreferredSize());
         }catch (Exception e){
             e.printStackTrace();
@@ -295,7 +295,7 @@ public class GamePage extends Page implements KeyListener{
                     public void run(){
                         while(running() && keyPressed[pressedNum] ){
                             executeKey(e);
-                            warte(gui.getFrameWait());
+                            FunctionLoader.warte(gui.getFrameWait());
                         }
                     }
                 });
@@ -355,7 +355,7 @@ public class GamePage extends Page implements KeyListener{
         System.out.println("---> " + b);
         Thread warte = new Thread(new Runnable(){
                     public void run(){
-                        warte(10);
+                        FunctionLoader.warte(10);
                         if(b){
                             winnerLabel.setText("YOU WON!");
                             winnerLabel.setForeground(Color.YELLOW);

@@ -11,7 +11,7 @@ public class FontLoader{
         
     }
     
-    public Font loadFont(String fontPath, int size) {
+    public static Font loadFont(String fontPath, int size) {
         Font customFont = null;
         try {
             File fontFile = new File(fontPath);

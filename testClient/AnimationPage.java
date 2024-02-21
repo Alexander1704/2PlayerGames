@@ -1,5 +1,6 @@
 package testClient;
 
+import assetLoader.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class AnimationPage extends Page{
                             // imgPath = "assets/player/playerAnimation/running_ basic player_0010.png";
                             try{
                                 // animationLabel.setIcon(getResizedIcon("player/playerAnimation/running_ basic player_" + getNumString(animationNum + "") + ".png", 640, 360)); 
-                                animationLabel.setIcon(getResizedIcon(imgPath , 640, 360));
+                                animationLabel.setIcon(ImageLoader.getResizedIcon(imgPath , 640, 360));
                             }catch (Exception e){
                                 e.printStackTrace();
                                 System.out.println("ERROR");
@@ -52,7 +53,7 @@ public class AnimationPage extends Page{
                             }
                             animationLabel.setSize(animationLabel.getPreferredSize());
                             animationLabel.setLocation(0, 0);
-                            warte(10);
+                            FunctionLoader.warte(10);
                             
                             animationNum++;
                             if(animationNum > MAX_ANIMATION_NUM) animationNum = 0;

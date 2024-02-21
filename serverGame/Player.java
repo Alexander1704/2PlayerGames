@@ -25,9 +25,6 @@ public class Player extends JLabel implements Healthy{
             init(name, info[1], info[2], info[3], info[4]);
             System.out.println(info[4]);
         }
-        // PlayerInfo(String name, String texture, String bullet_texture, String bullet_damage){
-        // init(name, texture, bullet_texture, bullet_damage);
-        // }
         private void init(String name, String texture, String bullet_texture, String bullet_damage, String bullet_direction){
             this.name = name;
             this.texture = texture;

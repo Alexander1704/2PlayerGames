@@ -1,5 +1,6 @@
 package testClient;
 
+import assetLoader.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -8,7 +9,7 @@ import javax.imageio.ImageIO;
 import java.io.*;
 import java.awt.event.*;
 
-public class MenuPage extends Page {
+public class MenuPage extends Page { 
     private GUI gui;
     private String character;
     private ArrayList<String> characterList;
@@ -31,7 +32,7 @@ public class MenuPage extends Page {
         characterName.setBackground(Color.WHITE);
         characterName.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5)); // Schwarzer Rand
         characterName.setHorizontalAlignment(SwingConstants.CENTER);
-        characterName.setFont(loadFont("assets/LilitaOne-Regular.ttf",25));
+        characterName.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         add(characterName);
 
         characterImage = new JLabel();
@@ -44,19 +45,19 @@ public class MenuPage extends Page {
         playButton = new JButton("Play");
         playButton.setBackground(new Color(93, 252, 153));
         playButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
-        playButton.setFont(loadFont("assets/LilitaOne-Regular.ttf",25));
+        playButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         add(playButton);
 
         nextPlayerButton = new JButton(">");
         nextPlayerButton.setBackground(new Color(93, 252, 153));
         nextPlayerButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
-        nextPlayerButton.setFont(loadFont("assets/LilitaOne-Regular.ttf",25));
+        nextPlayerButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         add(nextPlayerButton);
 
         previousPlayerButton = new JButton("<");
         previousPlayerButton.setBackground(new Color(93, 252, 153));
         previousPlayerButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
-        previousPlayerButton.setFont(loadFont("assets/LilitaOne-Regular.ttf",25));
+        previousPlayerButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         add(previousPlayerButton);
 
         nextPlayerButton.addActionListener(new ActionListener(){
@@ -141,12 +142,11 @@ public class MenuPage extends Page {
         characterImage.setSize((int) (frameWidth / 3.0), frameHeight / 2);
         try {
             String imgPath = "player/" + character + "/animation10.png";
-            ImageIcon icon = cropIcon(new ImageIcon("assets/" + imgPath), 0, 0, 0, 0);
-            // Dimension imgSize = getImageSize("player/" + character + "/a (1).png");
+            ImageIcon icon = (new ImageIcon("assets/" + imgPath));
             Dimension imgSize = new Dimension(icon.getIconWidth(), icon.getIconHeight());
             int border = frameHeight/ 10;
             double scaling = Math.min((characterImage.getWidth() - border) * 1.0 /imgSize.getWidth(), (characterImage.getHeight() - border) * 1.0 / imgSize.getHeight());
-            characterImage.setIcon(cropIcon(getScaledIcon(imgPath, scaling, scaling), 0, 0, 0, 0));
+            characterImage.setIcon((ImageLoader.getScaledIcon(imgPath, scaling, scaling)));
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(character +"::: " + "player/" + character + "/a (1).png");
