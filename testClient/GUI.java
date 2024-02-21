@@ -1,6 +1,9 @@
 package testClient;
 
 import database.*;
+import assetLoader.*;
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -62,13 +65,23 @@ public class GUI implements KeyListener{
         currentPage = loginPage;
         switchPage(currentPage);
 
-        Thread renderFrame = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        renderFrame();
-                    }
-                });
-        renderFrame.start();
+        // Thread renderFrame = new Thread(new Runnable() {
+                    // @Override
+                    // public void run() {
+                        // renderFrame();
+                    // }
+                // });
+        // renderFrame.start();
+        
+        
+        TickThread renderFrameThread = new TickThread(60, new Runnable(){
+            @Override
+            public void run(){
+                currentPage.repaint();                
+            }
+        });
+        renderFrameThread.start();
+        
 
         frame.addComponentListener(new ComponentAdapter() {
                 @Override
@@ -113,6 +126,8 @@ public class GUI implements KeyListener{
     }
 
     public void renderFrame(){
+        
+        
         final int TARGET_FPS = 30;
         final long TARGET_TIME = 1000000000 / TARGET_FPS; // nanoseconds per frame
 

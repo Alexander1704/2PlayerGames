@@ -118,6 +118,11 @@ public class UserClient extends Client{
                                 
                                 // gui..setPosition(Integer.parseInt(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2]));                        
                             }
+                            case "UPDATE" ->{
+                                gui.getGamePage().setPosition(Integer.parseInt(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4]), Integer.parseInt(args[7]));
+                                
+                                // gui..setPosition(Integer.parseInt(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2]));                        
+                            }
                         case "INIT" -> {
                             if(args.length >= 5) {
                                 gui.getGamePage().setCharacter(Integer.parseInt(args[2]), args[3] + " " + args[4]);
