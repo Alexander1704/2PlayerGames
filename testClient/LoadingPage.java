@@ -35,7 +35,6 @@ public class LoadingPage extends Page{
     private GUI gui;
     private JLabel loadingLabel;
     private Rectangle[] loadingAnimation;
-    private TickThread updateLoadingAnimationThread;
     private long lastUpdate;
     public LoadingPage(GUI gui){
         this.gui = gui;
@@ -54,42 +53,21 @@ public class LoadingPage extends Page{
             add (loadingAnimation[i]);
         }
     }
-    private void updateLoadingLabel(){
-        int start = 0;
-        while(true){
-            if(start == 0) loadingLabel.setText("loading");
-            if(start == 1) loadingLabel.setText("loading.");
-            if(start == 2) loadingLabel.setText("loading..");
-            if(start == 3) loadingLabel.setText("loading...");
-            positionElements();
-            try{
-                Thread.sleep(900);
-            }
-            catch (InterruptedException ie){
-                ie.printStackTrace();
-            }
-            start++;
-            if(start > 3) start = 0;
-        }
-    }
-    public void reloadData(){
-        updateLoadingAnimationThread = new TickThread(gui.getTick(), new Runnable(){
-           @Override
-           public void run(){
-               repaint();
-           }
-        });
-        updateLoadingAnimationThread.start();
-    }
-    public void componentResized(){
+    
+    @Override
+    public void start(){}
+    
+    @Override
+    public void finish(){}
+    
+    @Override
+    public void resized(){
         FunctionLoader.position(loadingLabel, 0.5, 0.5);
-        // int loadingWidth = (int) loadingLabel.getPreferredSize().getWidth();
-        // int loadingHeight = (int) loadingLabel.getPreferredSize().getHeight();
-        // loadingLabel.setBounds((gui.getFrame().getWidth() - loadingWidth)/ 2, (gui.getFrame().getHeight()-loadingHeight)/ 2, loadingWidth, loadingHeight);
-        // FunctionLoader.warte(10);
     }
-    public void positionElements(){
-        
+    
+    @Override
+    public void update(){
+        repaint();
     }
     
     @Override
@@ -104,14 +82,4 @@ public class LoadingPage extends Page{
             loadingAnimation[i].paintComponent(g);
         }
     } 
-    public void resizeElements(){
-        
-    }
-    
-    public void finish(){
-        updateLoadingAnimationThread.finish();
-    }
-    public void updateElements(){
-        
-    }
 }

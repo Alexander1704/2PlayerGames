@@ -53,10 +53,11 @@ public class Player extends JLabel implements Healthy{
             return bullet_direction;
         }
     }
-    private final double MAX_VELO = 0.005;
-    private final double MAX_JUMP_VELO = MAX_VELO * 5;
+    private final double MAX_VELO = 0.0025;
+    private final double MAX_JUMP_VELO = 0.02;
     private final double POS_ACCURACY = MAX_VELO;
     private final PlayerInfo playerInfo;
+    private boolean initialized;
     private boolean rightSided;
     private boolean falling;
     private boolean reloadingBullet;
@@ -84,21 +85,20 @@ public class Player extends JLabel implements Healthy{
         this.ir = new ImageRendering();
         this.id = id;
         this.animationNum = 1;
+        this.initialized = false;
         scaleImage();
 
-        // if(! rightSided) turnPlayerImage();
         turnPlayerImage();
-
         
-        // warte(2000);
         final int MAX_ANIMATION = 9;
-        TickThread animationThread = new TickThread(20, new Runnable(){
+        TickThread animationThread = new TickThread(15, new Runnable(){
                     @Override 
                     public void run(){
                         // System.out.println("Server: animationNum: " + animationNum + " moving?: " + isMoving());
                         if(isMoving()){
                             animationNum += 1;
                             if(animationNum > MAX_ANIMATION) animationNum = 1;
+                            sendAnimationNum();
                         }else{
                             if(animationNum != 10){
                                 if (animationNum == 7) {
@@ -112,6 +112,7 @@ public class Player extends JLabel implements Healthy{
                                         animationNum++;
                                     }
                                 }
+                                sendAnimationNum();
                             }
                         } 
 
@@ -119,6 +120,10 @@ public class Player extends JLabel implements Healthy{
                 });
         animationThread.start();
         // animationThread.finish();
+    }
+    
+    public void sendAnimationNum(){
+        gamePanel.getMessageInterpreter().interpretMessage("ANIMATION " + id + " " + animationNum);
     }
 
     public boolean rightSided(){
@@ -132,6 +137,10 @@ public class Player extends JLabel implements Healthy{
     public double getYPos(){
         return yPos;
     }
+    
+    public String getPosition(){
+        return xPos + " " + yPos;
+    }
 
     public int getHealth(){
         return health;
@@ -142,7 +151,7 @@ public class Player extends JLabel implements Healthy{
     }
 
     public boolean isMoving(){
-        return xVelo != 0 || yVelo != 0;
+        return initialized && (xVelo != 0 || yVelo != 0);
     }
 
     @Override
@@ -240,19 +249,7 @@ public class Player extends JLabel implements Healthy{
                         gamePanel.setLocation(this);
                     }
                     yPos -= POS_ACCURACY;
-
-                    // for(int j = 0; j < 5; j++){
-                    // if(gamePanel.checkBottom(this)){
-                    // yPos += POS_ACCURACY / 5;
-                    // gamePanel.setLocation(this);
-                    // }else{
-                    // break;
-                    // }
-                    // }
-                    // if(gamePanel.checkBottom(this)) {
-                    // yPos -= POS_ACCURACY/ 5 * 5;
-                    // gamePanel.setLocation(this);
-                    // }
+                    initialized = true;
                 }
                 return;
             }

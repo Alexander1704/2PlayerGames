@@ -7,7 +7,6 @@ import java.awt.*;
 
 public class Player extends JLabel implements Positionable{ 
     private JPanel panel;
-    private ImageLoader ir; 
     private String name;
     private double x; 
     private double y;
@@ -19,7 +18,6 @@ public class Player extends JLabel implements Positionable{
     private int animation;
     public Player(JPanel pPanel){
         panel = pPanel;
-        ir = new ImageLoader();
         x = 0;
         y = 0;
         this.size = 1 / 1700.0;
@@ -42,7 +40,7 @@ public class Player extends JLabel implements Positionable{
             System.out.println("Error while loading PlayerImage, FileName: assets/player/" + this.name + "/animation" + this.animation + ".png");
             e.printStackTrace();
         }
-        if(! this.rightSided) setIcon(ir.flipIcon(this.getIcon(), true, false));
+        if(! this.rightSided) this.setIcon(ImageLoader.flipIcon(this.getIcon(), true, false));
         this.setSize(this.getPreferredSize());
     }
 

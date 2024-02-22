@@ -44,37 +44,22 @@ public class AnimationPage extends Page{
         });
     }
     
-    public void finish(){
-        
-    }
+    @Override
+    public void start(){}
     
-
+    @Override
+    public void finish(){}
+    
+    @Override
+    public void resized(){}
+    
+    @Override
+    public void update(){}
+    
     private String getNumString(String a){
         for(int i = a.length(); i < 4; i++){
             a = "0" + a;
         }
         return a;
-    }
-
-    public String getDescription(){
-        return "AnimationPage";
-    }
-
-    public void positionElements(){
-    }
-
-    public void resizeElements(){
-    }
-
-    public void reloadData(){
-
-    }
-
-    public void componentResized(){
-
-    }
-    
-    public void updateElements(){
-        
     }
 }

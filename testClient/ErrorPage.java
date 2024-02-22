@@ -62,23 +62,27 @@ public class ErrorPage extends Page{
             }
         });
     }
-    public String getDescription(){
-        return "loadingPage";
-    }
-    public void reloadData(){
+
+    @Override
+    public void start(){
         
     }
-    public void componentResized(){
+    
+    @Override
+    public void finish(){
+        
+    }
+    
+    @Override
+    public void resized(){
         FunctionLoader.position(errorSign, 0.5, 0.4);
         FunctionLoader.position(errorTitle, errorSign, 0.5, - 10 - gui.getFrame().getHeight()/ 15, false, true);
         FunctionLoader.position(errorMessage, errorSign, 0.5, errorSign.getHeight() / 2+ 50 + gui.getFrame().getHeight() / 10, false, true);
         FunctionLoader.position(retryButton, errorMessage, 0.5, 20 + gui.getFrame().getHeight() / 20, false, true);
     }
-    public void finish(){
-        
-    }
     
-    public void updateElements(){
+    @Override
+    public void update(){
         
     }
 }

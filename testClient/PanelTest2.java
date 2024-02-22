@@ -91,42 +91,21 @@ public class PanelTest2 extends Page {
         scrollPane.setViewportView(contentPanel);
 
         addRedPanels(10); // Füge 5 rote Panels hinzu
-
-        // Hinzufügen eines Komponentenadapters, um auf Größenänderungen zu reagieren
-        gui.getFrame().getContentPane().addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent componentEvent) {
-                resizeElements();
-            }
-        });
     }
     
-    public void addRedPanels(int count) {
-        for (int i = 0; i < count; i++) {
-            // JPanel redPanel = new JPanel();
-            // redPanel.setBackground(Color.RED);
-            // redPanel.setPreferredSize(new Dimension(100, 100));
-            // redPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Border um die roten Panels hinzufügen
-            contentPanel.add(new SpectatePanel());
-        }
-        contentPanel.revalidate(); // Aktualisieren des Layouts
+    @Override 
+    public void start(){
+        
     }
-
-
-    public String getDescription() {
-        return "testPage2";
+    
+    @Override 
+    public void finish(){
+        
     }
-
-    public void positionElements() {
-        Component[] components = contentPanel.getComponents(); // Überprüfen Sie den Inhalt des contentPanel, nicht des JViewport
-        for (Component component : components) {
-            if (component instanceof JPanel) {
-                SpectatePanel gamePanel = (SpectatePanel) component;
-                gamePanel.updateElements();
-            }
-        }
-    }
-
-    public void resizeElements() {
+    
+    @Override 
+    public void resized(){
+        //Skaliere die Elemente
         int frameWidth = gui.getFrame().getWidth();
         int frameHeight = gui.getFrame().getHeight();
 
@@ -144,9 +123,47 @@ public class PanelTest2 extends Page {
         });
         timer.setRepeats(false);
         timer.start();
+        
+        
+        
+        
+        //Positioniere die Elemente
+        Component[] components = contentPanel.getComponents(); // Überprüfen Sie den Inhalt des contentPanel, nicht des JViewport
+        for (Component component : components) {
+            if (component instanceof JPanel) {
+                SpectatePanel gamePanel = (SpectatePanel) component;
+                gamePanel.updateElements();
+            }
+        }
     }
     
-    //Erstellt mir chatgpt
+    @Override
+    public void update(){
+        Component[] components = contentPanel.getComponents(); // Überprüfen Sie den Inhalt des contentPanel, nicht des JViewport
+        for (Component component : components) {
+            if (component instanceof JPanel) {
+                SpectatePanel gamePanel = (SpectatePanel) component;
+                // if (gamePanel.getHeight() < 200) {
+                    // gamePanel.setSize(gamePanel.getWidth(), 200);
+                // }
+                gamePanel.resized();
+            }
+        }
+    }
+    
+    
+    public void addRedPanels(int count) {
+        for (int i = 0; i < count; i++) {
+            // JPanel redPanel = new JPanel();
+            // redPanel.setBackground(Color.RED);
+            // redPanel.setPreferredSize(new Dimension(100, 100));
+            // redPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Border um die roten Panels hinzufügen
+            contentPanel.add(new SpectatePanel());
+        }
+        contentPanel.revalidate(); // Aktualisieren des Layouts
+    }
+    
+    //Erstellt mit chatgpt
     public ArrayList<JPanel> getAddedJPanels() {
         ArrayList<JPanel> addedPanels = new ArrayList<>();
         Component[] components = contentPanel.getComponents(); // Überprüfen Sie den Inhalt des contentPanel, nicht des JViewport
@@ -164,26 +181,5 @@ public class PanelTest2 extends Page {
             System.out.println(test.get(i));
         }
         System.out.println(test.size());
-    }
-
-    public void reloadData() {}
-
-    public void componentResized() {
-        Component[] components = contentPanel.getComponents(); // Überprüfen Sie den Inhalt des contentPanel, nicht des JViewport
-        for (Component component : components) {
-            if (component instanceof JPanel) {
-                SpectatePanel gamePanel = (SpectatePanel) component;
-                // if (gamePanel.getHeight() < 200) {
-                    // gamePanel.setSize(gamePanel.getWidth(), 200);
-                // }
-                gamePanel.resized();
-            }
-        }
-    }
-    public void finish(){
-        
-    }
-    public void updateElements(){
-        
     }
 }

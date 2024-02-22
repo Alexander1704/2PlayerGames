@@ -27,6 +27,15 @@ public class FunctionLoader{
         pComp.setLocation( x, y);
     }
     
+    public static void scale(Component pComp, double pX, double pY){
+        if(pComp.getParent() == null) {
+            System.err.println("Component hat keinen parent und kann daher nicht positioniert werden");
+            return;
+        }
+        Component parent = pComp.getParent();
+        pComp.setSize( (int) (parent.getWidth() * pX), (int) (parent.getHeight() * pY));
+    }
+    
     public static void print(Object obj){
         System.out.println(obj);
     }

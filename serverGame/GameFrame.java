@@ -1,5 +1,6 @@
 package serverGame;
 
+import assetLoader.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -27,6 +28,7 @@ public class GameFrame implements KeyListener{
     private int mapNum;
     BufferedImage bufferedMap;
     private final int frameRate = (int) (1000 / 60.0);
+    TickThread gameThread;
     public GameFrame(MessageInterpreter mI){
         messageInterpreter = mI;
         
@@ -35,10 +37,10 @@ public class GameFrame implements KeyListener{
         testFrame.setLayout(null);
         testFrame.setTitle("[SERVER] Simple Platformer");
         testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        testFrame.setSize(710, 400);
+        testFrame.setPreferredSize(new Dimension(710, 400));
         testFrame.setLocationRelativeTo(null);
-        testFrame.setVisible(false);
-        // testFrame.pack();
+        testFrame.setVisible(true);
+        testFrame.pack();
 
         keyPressed = new boolean[8];
         for(int i = 0; i < keyPressed.length; i++){
@@ -87,31 +89,22 @@ public class GameFrame implements KeyListener{
                     scaleComponents();
                 }
             });
-        Thread gameThread = new Thread(new Runnable(){
-                    @Override 
-                    public void run(){
-                        while(!isInitialized()){
-                            warte(10);
-                        }
-                        warte(10);
-                        while(true){
-                            updateGame();
-                            testFrame.repaint();
-                            try{
-                                Thread.sleep(frameRate);
-                            }catch (Exception e){
-
-                            }
-
-                        }
-                    }
-                });
-        gameThread.start();
 
         // setPlayer(0, "King");
         // setPlayer(1, "King");
     }
     
+    public void start(){
+        if(! isInitialized()) return;
+        gameThread = new TickThread(60, new Runnable(){
+                    @Override 
+                    public void run(){
+                        updateGame();
+                        testFrame.repaint();
+                    }
+                });
+        gameThread.start();
+    }
     public void dispose(){
         testFrame.dispose();
     }
@@ -142,7 +135,11 @@ public class GameFrame implements KeyListener{
             gamePanel.add(p2Health);
             gamePanel.setComponentZOrder(p2Health, 0);
         }
-        if(isInitialized()) scaleComponents();
+        if(isInitialized()) {
+            scaleComponents();
+            updateGame();
+            testFrame.repaint();
+        }
     }
 
     public void updateGame(){

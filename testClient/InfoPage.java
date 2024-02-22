@@ -149,9 +149,6 @@ public class InfoPage extends Page{
         gui.getFrame().setVisible(true);
     }
     
-    public String getDescription(){
-        return "InfoPanel";
-    }
     public void positionElements(){
         // testButton.setLocation(0, 0);
         // gamePanel.setLocation(0, testButton.getHeight());
@@ -168,16 +165,24 @@ public class InfoPage extends Page{
             // // gP.update();
         // }
     }
-    public void reloadData(){
+    
+    @Override
+    public void start(){
         
     }
-    public void componentResized(){
-        
-    }
+    
+    @Override
     public void finish(){
         
     }
-    public void updateElements(){
+    
+    @Override
+    public void resized(){
         
+    }
+    
+    @Override
+    public void update(){
+         
     }
 }

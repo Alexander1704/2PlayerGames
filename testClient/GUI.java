@@ -2,22 +2,8 @@ package testClient;
 
 import assetLoader.*;
 import database.*;
-
-
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.Toolkit;
-import java.util.Map;
 import java.awt.event.*;
 
 public class GUI implements KeyListener{
@@ -66,7 +52,7 @@ public class GUI implements KeyListener{
         mainThread = new TickThread(60, new Runnable(){
             @Override
             public void run(){
-                currentPage.updateElements();                
+                currentPage.update();                
             }
         });
         mainThread.start();
@@ -75,8 +61,7 @@ public class GUI implements KeyListener{
         frame.addComponentListener(new ComponentAdapter() {
                 @Override
                 public void componentResized(ComponentEvent e) {
-                    FunctionLoader.print("Die Größe des Fensters wurde verändert");
-                    currentPage.componentResized();
+                    currentPage.resized();
                 }
             });
         frame.addWindowListener(new WindowAdapter() {
@@ -169,13 +154,16 @@ public class GUI implements KeyListener{
     }
 
     public void switchPage(Page from, Page to){
-        if (from != null) frame.remove(from);
+        if (from != null) {
+            frame.remove(from);
+            from.finish();
+        }
         frame.add(to);
         currentPage = to;
         frame.validate();
-        currentPage.reloadData();
-        currentPage.componentResized();
-        currentPage.componentResized();
+        currentPage.start();
+        currentPage.resized();
+        currentPage.resized();
         frame.repaint();
     }
 

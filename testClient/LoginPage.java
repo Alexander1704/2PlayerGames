@@ -69,13 +69,11 @@ public class LoginPage extends Page{
         portText.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         add (portText);
     }
-    public String getDescription(){
-        return "loginPage";
-    }
-    public void reloadData(){
+    
+    public void start(){
         
     }
-    public void componentResized(){
+    public void resized(){
         FunctionLoader.position(ipLabel, 0.5, 0.2);
         FunctionLoader.position(ipText, ipLabel, 0.5, 50, false, true);
         FunctionLoader.position(portLabel, ipLabel, 0.5, 150, false, true);
@@ -88,12 +86,11 @@ public class LoginPage extends Page{
         
         
     }
-    public void resizeElements(){
-    }
+
     public void finish(){
         
     }
-    public void updateElements(){
+    public void update(){
         
     }
 }

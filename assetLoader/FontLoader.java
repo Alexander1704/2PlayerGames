@@ -43,4 +43,15 @@ public class FontLoader{
         int fontSizeToUse = Math.min(newFontSize, componentHeight); // verhindere zu große Schrift
         label.setFont(new Font(labelFont.getName(), labelFont.getStyle(), fontSizeToUse));
     }
+    
+    // Methode zum Ändern der Transparenz eines JLabels
+    public static void setLabelTransparency(JLabel label, int alpha) {
+        // Stellen Sie sicher, dass der Alpha-Wert im gültigen Bereich von 0 bis 255 liegt
+        alpha = Math.max(0, Math.min(alpha, 255));
+
+        // Aktualisieren Sie die Hintergrundfarbe des Labels mit dem neuen Alpha-Wert
+        Color backgroundColor = label.getBackground();
+        Color newColor = new Color(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), alpha);
+        label.setBackground(newColor);
+    }
 }

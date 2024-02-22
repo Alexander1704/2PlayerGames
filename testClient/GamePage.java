@@ -24,6 +24,7 @@ public class GamePage extends Page implements KeyListener{
     private ArrayList<Bullet> bulletList;
     private JLabel gameClosingLabel;
     private JLabel winnerLabel;
+    private OutlinedLabel startingLabel;
     private int mapNum;
 
     GamePage(GUI gui){
@@ -71,9 +72,16 @@ public class GamePage extends Page implements KeyListener{
         winnerLabel.setForeground(Color.YELLOW);
         gamePanel.add(winnerLabel);
         gamePanel.setComponentZOrder(winnerLabel, 0);
+        
+        startingLabel = new OutlinedLabel("3");
+        startingLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",50));
+        startingLabel.setForeground(Color.RED); 
+        startingLabel.setVisible(false);
+        gamePanel.add(startingLabel);
+        gamePanel.setComponentZOrder(startingLabel, 0);
 
-        mapNum = 1;
-        componentResized();
+        mapNum = 0;
+        resized();
 
         keyPressed = new boolean[4];
         for(int i = 0; i < keyPressed.length; i++){
@@ -121,15 +129,38 @@ public class GamePage extends Page implements KeyListener{
     }
 
     public void setCharacter(int pNum, String character){
-        componentResized();
+        resized();
     }
 
     public void setYourPlayer(int pNum){
         healthPanel[pNum].setColor(new Color(94, 144, 252));
     }
-
-    public String getDescription(){
-        return "gamePage";
+    
+    public void setStarting(String pNum){
+        startingLabel.setVisible(true);
+        startingLabel.setText(pNum);
+        FunctionLoader.scale(startingLabel, 0.2, 0.3);
+        FontLoader.scaleLabel(startingLabel);
+        startingLabel.setSize(startingLabel.getPreferredSize());
+        FunctionLoader.position(startingLabel, 0.5, 0.5);
+        if(pNum.equals("0")){
+            System.out.println("hiding test");
+            Thread hideThread = new Thread(new Runnable(){
+                @Override
+                public void run(){
+                    FunctionLoader.warte(1000);
+                    startingLabel.setVisible(false);
+                }
+            });
+            hideThread.start();
+        }
+    }
+    
+    public void setAnimation(int pPlayerId, int pNum){
+        if(pNum != player[pPlayerId].getAnimation()){
+            player[pPlayerId] .setAnimation(pNum);
+            scalePlayers();
+        }
     }
 
     public void setMap(int pMapNum){
@@ -143,11 +174,8 @@ public class GamePage extends Page implements KeyListener{
     public void setRightSided(int pNum, boolean pRightSided){
         player[pNum].setRightSided(pRightSided);
     }
-    
-    public void resizeElements(){
-    }
 
-    public void reloadData(){
+    public void start(){
         repaintThread = new TickThread(gui.getTick(), new Runnable(){
             @Override
             public void run(){
@@ -178,7 +206,9 @@ public class GamePage extends Page implements KeyListener{
         }
     }
 
-    public void componentResized(){
+    
+    @Override
+    public void resized(){
         int panelSize = Math.min(gui.getFrame().getWidth()/16, gui.getFrame().getHeight()/ 9);
         gamePanel.setSize(panelSize * 16, panelSize* 9);
         gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth()) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight()) / 2);
@@ -208,12 +238,14 @@ public class GamePage extends Page implements KeyListener{
         }
 
         try{
-            String mapImgPath = "maps/World " + mapNum + ".png";
-            double mapWidth = getImageIcon(mapImgPath).getIconWidth();
-            double mapHeight = getImageIcon(mapImgPath).getIconHeight();
-            double mapScale = (mapWidth / 16 < mapHeight / 9) ?   gamePanel.getHeight() / mapHeight : gamePanel.getWidth() / mapWidth;
-            mapLabel.setIcon(ImageLoader.getScaledIcon(mapImgPath, mapScale, mapScale));
-            mapLabel.setSize(mapLabel.getPreferredSize());
+            if(mapNum != 0){
+                String mapImgPath = "maps/World " + mapNum + ".png";
+                double mapWidth = getImageIcon(mapImgPath).getIconWidth();
+                double mapHeight = getImageIcon(mapImgPath).getIconHeight();
+                double mapScale = (mapWidth / 16 < mapHeight / 9) ?   gamePanel.getHeight() / mapHeight : gamePanel.getWidth() / mapWidth;
+                mapLabel.setIcon(ImageLoader.getScaledIcon(mapImgPath, mapScale, mapScale));
+                mapLabel.setSize(mapLabel.getPreferredSize());
+            }            
         }catch (Exception e){
             e.printStackTrace();
         } 
@@ -228,7 +260,6 @@ public class GamePage extends Page implements KeyListener{
             FontLoader.scaleLabel(winnerLabel);
             winnerLabel.setSize(gameClosingLabel.getPreferredSize());
         }
-
     }
     
     private void scalePlayers(){
@@ -247,14 +278,9 @@ public class GamePage extends Page implements KeyListener{
         return  new ImageIcon(ImageIO.read(new File("assets/" + path))); 
     }
 
-    public void setPosition(int pNum, double x, double y, int pAnimation){
-        player[pNum] .setX(x);
-        player[pNum] .setY(y);
-        int temp = player[pNum].getAnimation();
-        player[pNum] .setAnimation(pAnimation);
-        if(temp != pAnimation){
-            scalePlayers();
-        }
+    public void setPosition(int pPlayerNum, double x, double y){
+        player[pPlayerNum] .setX(x);
+        player[pPlayerNum] .setY(y);
     }
 
     public void setPosition(Positionable o){
@@ -334,7 +360,7 @@ public class GamePage extends Page implements KeyListener{
         FontLoader.scaleLabel(gameClosingLabel);
         gameClosingLabel.setSize(gameClosingLabel.getPreferredSize());
         if(! gameClosingLabel.isVisible()){
-            componentResized();
+            resized();
             gameClosingLabel.setVisible(true);
         }
 
@@ -362,7 +388,7 @@ public class GamePage extends Page implements KeyListener{
     public void finish(){
         
     }
-    public void updateElements(){
+    public void update(){
         gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth() - 20) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight() - 40) / 2);
         mapLabel.setLocation(0, 0);
         for(int i = 0; i < player.length; i++){

@@ -105,7 +105,7 @@ public class MenuPage extends Page {
                 }
             });
 
-        updateElements();
+        update();
     }
 
     public boolean running(){
@@ -135,7 +135,7 @@ public class MenuPage extends Page {
 
     @Override
     public void paintComponent(Graphics g){
-        updateElements();
+        update();
         super.paintComponent(g);
     }
 
@@ -143,16 +143,16 @@ public class MenuPage extends Page {
         
     }
     
-    public void updateElements(){
+    public void update(){
         
     }
 
 
-    public void reloadData() {
+    public void start() {
 
     }
 
-    public void componentResized() {
+    public void resized() {
         int frameWidth = gui.getFrame().getWidth();
         int frameHeight = gui.getFrame().getHeight();
         
