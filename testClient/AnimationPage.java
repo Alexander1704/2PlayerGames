@@ -32,36 +32,22 @@ public class AnimationPage extends Page{
         add (animationLabel);
         
 
-        Thread playerAnimation = new Thread(new Runnable(){
-                    public void run(){
-                        int animationNum = 0;
-                        int MAX_ANIMATION_NUM = 43;
-                        while(true){
-                            System.out.println("Curr Animation: " + animationNum);
-                            String imgPath = "player/playerAnimation/running_ basic player_" + getNumString(animationNum + "") + ".png";
-                            System.out.println(imgPath);
-                            // imgPath = "assets/player/playerAnimation/running_ basic player_0010.png";
-                            // imgPath = "assets/player/playerAnimation/running_ basic player_0010.png";
-                            try{
-                                // animationLabel.setIcon(getResizedIcon("player/playerAnimation/running_ basic player_" + getNumString(animationNum + "") + ".png", 640, 360)); 
-                                animationLabel.setIcon(ImageLoader.getResizedIcon(imgPath , 640, 360));
-                            }catch (Exception e){
-                                e.printStackTrace();
-                                System.out.println("ERROR");
-                                System.err.println(e);
-                                System.out.println("THE ERROR IS: " + e);
-                            }
-                            animationLabel.setSize(animationLabel.getPreferredSize());
-                            animationLabel.setLocation(0, 0);
-                            FunctionLoader.warte(10);
-                            
-                            animationNum++;
-                            if(animationNum > MAX_ANIMATION_NUM) animationNum = 0;
-                        }
-                    }
-                });
-        // playerAnimation.start();
+        Thread updateAnimation = new Thread(new Runnable(){
+           public void run(){
+               int MAX_ANIMATION = 9;
+               int animation = 1;
+               while(true){
+                   animation++;
+                   if(animation > MAX_ANIMATION) animation = 1;
+               }
+           }
+        });
     }
+    
+    public void finish(){
+        
+    }
+    
 
     private String getNumString(String a){
         for(int i = a.length(); i < 4; i++){
@@ -86,5 +72,9 @@ public class AnimationPage extends Page{
 
     public void componentResized(){
 
+    }
+    
+    public void updateElements(){
+        
     }
 }

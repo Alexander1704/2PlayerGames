@@ -174,4 +174,10 @@ public class InfoPage extends Page{
     public void componentResized(){
         
     }
+    public void finish(){
+        
+    }
+    public void updateElements(){
+        
+    }
 }

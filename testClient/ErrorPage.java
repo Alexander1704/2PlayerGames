@@ -18,7 +18,6 @@ public class ErrorPage extends Page{
         setLayout (null);
         
         errorTitle = new JLabel("An error occured :(");
-        errorTitle.setLocation(0, 0);
         errorTitle.setForeground(new Color(255, 0, 0)); // Set the text color to green
         errorTitle.setFont(new Font("Helvetica Bold", Font.PLAIN, 36)); // Set the font to plain monospaced
         errorTitle.setSize(errorTitle.getPreferredSize());
@@ -34,7 +33,6 @@ public class ErrorPage extends Page{
             System.out.println("ERROR");
         }
         errorSign.setSize(errorSign.getPreferredSize());
-        // errorSign.setVisible(false);
         add(errorSign);
         
         
@@ -71,18 +69,16 @@ public class ErrorPage extends Page{
         
     }
     public void componentResized(){
-        positionElements();
+        FunctionLoader.position(errorSign, 0.5, 0.4);
+        FunctionLoader.position(errorTitle, errorSign, 0.5, - 10 - gui.getFrame().getHeight()/ 15, false, true);
+        FunctionLoader.position(errorMessage, errorSign, 0.5, errorSign.getHeight() / 2+ 50 + gui.getFrame().getHeight() / 10, false, true);
+        FunctionLoader.position(retryButton, errorMessage, 0.5, 20 + gui.getFrame().getHeight() / 20, false, true);
     }
-    public void resizeElements(){
+    public void finish(){
         
     }
-    public void positionElements(){
-        int frameWidth = gui.getFrame().getWidth();
-        int frameHeight = gui.getFrame().getHeight();
+    
+    public void updateElements(){
         
-        errorTitle.setLocation((frameWidth - errorTitle.getWidth() )/ 2, errorSign.getY() - 10 - frameHeight/15); 
-        errorSign.setLocation((frameWidth - errorSign.getWidth())/2, (int)((frameHeight - errorSign.getHeight()) *0.4));
-        errorMessage.setLocation((frameWidth - errorMessage.getWidth())/2, errorSign.getY() + errorSign.getHeight()/2 + 50 + frameHeight/10);
-        retryButton.setLocation((frameWidth - retryButton.getWidth())/2, errorMessage.getY() + 20 + frameHeight/20);
     }
 }

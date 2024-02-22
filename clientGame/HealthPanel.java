@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class HealthPanel extends JPanel implements Positionable{
-    private FontLoader fontLoader;
     private JPanel panel;
     private JLabel healthLabel;
     private JPanel healthPanel;
@@ -19,7 +18,6 @@ public class HealthPanel extends JPanel implements Positionable{
         setLayout(null);
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-        fontLoader = new FontLoader();
         this.panel = pPanel;
 
         healthLabel = new JLabel("100%");
@@ -77,7 +75,7 @@ public class HealthPanel extends JPanel implements Positionable{
         healthLine.setSize((int) (healthPanel.getWidth() * (health / 100.0)), healthPanel.getHeight());
         
         healthLabel.setSize( (int) (getWidth() * 0.8), (int) (getHeight() / 2 * 0.8));
-        fontLoader.scaleLabel(healthLabel);
+        FontLoader.scaleLabel(healthLabel);
         healthLabel.setSize(healthLabel.getPreferredSize());
         healthLabel.setLocation( (getWidth() - healthLabel.getWidth() ) / 2 , (getHeight() / 2 - healthLabel.getHeight() ) / 2);
     }

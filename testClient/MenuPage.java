@@ -89,14 +89,19 @@ public class MenuPage extends Page {
                 public void actionPerformed(ActionEvent e){
                     gui.switchPage(gui.getLoadingPage());
                     gui.getUserClient().send("CONNECT SEARCHGAME");
-                    Thread loginThread = new Thread(new Runnable() {
+                    
+                    long threadStart = System.currentTimeMillis();
+                    TickThread loginThread = new TickThread(null);
+                    loginThread = new TickThread(gui.getTick(), new Runnable() {
                         public void run(){
-                            gui.warte(30000);
-                            if(! gui.getUserClient().inGame()) gui.switchPage(gui.getErrorPage());
-                            // gui.switchPage(gui.getLoadingPage(), gui.getGamePage());
+                            // if(gui.getUserClient().inGame()) loginThread.finish();
+                            
+                            long elapsedTime = System.currentTimeMillis() - threadStart;
+                            // if(elapsedTime > 15000) gui.switchPage(gui.getErrorPage());
                         }
                     });
-                    loginThread.start();
+                    
+                    // loginThread.start();
                 }
             });
 
@@ -112,6 +117,20 @@ public class MenuPage extends Page {
     public void setCharacter(String name){
         character = name;
         characterName.setText(name);
+        
+        characterImage.setSize((int) (gui.getFrame().getWidth() / 3.0), gui.getFrame().getHeight() / 2);
+        try {
+            String imgPath = "player/" + character + "/animation10.png";
+            ImageIcon icon = (new ImageIcon("assets/" + imgPath));
+            Dimension imgSize = new Dimension(icon.getIconWidth(), icon.getIconHeight());
+            int border = gui.getFrame().getHeight()/ 10;
+            double scaling = Math.min((characterImage.getWidth() - border) * 1.0 /imgSize.getWidth(), (characterImage.getHeight() - border) * 1.0 / imgSize.getHeight());
+            characterImage.setIcon((ImageLoader.getScaledIcon(imgPath, scaling, scaling)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(character +"::: " + "player/" + character + "/a (1).png");
+        }
+        
     }
 
     @Override
@@ -120,37 +139,25 @@ public class MenuPage extends Page {
         super.paintComponent(g);
     }
 
-    public String getDescription() {
-        return "menuPage";
+    public void finish(){
+        
+    }
+    
+    public void updateElements(){
+        
     }
 
-    public void positionElements() {
-        int frameWidth = gui.getFrame().getWidth();
-        int frameHeight = gui.getFrame().getHeight();
 
-        characterImage.setLocation((frameWidth - characterImage.getWidth()) / 2, (int) ((frameHeight - characterImage.getHeight()) * 0.3));
-        characterName.setLocation((frameWidth - characterName.getWidth()) / 2, (characterImage.getY()) - 60);
-        playButton.setLocation((frameWidth - playButton.getWidth())/ 2, (characterImage.getY() + characterImage.getHeight()) + 15);
-        nextPlayerButton.setLocation(characterImage.getX() + characterImage.getWidth() + 10, characterName.getY());
-        previousPlayerButton.setLocation(characterImage.getX() - previousPlayerButton.getWidth() - 10, characterName.getY());
+    public void reloadData() {
+
     }
 
-    public void resizeElements() {
+    public void componentResized() {
         int frameWidth = gui.getFrame().getWidth();
         int frameHeight = gui.getFrame().getHeight();
-
-        characterImage.setSize((int) (frameWidth / 3.0), frameHeight / 2);
-        try {
-            String imgPath = "player/" + character + "/animation10.png";
-            ImageIcon icon = (new ImageIcon("assets/" + imgPath));
-            Dimension imgSize = new Dimension(icon.getIconWidth(), icon.getIconHeight());
-            int border = frameHeight/ 10;
-            double scaling = Math.min((characterImage.getWidth() - border) * 1.0 /imgSize.getWidth(), (characterImage.getHeight() - border) * 1.0 / imgSize.getHeight());
-            characterImage.setIcon((ImageLoader.getScaledIcon(imgPath, scaling, scaling)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(character +"::: " + "player/" + character + "/a (1).png");
-        }
+        
+        //Skaliere die Elemente
+        setCharacter(getCharacter());
 
         characterName.setSize(characterImage.getWidth(), 50);
 
@@ -160,34 +167,13 @@ public class MenuPage extends Page {
         int characterChoosingWidth = frameWidth > 900 ? 65 : 40;
         nextPlayerButton.setSize(characterChoosingWidth, characterImage.getY() + characterImage.getHeight() - characterName.getY());
         previousPlayerButton.setSize(characterChoosingWidth, characterImage.getY() + characterImage.getHeight() - characterName.getY());
-    }
-
-    public void reloadData() {
-
-    }
-
-    public void componentResized() {
-        int frameWidth = gui.getFrame().getWidth();
-        int frameHeight = gui.getFrame().getHeight();
-
-    }
-    public void keyPressed(KeyEvent e) {
-    }
-    public Dimension getImageSize(String path){
-        try {
-            File file = new File("assets/" + path); 
-            Image image = ImageIO.read(file);
-
-            if (image != null) {
-                int width = image.getWidth(null); // Breite des Bildes
-                int height = image.getHeight(null); // Höhe des Bildes
-                return new Dimension(width, height);
-            } else {
-                System.out.println("Das Bild konnte nicht geladen werden.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        
+        
+        //Positioniere die Elemente
+        FunctionLoader.position(characterImage, 0.5, 0.3);
+        FunctionLoader.position(characterName, characterImage, 0.5, - 60, false, true);
+        FunctionLoader.position(playButton, characterImage, 0.5, characterImage.getHeight() + 15, false, true);
+        nextPlayerButton.setLocation(characterImage.getX() + characterImage.getWidth() + 10, characterName.getY());
+        previousPlayerButton.setLocation(characterImage.getX() - previousPlayerButton.getWidth() - 10, characterName.getY());
     }
 }

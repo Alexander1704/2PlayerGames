@@ -33,6 +33,12 @@ public class TickThread extends Thread{
     public void setTick(int pTick){
         this.ticks = pTick;
     }
+    
+    /**Getter für die Variable tick
+     */
+    public int getTick(){
+        return this.ticks;
+    }
 
     /**Beendet die Aufgabe des TickThreads, sofern dieser gestartet worden ist 
      */

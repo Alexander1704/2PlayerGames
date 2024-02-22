@@ -92,7 +92,7 @@ public class Player extends JLabel implements Healthy{
         
         // warte(2000);
         final int MAX_ANIMATION = 9;
-        TickThread animationThread = new TickThread(15, new Runnable(){
+        TickThread animationThread = new TickThread(20, new Runnable(){
                     @Override 
                     public void run(){
                         // System.out.println("Server: animationNum: " + animationNum + " moving?: " + isMoving());

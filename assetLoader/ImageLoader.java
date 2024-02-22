@@ -28,6 +28,24 @@ public class ImageLoader{
         imageIcon = new ImageIcon(newimg);  
         return imageIcon;
     }
+    
+    public static Dimension getImageSize(String path){
+        try {
+            File file = new File("assets/" + path); 
+            Image image = ImageIO.read(file);
+
+            if (image != null) {
+                int width = image.getWidth(null); // Breite des Bildes
+                int height = image.getHeight(null); // Höhe des Bildes
+                return new Dimension(width, height);
+            } else {
+                System.out.println("Das Bild konnte nicht geladen werden.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public static ImageIcon flipIcon(Icon originalIcon, boolean horizontal, boolean vertical) {
         int width = originalIcon.getIconWidth();

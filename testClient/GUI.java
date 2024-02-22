@@ -23,6 +23,7 @@ import java.awt.event.*;
 public class GUI implements KeyListener{
     ServerStart server = new ServerStart();
     private JFrame frame;
+    private TickThread mainThread;
     private DBController dbc;
     private Page currentPage;
     private LoginPage loginPage;
@@ -31,7 +32,6 @@ public class GUI implements KeyListener{
     private GamePage gamePage;
     private ErrorPage errorPage;
     private InfoPage infoPage;
-    private boolean running;
     private UserClient userClient;
     private UserClient userClientTest;
     
@@ -50,7 +50,6 @@ public class GUI implements KeyListener{
         frame.addKeyListener(this);
         frame.setFocusable(true);
         frame.setFocusTraversalKeysEnabled(true);
-        running = true;
 
         dbc = new DBController();
         loginPage = new LoginPage(this);
@@ -60,32 +59,23 @@ public class GUI implements KeyListener{
         errorPage = new ErrorPage(this);
         // infoPage = new InfoPage(this);
         
-        // animationPage = new AnimationPage(this);
-        // panelTest2 = new PanelTest2(this);
         currentPage = loginPage;
         switchPage(currentPage);
-
-        // Thread renderFrame = new Thread(new Runnable() {
-                    // @Override
-                    // public void run() {
-                        // renderFrame();
-                    // }
-                // });
-        // renderFrame.start();
         
         
-        TickThread renderFrameThread = new TickThread(60, new Runnable(){
+        mainThread = new TickThread(60, new Runnable(){
             @Override
             public void run(){
-                currentPage.repaint();                
+                currentPage.updateElements();                
             }
         });
-        renderFrameThread.start();
+        mainThread.start();
         
 
         frame.addComponentListener(new ComponentAdapter() {
                 @Override
                 public void componentResized(ComponentEvent e) {
+                    FunctionLoader.print("Die Größe des Fensters wurde verändert");
                     currentPage.componentResized();
                 }
             });
@@ -95,12 +85,14 @@ public class GUI implements KeyListener{
                     System.out.println("Fenster wird geschlossen.");
                 }
             });
-
-        // frame.addKeyListener(new KeyAdapter() {
-        // public void keyPressed(KeyEvent e) {
-        // currentPage.keyPressed(e);
-        // }
-        // });
+    }
+    
+    public int getTick(){
+        if(mainThread == null) return 30;
+        return mainThread.getTick();
+    }
+    public void setTick(int pTick){
+        mainThread.setTick(pTick);
     }
 
     public void login(String ip, int port){
@@ -110,7 +102,7 @@ public class GUI implements KeyListener{
                         int counter = 0;
                         final int WAIT_TIME = 5000;
                         while(counter < WAIT_TIME && (userClient == null || !userClient.hasConnected())){
-                            warte (100);
+                            FunctionLoader.warte (100);
                             counter += 100;
                         }
                         if(userClient != null && userClient.hasConnected()) switchPage(menuPage);
@@ -123,37 +115,6 @@ public class GUI implements KeyListener{
         userClientTest = new UserClient(this, ip, port);
         userClientTest.setProcessingMessages(false);
         userClientTest.send("CONNECT SEARCHGAME");
-    }
-
-    public void renderFrame(){
-        
-        
-        final int TARGET_FPS = 30;
-        final long TARGET_TIME = 1000000000 / TARGET_FPS; // nanoseconds per frame
-
-        long lastLoopTime = System.nanoTime();
-
-        while (running) {
-            long currentTime = System.nanoTime();
-            long elapsedTime = currentTime - lastLoopTime;
-            lastLoopTime = currentTime;
-
-            // Perform your game logic or operations here
-            if(currentPage != null) {
-                currentPage.repaint();
-            }
-
-            // Calculate time to sleep to maintain desired FPS
-            long sleepTime = TARGET_TIME - elapsedTime;
-
-            if (sleepTime > 0) {
-                try {
-                    Thread.sleep(sleepTime / 1000000); // Convert nanoseconds to milliseconds
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     public JFrame getFrame(){
@@ -211,15 +172,15 @@ public class GUI implements KeyListener{
         if (from != null) frame.remove(from);
         frame.add(to);
         currentPage = to;
+        frame.validate();
         currentPage.reloadData();
         currentPage.componentResized();
-        frame.validate();
+        currentPage.componentResized();
         frame.repaint();
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        // keyListener
         if(currentPage instanceof KeyListener){
             KeyListener keyListener = (KeyListener) currentPage;
             keyListener.keyPressed(e);
@@ -241,14 +202,6 @@ public class GUI implements KeyListener{
         if(currentPage instanceof KeyListener){
             KeyListener keyListener = (KeyListener) currentPage;
             keyListener.keyReleased(e);
-        }
-    }
-
-    public void warte(int time){
-        try{
-            Thread.sleep(time);
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 

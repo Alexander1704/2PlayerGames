@@ -14,6 +14,7 @@ import serverGame.Positionable;
 public class GamePage extends Page implements KeyListener{
     
     private GUI gui;
+    TickThread repaintThread;
     private JPanel gamePanel;
     private Player[] player;
     private HealthPanel[] healthPanel;
@@ -142,26 +143,20 @@ public class GamePage extends Page implements KeyListener{
     public void setRightSided(int pNum, boolean pRightSided){
         player[pNum].setRightSided(pRightSided);
     }
-
-    public void positionElements(){
-        gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth() - 20) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight() - 40) / 2);
-        mapLabel.setLocation(0, 0);
-        for(int i = 0; i < player.length; i++){
-            setPosition(player[i]);
-            setPosition(healthPanel[i]);
-        }
-        for(int i = 0; i < bulletList.size(); i++){
-            setPosition(bulletList.get(i));
-        }
-
-        if(gameClosingLabel.isVisible()) gameClosingLabel.setLocation((gamePanel.getWidth() - gameClosingLabel.getWidth() )/ 2, (int) ((gamePanel.getHeight() - gameClosingLabel.getHeight()) * 2.0/ 5));
-        if(winnerLabel.isVisible()) winnerLabel.setLocation((gamePanel.getWidth() - winnerLabel.getWidth() )/ 2, gameClosingLabel.getY() + gameClosingLabel.getHeight() + 100);
-    }
     
     public void resizeElements(){
     }
 
     public void reloadData(){
+        repaintThread = new TickThread(gui.getTick(), new Runnable(){
+            @Override
+            public void run(){
+                repaint();
+            }
+        });
+        repaintThread.start();
+        
+        
         gameClosingLabel.setVisible(false);
         winnerLabel.setVisible(false);
  
@@ -225,12 +220,12 @@ public class GamePage extends Page implements KeyListener{
 
         if(gameClosingLabel.isVisible()) {
             gameClosingLabel.setSize((int) (gamePanel.getWidth() * 0.75), (int) (gamePanel.getWidth() * 0.5));
-            scaleLabel(gameClosingLabel);
+            FontLoader.scaleLabel(gameClosingLabel);
             gameClosingLabel.setSize(gameClosingLabel.getPreferredSize());
         }
         if(winnerLabel.isVisible()) {
             winnerLabel.setSize((int) (gamePanel.getWidth() * 0.5), (int) (gamePanel.getWidth() * 0.3));
-            scaleLabel(winnerLabel);
+            FontLoader.scaleLabel(winnerLabel);
             winnerLabel.setSize(gameClosingLabel.getPreferredSize());
         }
 
@@ -293,7 +288,7 @@ public class GamePage extends Page implements KeyListener{
     public void executeKeyThread(KeyEvent e, int pressedNum){
         Thread executeKeyThread = new Thread(new Runnable(){
                     public void run(){
-                        while(running() && keyPressed[pressedNum] ){
+                        while( gui.getCurrentPage().equals(gui.getGamePage()) && keyPressed[pressedNum] ){
                             executeKey(e);
                             FunctionLoader.warte(gui.getFrameWait());
                         }
@@ -316,9 +311,7 @@ public class GamePage extends Page implements KeyListener{
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        // Not needed for this implementation
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyReleased(KeyEvent e) {
@@ -335,14 +328,10 @@ public class GamePage extends Page implements KeyListener{
         }
     }
 
-    public boolean running(){
-        return gui.getCurrentPage() == this; 
-    }
-
     public void closingGame(String time){
         gameClosingLabel.setText("GAME IS CLOSING IN " + time + "s");
         gameClosingLabel.setSize((int) (gamePanel.getWidth() * 0.75), (int) (gamePanel.getWidth() * 0.5));
-        scaleLabel(gameClosingLabel);
+        FontLoader.scaleLabel(gameClosingLabel);
         gameClosingLabel.setSize(gameClosingLabel.getPreferredSize());
         if(! gameClosingLabel.isVisible()){
             componentResized();
@@ -369,24 +358,22 @@ public class GamePage extends Page implements KeyListener{
                 });
         warte.start();
     }
+    
+    public void finish(){
+        
+    }
+    public void updateElements(){
+        gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth() - 20) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight() - 40) / 2);
+        mapLabel.setLocation(0, 0);
+        for(int i = 0; i < player.length; i++){
+            setPosition(player[i]);
+            setPosition(healthPanel[i]);
+        }
+        for(int i = 0; i < bulletList.size(); i++){
+            setPosition(bulletList.get(i));
+        }
 
-    private void scaleLabel(JLabel label) {
-        Font labelFont = label.getFont();
-        String labelText = label.getText();
-
-        // Berechne die Breite des Textes im JLabel
-        int stringWidth = label.getFontMetrics(labelFont).stringWidth(labelText);
-
-        // Erhalte die aktuelle Breite und Höhe des JLabels
-        int componentWidth = label.getWidth();
-        int componentHeight = label.getHeight();
-
-        // Berechne die Skalierungsfaktoren für Breite und Höhe
-        double widthRatio = (double) componentWidth / (double) stringWidth;
-        int newFontSize = (int) (labelFont.getSize() * widthRatio);
-
-        // Setze die neue Schriftgröße, sodass der Text passt
-        int fontSizeToUse = Math.min(newFontSize, componentHeight); // verhindere zu große Schrift
-        label.setFont(new Font(labelFont.getName(), labelFont.getStyle(), fontSizeToUse));
+        if(gameClosingLabel.isVisible()) gameClosingLabel.setLocation((gamePanel.getWidth() - gameClosingLabel.getWidth() )/ 2, (int) ((gamePanel.getHeight() - gameClosingLabel.getHeight()) * 2.0/ 5));
+        if(winnerLabel.isVisible()) winnerLabel.setLocation((gamePanel.getWidth() - winnerLabel.getWidth() )/ 2, gameClosingLabel.getY() + gameClosingLabel.getHeight() + 100);
     }
 }

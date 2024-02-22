@@ -76,19 +76,24 @@ public class LoginPage extends Page{
         
     }
     public void componentResized(){
+        FunctionLoader.position(ipLabel, 0.5, 0.2);
+        FunctionLoader.position(ipText, ipLabel, 0.5, 50, false, true);
+        FunctionLoader.position(portLabel, ipLabel, 0.5, 150, false, true);
+        FunctionLoader.position(portText, ipLabel, 0.5, 200, false, true);
+        FunctionLoader.position(connectButton, ipLabel, 0.5, 300, false, true);
     }
     public void positionElements(){
-        int frameWidth = gui.getFrame().getWidth();
-        int frameHeight = gui.getFrame().getHeight();
         
-        ipLabel.setLocation((frameWidth - ipLabel.getWidth())/ 2, (int) ((frameHeight- ipLabel.getHeight()) * 1.0 / 5));
-        ipText.setLocation((frameWidth - ipText.getWidth())/ 2, ipLabel.getY() + 50);
-        portLabel.setLocation((frameWidth - portLabel.getWidth())/ 2, ipLabel.getY() + 150);
-        portText.setLocation((frameWidth - portText.getWidth())/ 2, ipLabel.getY() + 200);
         
-        connectButton.setLocation((frameWidth - connectButton.getWidth())/ 2, ipLabel.getY() + 300);
+        
         
     }
     public void resizeElements(){
+    }
+    public void finish(){
+        
+    }
+    public void updateElements(){
+        
     }
 }

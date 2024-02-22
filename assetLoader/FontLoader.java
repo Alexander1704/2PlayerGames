@@ -24,7 +24,7 @@ public class FontLoader{
         return customFont;
     }
     
-    public void scaleLabel(JLabel label) {
+    public static void scaleLabel(JLabel label) {
         Font labelFont = label.getFont();
         String labelText = label.getText();
 

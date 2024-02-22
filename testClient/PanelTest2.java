@@ -180,4 +180,10 @@ public class PanelTest2 extends Page {
             }
         }
     }
+    public void finish(){
+        
+    }
+    public void updateElements(){
+        
+    }
 }
