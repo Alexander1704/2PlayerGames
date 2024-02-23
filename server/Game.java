@@ -28,6 +28,8 @@ public class Game implements MessageInterpreter{
         Thread initThread = new Thread(new Runnable(){
                     @Override
                     public void run(){
+                        sendMessage("GAME PLAYERNAME 0 " + clientA.getName());
+                        sendMessage("GAME PLAYERNAME 1 " + clientB.getName());
                         while(! gameFrame.isInitialized()){
                             FunctionLoader.warte(10);
                         }
@@ -38,7 +40,7 @@ public class Game implements MessageInterpreter{
                         gameState = "STARTING";
                         for(int i = 3; i > -1; i--){
                             sendMessage("GAME STARTING " + i);
-                            FunctionLoader.warte(1000);
+                            if(i != 0) FunctionLoader.warte(2000); 
                         }
                         gameState = "GAME";
                         gameFrame.start();
@@ -239,5 +241,10 @@ public class Game implements MessageInterpreter{
         catch (InterruptedException ie){
             ie.printStackTrace();
         }
+    }
+    
+    public Client getClient(int pNum){
+        if(pNum >= clients.length || pNum < 0 ) return null;
+        return clients[pNum];
     }
 }

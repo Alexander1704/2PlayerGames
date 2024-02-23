@@ -25,7 +25,10 @@ public class GamePage extends Page implements KeyListener{
     private JLabel gameClosingLabel;
     private JLabel winnerLabel;
     private OutlinedLabel startingLabel;
+    private Banner player0Banner;
+    private Banner player1Banner;
     private int mapNum;
+    
 
     GamePage(GUI gui){
         this.gui = gui;
@@ -73,6 +76,18 @@ public class GamePage extends Page implements KeyListener{
         gamePanel.add(winnerLabel);
         gamePanel.setComponentZOrder(winnerLabel, 0);
         
+        player0Banner = new Banner();
+        player0Banner.setLocation(0, 0);
+        player0Banner.setVisible(false);
+        gamePanel.add(player0Banner);
+        gamePanel.setComponentZOrder(player0Banner, 0);
+        
+        player1Banner = new Banner();
+        player1Banner.setLocation(0, 0);
+        player1Banner.setVisible(false);
+        gamePanel.add(player1Banner);
+        gamePanel.setComponentZOrder(player1Banner, 0);
+        
         startingLabel = new OutlinedLabel("3");
         startingLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",50));
         startingLabel.setForeground(Color.RED); 
@@ -88,93 +103,7 @@ public class GamePage extends Page implements KeyListener{
             keyPressed[i] = false;
         }
     }
-
-    public void addBullet(Integer id, String texture, double x, double y, boolean rightSided){
-        Bullet bullet = new Bullet(gamePanel, id, texture, x, y, rightSided);
-
-        double scaleImg = (gamePanel.getHeight() * 0.5) / 170.0;
-        try{
-            bullet.setIcon(ImageLoader.getScaledIcon("bullets/" + texture, scaleImg, scaleImg));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        bullet.setSize(bullet.getPreferredSize());
-        bullet.imageTurning();
-
-        gamePanel.add(bullet);
-        gamePanel.setComponentZOrder(bullet, 0);
-        bulletList.add(bullet);
-    }
-
-    public void updateBullet(Integer id, String texture, double x, double y){
-        for(int i = 0; i < bulletList.size(); i++){
-            if(bulletList.get(i).equals(id)) {
-                bulletList.get(i).setXPos(x);
-                bulletList.get(i).setYPos(y);
-                return;
-            }
-        }
-
-    }
-
-    public void removeBullet(Integer id){
-        System.out.println("removing --> " + id);
-        for(int i = 0; i < bulletList.size(); i++){
-            if(bulletList.get(i).equals(id)) {
-                gamePanel.remove(bulletList.get(i));
-                bulletList.remove(i);
-                return;
-            }
-        }
-    }
-
-    public void setCharacter(int pNum, String character){
-        resized();
-    }
-
-    public void setYourPlayer(int pNum){
-        healthPanel[pNum].setColor(new Color(94, 144, 252));
-    }
     
-    public void setStarting(String pNum){
-        startingLabel.setVisible(true);
-        startingLabel.setText(pNum);
-        FunctionLoader.scale(startingLabel, 0.2, 0.3);
-        FontLoader.scaleLabel(startingLabel);
-        startingLabel.setSize(startingLabel.getPreferredSize());
-        FunctionLoader.position(startingLabel, 0.5, 0.5);
-        if(pNum.equals("0")){
-            System.out.println("hiding test");
-            Thread hideThread = new Thread(new Runnable(){
-                @Override
-                public void run(){
-                    FunctionLoader.warte(1000);
-                    startingLabel.setVisible(false);
-                }
-            });
-            hideThread.start();
-        }
-    }
-    
-    public void setAnimation(int pPlayerId, int pNum){
-        if(pNum != player[pPlayerId].getAnimation()){
-            player[pPlayerId] .setAnimation(pNum);
-            scalePlayers();
-        }
-    }
-
-    public void setMap(int pMapNum){
-        this.mapNum = pMapNum;
-    }
-    
-    public void setHealth(int pNum, int health){
-        healthPanel[pNum].setHealth(health);
-    }
-
-    public void setRightSided(int pNum, boolean pRightSided){
-        player[pNum].setRightSided(pRightSided);
-    }
-
     public void start(){
         repaintThread = new TickThread(gui.getTick(), new Runnable(){
             @Override
@@ -184,7 +113,7 @@ public class GamePage extends Page implements KeyListener{
         });
         repaintThread.start();
         
-        
+        startingLabel.setVisible(true);
         gameClosingLabel.setVisible(false);
         winnerLabel.setVisible(false);
  
@@ -204,8 +133,11 @@ public class GamePage extends Page implements KeyListener{
         for(int i = 0; i < temp.size(); i++){
             removeBullet(temp.get(i));
         }
+        
     }
 
+    public void finish(){
+    }
     
     @Override
     public void resized(){
@@ -260,6 +192,36 @@ public class GamePage extends Page implements KeyListener{
             FontLoader.scaleLabel(winnerLabel);
             winnerLabel.setSize(gameClosingLabel.getPreferredSize());
         }
+        
+        if(player0Banner.isVisible()) {
+            player0Banner.setSize(gamePanel.getWidth(), (int) (gamePanel.getHeight() * 0.2));
+            player0Banner.resized();
+        }
+        
+        if(player1Banner.isVisible()) {
+            player1Banner.setSize(gamePanel.getWidth(), (int) (gamePanel.getHeight() * 0.2));
+            player1Banner.resized();
+        }
+    }
+    
+    public void update(){
+        gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth() - 20) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight() - 40) / 2);
+        mapLabel.setLocation(0, 0);
+        for(int i = 0; i < player.length; i++){
+            setPosition(player[i]);
+            setPosition(healthPanel[i]);
+        }
+        for(int i = 0; i < bulletList.size(); i++){
+            setPosition(bulletList.get(i));
+        }
+
+        if(gameClosingLabel.isVisible()) gameClosingLabel.setLocation((gamePanel.getWidth() - gameClosingLabel.getWidth() )/ 2, (int) ((gamePanel.getHeight() - gameClosingLabel.getHeight()) * 2.0/ 5));
+        if(winnerLabel.isVisible()) winnerLabel.setLocation((gamePanel.getWidth() - winnerLabel.getWidth() )/ 2, gameClosingLabel.getY() + gameClosingLabel.getHeight() + 100);
+    }
+    
+    public void setPlayerName(int pPlayerId, String pName){
+        if(pPlayerId == 0) player0Banner.setTitle(pName);;
+        if(pPlayerId == 1) player1Banner.setTitle(pName);
     }
     
     private void scalePlayers(){
@@ -267,6 +229,140 @@ public class GamePage extends Page implements KeyListener{
             player[i].update();
             healthPanel[i].update();
         }
+    }
+
+    public void addBullet(Integer id, String texture, double x, double y, boolean rightSided){
+        Bullet bullet = new Bullet(gamePanel, id, texture, x, y, rightSided);
+
+        double scaleImg = (gamePanel.getHeight() * 0.5) / 170.0;
+        try{
+            bullet.setIcon(ImageLoader.getScaledIcon("bullets/" + texture, scaleImg, scaleImg));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        bullet.setSize(bullet.getPreferredSize());
+        bullet.imageTurning();
+
+        gamePanel.add(bullet);
+        gamePanel.setComponentZOrder(bullet, 0);
+        bulletList.add(bullet);
+    }
+
+    public void updateBullet(Integer id, String texture, double x, double y){
+        for(int i = 0; i < bulletList.size(); i++){
+            if(bulletList.get(i).equals(id)) {
+                bulletList.get(i).setXPos(x);
+                bulletList.get(i).setYPos(y);
+                return;
+            }
+        }
+
+    }
+
+    public void removeBullet(Integer id){
+        System.out.println("removing --> " + id);
+        for(int i = 0; i < bulletList.size(); i++){
+            if(bulletList.get(i).equals(id)) {
+                gamePanel.remove(bulletList.get(i));
+                bulletList.remove(i);
+                return;
+            }
+        }
+    }
+
+    public void setCharacter(int pNum, String character){
+        resized();
+    }
+
+    public void setYourPlayer(int pNum){
+        healthPanel[pNum].setColor(new Color(94, 144, 252));
+        if(pNum == 0) player0Banner.switchDesign();
+        else player1Banner.switchDesign();
+    }
+    
+    public void setStarting(String pNum){
+        startingLabel.setText(pNum);
+        if(pNum.equals("3")){
+            Sound countdownSound = new Sound("countdown.wav");
+            countdownSound.playSound();
+
+            Thread bannerLocationThread = new Thread(new Runnable(){
+                @Override 
+                public void run(){
+                    player0Banner.setSize(gamePanel.getWidth(), (int) (gamePanel.getHeight() * 0.2));
+                    player0Banner.resized();
+                    player0Banner.setVisible(true);
+                    player1Banner.setSize(gamePanel.getWidth(), (int) (gamePanel.getHeight() * 0.2));
+                    player1Banner.resized();
+                    player1Banner.setVisible(true);
+                    
+                    double bannerChange = 0;
+                    double bannerSpeed = 0.002;
+            
+                    long lastLoopTime = System.nanoTime();
+                    while(player0Banner.isVisible()) {
+                        long currentTime = System.nanoTime();
+                        long elapsedTime = currentTime - lastLoopTime;
+                        lastLoopTime = currentTime;
+                        
+                        player0Banner.setLocation( (int) ((gamePanel.getWidth()) * (-0.1 + bannerChange)), (int) ((gamePanel.getHeight() - player0Banner.getHeight()) * 0.2));
+                        player1Banner.setLocation( (int) ((gamePanel.getWidth()) * ( 0.65 - bannerChange)), (int) ((gamePanel.getHeight() - player1Banner.getHeight()) * 0.8));
+                        bannerChange += bannerSpeed;
+                        bannerSpeed *= 0.995;
+            
+                        System.out.println(bannerChange);
+                        
+                        // Calculate time to sleep to maintain desired tick
+                        long waitTime = 1000000000 / 60;
+                        long sleepTime = waitTime - elapsedTime;
+            
+                        try {
+                            Thread.sleep(Math.max(0, sleepTime / 1000000));
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            bannerLocationThread.start();
+        }
+        if(pNum.equals("0")){
+            player0Banner.setVisible(false);
+            player1Banner.setVisible(false);
+            startingLabel.setText("GO!");
+            Thread hideThread = new Thread(new Runnable(){
+                @Override
+                public void run(){
+                    FunctionLoader.warte(1000);
+                    startingLabel.setVisible(false);
+                }
+            });
+            hideThread.start();
+        }
+        startingLabel.setVisible(true);
+        FunctionLoader.scale(startingLabel, 0.2, 0.3);
+        FontLoader.scaleLabel(startingLabel);
+        startingLabel.setSize(startingLabel.getPreferredSize());
+        FunctionLoader.position(startingLabel, 0.5, 0.5);
+    }
+    
+    public void setAnimation(int pPlayerId, int pNum){
+        if(pNum != player[pPlayerId].getAnimation()){
+            player[pPlayerId] .setAnimation(pNum);
+            scalePlayers();
+        }
+    }
+
+    public void setMap(int pMapNum){
+        this.mapNum = pMapNum;
+    }
+    
+    public void setHealth(int pNum, int health){
+        healthPanel[pNum].setHealth(health);
+    }
+
+    public void setRightSided(int pNum, boolean pRightSided){
+        player[pNum].setRightSided(pRightSided);
     }
 
     public void witchPlayer(int pNum, boolean b){
@@ -383,23 +479,5 @@ public class GamePage extends Page implements KeyListener{
                     }
                 });
         warte.start();
-    }
-    
-    public void finish(){
-        
-    }
-    public void update(){
-        gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth() - 20) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight() - 40) / 2);
-        mapLabel.setLocation(0, 0);
-        for(int i = 0; i < player.length; i++){
-            setPosition(player[i]);
-            setPosition(healthPanel[i]);
-        }
-        for(int i = 0; i < bulletList.size(); i++){
-            setPosition(bulletList.get(i));
-        }
-
-        if(gameClosingLabel.isVisible()) gameClosingLabel.setLocation((gamePanel.getWidth() - gameClosingLabel.getWidth() )/ 2, (int) ((gamePanel.getHeight() - gameClosingLabel.getHeight()) * 2.0/ 5));
-        if(winnerLabel.isVisible()) winnerLabel.setLocation((gamePanel.getWidth() - winnerLabel.getWidth() )/ 2, gameClosingLabel.getY() + gameClosingLabel.getHeight() + 100);
     }
 }

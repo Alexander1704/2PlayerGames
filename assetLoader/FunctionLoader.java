@@ -5,9 +5,9 @@ import java.awt.Component;
 
 public class FunctionLoader{
     public FunctionLoader(){
-        
+
     }
-    
+
     public static void position(Component pComp, double pX, double pY){
         if(pComp.getParent() == null) {
             System.err.println("Component hat keinen parent und kann daher nicht positioniert werden");
@@ -16,6 +16,7 @@ public class FunctionLoader{
         Component parent = pComp.getParent();
         pComp.setLocation( (int) ((parent.getWidth() - pComp.getWidth()) * pX), (int) ((parent.getHeight() - pComp.getHeight()) * pY));
     }
+
     public static void position(Component pComp, Component pReferenceComponent, double pX, double pY, boolean pAbsoluteX, boolean pAbsoluteY){
         if(pComp.getParent() == null) {
             System.err.println("Component hat keinen parent und kann daher nicht positioniert werden");
@@ -26,7 +27,7 @@ public class FunctionLoader{
         int y = pAbsoluteY ? (int) (pReferenceComponent.getY() + pY) : (int) ((parent.getHeight() - pComp.getHeight()) * pY);
         pComp.setLocation( x, y);
     }
-    
+
     public static void scale(Component pComp, double pX, double pY){
         if(pComp.getParent() == null) {
             System.err.println("Component hat keinen parent und kann daher nicht positioniert werden");
@@ -35,11 +36,11 @@ public class FunctionLoader{
         Component parent = pComp.getParent();
         pComp.setSize( (int) (parent.getWidth() * pX), (int) (parent.getHeight() * pY));
     }
-    
+
     public static void print(Object obj){
         System.out.println(obj);
     }
-    
+
     public static void warte(int pTime){
         if(pTime < 0) return;
         try{
@@ -49,6 +50,7 @@ public class FunctionLoader{
             ie.printStackTrace();
         }
     }
+
     public static void warte(long pTime){
         if(pTime < 0) return;
         try{

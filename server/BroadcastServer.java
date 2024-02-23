@@ -74,9 +74,24 @@ public class BroadcastServer extends Server{
             case "CONNECT" ->{
                     message = message[1].split(" ", 2);
                     switch(message[0]){
+                        case "SETNAME" -> {
+                                System.out.println("setting the name " + message[1]);
+                                int clientIndex = searchIndex(clientList, client);
+                                if(clientIndex == -1){
+                                    System.out.println("client not found" + client.toString());
+                                    return;
+                                }
+                                clientList.get(clientIndex).setName(message[1]);
+                                send(client, "+OK SETNAME " + message[1]);
+                            }
                         case "SEARCHGAME" -> {
                                 if(! waitingList.contains(new Client(pClientIP, pClientPort))){
-                                    waitingList.add(new Client(pClientIP, pClientPort));
+                                    int clientIndex = searchIndex(clientList, client);
+                                    if(clientIndex == -1){
+                                        System.out.println("client not found" + client.toString());
+                                        return;
+                                    } 
+                                    waitingList.add(clientList.get(clientIndex));
                                 }
                             }
                         case "EXITGAME" ->{

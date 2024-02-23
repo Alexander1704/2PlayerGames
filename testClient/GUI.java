@@ -22,7 +22,6 @@ public class GUI implements KeyListener{
     private UserClient userClientTest;
     
     private PanelTest2 panelTest2;
-    private AnimationPage animationPage;
     public GUI(){
         System.out.println("Sys start");
         frame = new JFrame("2PlayerGames");
@@ -80,7 +79,7 @@ public class GUI implements KeyListener{
         mainThread.setTick(pTick);
     }
 
-    public void login(String ip, int port){
+    public void login(String ip, int port, String pName){
         switchPage(loadingPage);   
         Thread connectToGame = new Thread(new Runnable() {
                     public void run(){
@@ -97,8 +96,13 @@ public class GUI implements KeyListener{
         connectToGame.start();
         
         userClient = new UserClient(this, ip, port);
+        while(! userClient.hasConnected()){
+            FunctionLoader.warte(100);
+        }
+        if(userClient.hasConnected()) userClient.send("CONNECT SETNAME " + pName);
         userClientTest = new UserClient(this, ip, port);
         userClientTest.setProcessingMessages(false);
+        userClientTest.send("CONNECT SETNAME DUMMY");
         userClientTest.send("CONNECT SEARCHGAME");
     }
 

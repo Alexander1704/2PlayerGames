@@ -20,103 +20,41 @@ public class UserClient extends Client{
     }
 
     public void processMessage(String pMessage){
-        switch(pMessage){
-            case "+SPIELER OK" ->{
-                    this.connected = true;
-                    // if(!processMessages)  return;
-                    // gui.switchPage(gui.getMenuPage());
-                }
-            case "+GAME FOUND" ->{
-                    inGame = true;
-                    if(! processMessages) send("GAME INIT " + "Sword Man");
-                    if(! processMessages)  return;
-                    gui.switchPage(gui.getGamePage());
-                    send("GAME INIT " + gui.getMenuPage().getCharacter());
-                }
-            case "+GAME CLOSED" ->{
-                    inGame = false;
-                    if(! processMessages)  return;
-                    gui.switchPage(gui.getMenuPage());
-                }
+        if(pMessage.charAt(0) == '+') {
+            switch(pMessage){
+                case "+SPIELER OK" ->{
+                        this.connected = true;
+                        // if(!processMessages)  return;
+                        // gui.switchPage(gui.getMenuPage());
+                    }
+                case "+GAME FOUND" ->{
+                        inGame = true;
+                        if(! processMessages) send("GAME INIT " + "Sword Man");
+                        if(! processMessages)  return;
+                        gui.switchPage(gui.getGamePage());
+                        send("GAME INIT " + gui.getMenuPage().getCharacter());
+                    }
+                case "+GAME CLOSED" ->{
+                        inGame = false;
+                        if(! processMessages)  return;
+                        gui.switchPage(gui.getMenuPage());
+                    }
+            }
         }
         if(! processMessages) {
             // System.out.println("[Muted Client]" + pMessage);
             return;
         }
 
-        // System.out.println("[Client]" + pMessage);
-
-        // String[] message = pMessage.split(" ");
-        // switch(pMessage){
-        // case "+SPIELER OK" ->{
-        // this.connected = true;
-        // gui.switchPage(gui.getMenuPage());
-        // }
-        // case "+GAME FOUND" ->{
-        // inGame = true;
-        // gui.switchPage(gui.getGamePage());
-        // }
-        // case "+GAME CLOSED" ->{
-        // inGame = false;
-        // gui.switchPage(gui.getMenuPage());
-        // }
-
-        // // switch(message[0]){
-        // // case "POSITION"->{
-        // // String[] positionData = message[1].split(" ");
-        // // gui.getMainPage().setPositionData(positionData[0], positionData[1], Integer.parseInt(positionData[2]), Integer.parseInt(positionData[3]));
-        // // }
-
-        // // }
-        // // switch(message[0]){
-        // // case "GAME" ->{
-
-        // // }
-        // // }
-        // // case "INFO"->{
-        // // String[] infoData = message[1].split(" ");
-        // // gui.getMainPage().setInfo(infoData[0], infoData[1]);
-        // // }
-        // // case "POSITION"->{
-        // // String[] positionData = message[1].split(" ");
-        // // gui.getMainPage().setPositionData(positionData[0], positionData[1], Integer.parseInt(positionData[2]), Integer.parseInt(positionData[3]));
-        // // }
-        // // case "PLAYERLOGIN" ->{
-        // // String[] playerData = message[1].split(" ");
-        // // gui.getMainPage().addPlayer(playerData[0], playerData[1]);
-        // // }
-        // // case "SPIELERLISTE" ->{
-        // // String text = "", ip = "";
-        // // for(int i = 0; i < message[1].length(); i++){
-        // // if( message[1].charAt(i) == ',') {
-        // // ip = text;
-        // // text = "";
-        // // }
-        // // else if ( message[1].charAt(i) == '|') {
-        // // gui.getMainPage().addPlayer(ip, text);
-        // // text = "";
-        // // ip = "";
-        // // }
-        // // else text += message[1].charAt(i);
-        // // }
-        // // }
-        // // case "PLAYEREXIT" ->{
-        // // String[] playerData = message[1].split(" ");
-        // // gui.getMainPage().removePlayer(playerData[0], playerData[1]);
-        // // }
-        // default -> {
-        // System.out.println("Nachricht erhalten: \n " + pMessage);
-        // }
-
-        // }
         String[] args = pMessage.split(" ");
         switch(args[0]){
             case "GAME" ->{
                     switch(args[1]){
                         case "STARTING" -> gui.getGamePage().setStarting(args[2]);
+                        case "PLAYERNAME" -> gui.getGamePage().setPlayerName(Integer.parseInt(args[2]), args[3]);
                         case "ANIMATION" ->{
-                            gui.getGamePage().setAnimation(Integer.parseInt(args[2]), Integer.parseInt(args[3])); 
-                        }
+                                gui.getGamePage().setAnimation(Integer.parseInt(args[2]), Integer.parseInt(args[3])); 
+                            }
                         case "POSITION" ->{
                                 gui.getGamePage().setPosition(Integer.parseInt(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4]));                     
                             }
@@ -167,6 +105,7 @@ public class UserClient extends Client{
                         case "WON" -> {
                                 gui.getGamePage().gameWon(Boolean.parseBoolean(args[2]));
                             }
+                        default -> System.out.println("ERR in client: function " + args[1] + " could not be found");
                     }
                 }
         }

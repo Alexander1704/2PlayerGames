@@ -13,6 +13,7 @@ public class MenuPage extends Page {
     private GUI gui;
     private String character;
     private ArrayList<String> characterList;
+    private JLabel playerName;
     private JLabel characterImage;
     private JLabel characterName;
     private JLabel characterDescription;
@@ -26,7 +27,12 @@ public class MenuPage extends Page {
 
         character = "Player";
         characterList = gui.getDBController().getPlayerNames();
-
+        
+        playerName = new JLabel();
+        playerName.setForeground(Color.WHITE);
+        playerName.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        add(playerName);
+        
         characterName = new JLabel(character);
         characterName.setOpaque(true);
         characterName.setBackground(Color.WHITE);
@@ -104,10 +110,54 @@ public class MenuPage extends Page {
                     // loginThread.start();
                 }
             });
-
-        update();
     }
 
+    @Override
+    public void start() {
+        playerName.setText(gui.getLoginPage().getPlayerName());
+    }
+    
+    @Override
+    public void finish(){
+        
+    }
+
+    @Override
+    public void resized() {
+        int frameWidth = gui.getFrame().getWidth();
+        int frameHeight = gui.getFrame().getHeight();
+        
+        //Skaliere die Elemente
+        FunctionLoader.scale(playerName, 0.8, 0.05);
+        FontLoader.scaleLabel(playerName);
+        playerName.setSize(playerName.getPreferredSize());
+        
+        setCharacter(getCharacter());
+
+        characterName.setSize(characterImage.getWidth(), 50);
+
+        int buttonWidth = characterImage.getWidth() < 300 ? characterImage.getWidth() : 300;
+        playButton.setSize(buttonWidth, 65);
+
+        int characterChoosingWidth = frameWidth > 900 ? 65 : 40;
+        nextPlayerButton.setSize(characterChoosingWidth, characterImage.getY() + characterImage.getHeight() - characterName.getY());
+        previousPlayerButton.setSize(characterChoosingWidth, characterImage.getY() + characterImage.getHeight() - characterName.getY());
+        
+        
+        //Positioniere die Elemente
+        FunctionLoader.position(playerName, 0, 1);
+        FunctionLoader.position(characterImage, 0.5, 0.3);
+        FunctionLoader.position(characterName, characterImage, 0.5, - 60, false, true);
+        FunctionLoader.position(playButton, characterImage, 0.5, characterImage.getHeight() + 15, false, true);
+        nextPlayerButton.setLocation(characterImage.getX() + characterImage.getWidth() + 10, characterName.getY());
+        previousPlayerButton.setLocation(characterImage.getX() - previousPlayerButton.getWidth() - 10, characterName.getY());
+    }
+    
+    @Override
+    public void update(){
+        
+    }
+    
     public boolean running(){
         return gui.getCurrentPage() == this; 
     }
@@ -131,49 +181,5 @@ public class MenuPage extends Page {
             System.err.println(character +"::: " + "player/" + character + "/a (1).png");
         }
         
-    }
-
-    @Override
-    public void paintComponent(Graphics g){
-        update();
-        super.paintComponent(g);
-    }
-
-    public void finish(){
-        
-    }
-    
-    public void update(){
-        
-    }
-
-
-    public void start() {
-
-    }
-
-    public void resized() {
-        int frameWidth = gui.getFrame().getWidth();
-        int frameHeight = gui.getFrame().getHeight();
-        
-        //Skaliere die Elemente
-        setCharacter(getCharacter());
-
-        characterName.setSize(characterImage.getWidth(), 50);
-
-        int buttonWidth = characterImage.getWidth() < 300 ? characterImage.getWidth() : 300;
-        playButton.setSize(buttonWidth, 65);
-
-        int characterChoosingWidth = frameWidth > 900 ? 65 : 40;
-        nextPlayerButton.setSize(characterChoosingWidth, characterImage.getY() + characterImage.getHeight() - characterName.getY());
-        previousPlayerButton.setSize(characterChoosingWidth, characterImage.getY() + characterImage.getHeight() - characterName.getY());
-        
-        
-        //Positioniere die Elemente
-        FunctionLoader.position(characterImage, 0.5, 0.3);
-        FunctionLoader.position(characterName, characterImage, 0.5, - 60, false, true);
-        FunctionLoader.position(playButton, characterImage, 0.5, characterImage.getHeight() + 15, false, true);
-        nextPlayerButton.setLocation(characterImage.getX() + characterImage.getWidth() + 10, characterName.getY());
-        previousPlayerButton.setLocation(characterImage.getX() - previousPlayerButton.getWidth() - 10, characterName.getY());
     }
 }

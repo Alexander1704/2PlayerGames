@@ -7,7 +7,7 @@ package assetLoader;
 public class TickThread extends Thread{
     private int ticks;
     private boolean running;
-
+    
     /**Konstruktor, der einen TickThread erstellt
      * Standardmäßig werden die ticks auf 60 gesetzt
      */

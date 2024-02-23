@@ -13,6 +13,16 @@ public class ImageLoader{
 
     }
     
+    public static void fitImage(JLabel pLabel, String pImagePath) throws IOException {
+        Dimension imgSize = getImageSize(pImagePath);
+        Dimension labelSize = pLabel.getSize();
+        
+        double xRatio = 1.0 *  labelSize.getWidth() / imgSize.getWidth();
+        double yRatio = 1.0 * labelSize.getHeight() / imgSize.getHeight();
+        
+        double ratio = Math.min(xRatio, yRatio);
+        pLabel.setIcon(getScaledIcon(pImagePath, ratio, ratio));
+    }
     public static ImageIcon getResizedIcon(String path, int x_scale, int y_scale) throws IOException {
             // Lade das Bild von der Datei
             Image img = ImageIO.read(new File("assets/" + path));
