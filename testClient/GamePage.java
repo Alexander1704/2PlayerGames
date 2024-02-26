@@ -202,6 +202,12 @@ public class GamePage extends Page implements KeyListener{
             player1Banner.setSize(gamePanel.getWidth(), (int) (gamePanel.getHeight() * 0.2));
             player1Banner.resized();
         }
+        if(startingLabel.isVisible()){
+            FunctionLoader.scale(startingLabel, 0.2, 0.3);
+            FontLoader.scaleLabel(startingLabel);
+            startingLabel.setSize(startingLabel.getPreferredSize());
+            FunctionLoader.position(startingLabel, 0.5, 0.5);
+        }
     }
     
     public void update(){

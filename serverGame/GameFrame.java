@@ -72,7 +72,7 @@ public class GameFrame implements KeyListener{
         // gamePanel.add(test);
         // addBullet();
 
-        int mapNum = (int) (Math.random() * 2) + 1;
+        int mapNum = (int) (Math.random() * 3) + 1;
         mapLabel = new JLabel(); 
         mapImgPath = "maps/World " + mapNum + ".png";
         gamePanel.add(mapLabel);

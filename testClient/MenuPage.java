@@ -110,6 +110,8 @@ public class MenuPage extends Page {
                     // loginThread.start();
                 }
             });
+        
+        resized();
     }
 
     @Override

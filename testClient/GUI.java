@@ -167,7 +167,6 @@ public class GUI implements KeyListener{
         frame.validate();
         currentPage.start();
         currentPage.resized();
-        currentPage.resized();
         frame.repaint();
     }
 
