@@ -75,7 +75,7 @@ public class HealthPanel extends JPanel implements Positionable{
         healthLine.setSize((int) (healthPanel.getWidth() * (health / 100.0)), healthPanel.getHeight());
         
         healthLabel.setSize( (int) (getWidth() * 0.8), (int) (getHeight() / 2 * 0.8));
-        FontLoader.scaleLabel(healthLabel);
+        FontLoader.fitFont(healthLabel);
         healthLabel.setSize(healthLabel.getPreferredSize());
         healthLabel.setLocation( (getWidth() - healthLabel.getWidth() ) / 2 , (getHeight() / 2 - healthLabel.getHeight() ) / 2);
     }

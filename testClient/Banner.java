@@ -58,7 +58,7 @@ public class Banner extends JPanel{
         
         //0.25 bis 0.95
         bannerPlayerName.setSize((int) (bannerBackground.getWidth() * 0.7), (int) (bannerBackground.getHeight() * 0.4));
-        FontLoader.scaleLabel(bannerPlayerName);
+        FontLoader.fitFont(bannerPlayerName);
         bannerPlayerName.setSize(bannerPlayerName.getPreferredSize());
         bannerPlayerName.setLocation( (int) ((bannerBackground.getWidth() - bannerPlayerName.getWidth()) * 0.75) , (bannerBackground.getHeight() - bannerPlayerName.getHeight()) / 2);
     }

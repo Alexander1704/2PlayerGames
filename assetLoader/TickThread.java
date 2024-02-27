@@ -11,7 +11,7 @@ public class TickThread extends Thread{
     /**Konstruktor, der einen TickThread erstellt
      * Standardmäßig werden die ticks auf 60 gesetzt
      */
-    public TickThread(Runnable pRunnable){
+    public TickThread(Runnable pRunnable){ 
         this(60, pRunnable);
     }
 

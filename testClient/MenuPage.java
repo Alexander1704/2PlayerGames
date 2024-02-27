@@ -20,6 +20,7 @@ public class MenuPage extends Page {
     private JButton playButton;
     private JButton nextPlayerButton;
     private JButton previousPlayerButton;
+    private JButton creditsButton;
     public MenuPage(GUI gui) {
         setLayout(null);
         setBackground(new Color(94, 144, 252));
@@ -28,9 +29,11 @@ public class MenuPage extends Page {
         character = "Player";
         characterList = gui.getDBController().getPlayerNames();
         
-        playerName = new JLabel();
+        playerName = new JLabel("PLAYER");
         playerName.setForeground(Color.WHITE);
         playerName.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        playerName.setLocation(0, 0);
+        playerName.setSize(playerName.getPreferredSize());
         add(playerName);
         
         characterName = new JLabel(character);
@@ -65,6 +68,12 @@ public class MenuPage extends Page {
         previousPlayerButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
         previousPlayerButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
         add(previousPlayerButton);
+        
+        creditsButton = new JButton("credits");
+        creditsButton.setBackground(new Color(93, 252, 153));
+        creditsButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+        creditsButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        add(creditsButton);
 
         nextPlayerButton.addActionListener(new ActionListener(){
                 @Override
@@ -91,7 +100,7 @@ public class MenuPage extends Page {
                 }
             });
         playButton.addActionListener(new ActionListener(){
-                @Override
+                @Override 
                 public void actionPerformed(ActionEvent e){
                     gui.switchPage(gui.getLoadingPage());
                     gui.getUserClient().send("CONNECT SEARCHGAME");
@@ -110,13 +119,19 @@ public class MenuPage extends Page {
                     // loginThread.start();
                 }
             });
+        creditsButton.addActionListener(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e){
+                    gui.switchPage(gui.getCreditsPage());
+                }
+            });
         
         resized();
     }
 
     @Override
     public void start() {
-        playerName.setText(gui.getLoginPage().getPlayerName());
+        // playerName.setText(gui.getLoginPage().getPlayerName());
     }
     
     @Override
@@ -130,9 +145,11 @@ public class MenuPage extends Page {
         int frameHeight = gui.getFrame().getHeight();
         
         //Skaliere die Elemente
+        creditsButton.setSize(frameHeight/ 10, frameHeight/ 10);
+        FontLoader.fitFont(creditsButton);
+        
         FunctionLoader.scale(playerName, 0.8, 0.05);
-        FontLoader.scaleLabel(playerName);
-        playerName.setSize(playerName.getPreferredSize());
+        FontLoader.fitFont(playerName);
         
         setCharacter(getCharacter());
 
@@ -147,6 +164,7 @@ public class MenuPage extends Page {
         
         
         //Positioniere die Elemente
+        FunctionLoader.position(creditsButton, 0.9, 0.5);
         FunctionLoader.position(playerName, 0, 1);
         FunctionLoader.position(characterImage, 0.5, 0.3);
         FunctionLoader.position(characterName, characterImage, 0.5, - 60, false, true);
@@ -156,12 +174,10 @@ public class MenuPage extends Page {
     }
     
     @Override
-    public void update(){
-        
-    }
+    public void update(){}
     
-    public boolean running(){
-        return gui.getCurrentPage() == this; 
+    public void setPlayerName(String pPlayerName){
+        playerName.setText(pPlayerName);
     }
     public String getCharacter(){
         return character;

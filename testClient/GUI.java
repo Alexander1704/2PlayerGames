@@ -18,6 +18,7 @@ public class GUI implements KeyListener{
     private GamePage gamePage;
     private ErrorPage errorPage;
     private InfoPage infoPage;
+    private CreditsPage creditsPage;
     private UserClient userClient;
     private UserClient userClientTest;
     
@@ -42,6 +43,7 @@ public class GUI implements KeyListener{
         loadingPage = new LoadingPage(this);
         gamePage = new GamePage(this);
         errorPage = new ErrorPage(this);
+        creditsPage = new CreditsPage(this);
         // infoPage = new InfoPage(this);
         
         currentPage = loginPage;
@@ -137,6 +139,10 @@ public class GUI implements KeyListener{
     public LoginPage getLoginPage(){
         return loginPage;
     }
+    
+    public CreditsPage getCreditsPage(){
+        return creditsPage;
+    }
 
     public UserClient getUserClient(){
         return userClient;
@@ -154,13 +160,9 @@ public class GUI implements KeyListener{
     }
 
     public void switchPage(Page to){
-        switchPage(currentPage, to);
-    }
-
-    public void switchPage(Page from, Page to){
-        if (from != null) {
-            frame.remove(from);
-            from.finish();
+        if (currentPage != null) {
+            frame.remove(currentPage);
+            currentPage.finish();
         }
         frame.add(to);
         currentPage = to;

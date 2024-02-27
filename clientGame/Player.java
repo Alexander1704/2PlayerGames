@@ -15,7 +15,7 @@ public class Player extends JLabel implements Positionable{
     private String texture;
     private boolean witched;
     private boolean rightSided;
-    private int animation;
+    private int animation; 
     public Player(JPanel pPanel){
         panel = pPanel;
         x = 0;

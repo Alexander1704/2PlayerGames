@@ -25,7 +25,7 @@ public abstract class Page extends JPanel{
      */
     public abstract void resized();
     
-    /**In der update-Methode können Elemente geupdatet werden, die auch unabhöngig
+    /**In der update-Methode können Elemente geupdatet werden, die auch unabhängig
      * vom Ändern der Größe des JFrames aktualiert werden müssen.
      * 
      * Die update-Methode wird ticks * mal pro Sekunde von der GUI aufgerufen.

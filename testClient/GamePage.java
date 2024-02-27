@@ -184,12 +184,12 @@ public class GamePage extends Page implements KeyListener{
 
         if(gameClosingLabel.isVisible()) {
             gameClosingLabel.setSize((int) (gamePanel.getWidth() * 0.75), (int) (gamePanel.getWidth() * 0.5));
-            FontLoader.scaleLabel(gameClosingLabel);
+            FontLoader.fitFont(gameClosingLabel);
             gameClosingLabel.setSize(gameClosingLabel.getPreferredSize());
         }
         if(winnerLabel.isVisible()) {
             winnerLabel.setSize((int) (gamePanel.getWidth() * 0.5), (int) (gamePanel.getWidth() * 0.3));
-            FontLoader.scaleLabel(winnerLabel);
+            FontLoader.fitFont(winnerLabel);
             winnerLabel.setSize(gameClosingLabel.getPreferredSize());
         }
         
@@ -204,7 +204,7 @@ public class GamePage extends Page implements KeyListener{
         }
         if(startingLabel.isVisible()){
             FunctionLoader.scale(startingLabel, 0.2, 0.3);
-            FontLoader.scaleLabel(startingLabel);
+            FontLoader.fitFont(startingLabel);
             startingLabel.setSize(startingLabel.getPreferredSize());
             FunctionLoader.position(startingLabel, 0.5, 0.5);
         }
@@ -347,7 +347,7 @@ public class GamePage extends Page implements KeyListener{
         }
         startingLabel.setVisible(true);
         FunctionLoader.scale(startingLabel, 0.2, 0.3);
-        FontLoader.scaleLabel(startingLabel);
+        FontLoader.fitFont(startingLabel);
         startingLabel.setSize(startingLabel.getPreferredSize());
         FunctionLoader.position(startingLabel, 0.5, 0.5);
     }
@@ -459,7 +459,7 @@ public class GamePage extends Page implements KeyListener{
     public void closingGame(String time){
         gameClosingLabel.setText("GAME IS CLOSING IN " + time + "s");
         gameClosingLabel.setSize((int) (gamePanel.getWidth() * 0.75), (int) (gamePanel.getWidth() * 0.5));
-        FontLoader.scaleLabel(gameClosingLabel);
+        FontLoader.fitFont(gameClosingLabel);
         gameClosingLabel.setSize(gameClosingLabel.getPreferredSize());
         if(! gameClosingLabel.isVisible()){
             resized();
