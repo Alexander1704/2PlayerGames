@@ -1,5 +1,6 @@
 package serverGame;
 
+import clientGame.*;
 import javax.swing.*;
 
 public class Bullet extends JLabel implements Positionable{

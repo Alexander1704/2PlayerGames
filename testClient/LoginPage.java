@@ -94,6 +94,7 @@ public class LoginPage extends Page{
     public void start(){
         
     }
+    
     public void resized(){
         FunctionLoader.position(loginPanel, 0.5, 0.4);
         FunctionLoader.position(ipLabel, 0.5, 0);
@@ -103,12 +104,6 @@ public class LoginPage extends Page{
         FunctionLoader.position(nameLabel, portText, 0.5, 70, false, true);
         FunctionLoader.position(nameText, nameLabel, 0.5, 35, false, true);
         FunctionLoader.position(connectButton, nameText, 0.5, 90, false, true);
-    }
-    public void positionElements(){
-        
-        
-        
-        
     }
 
     public void finish(){
@@ -121,5 +116,9 @@ public class LoginPage extends Page{
     
     public String getPlayerName(){
         return nameText.getText();
+    }
+    
+    public void setPlayerName(String pPlayerName){
+        nameText.setText(pPlayerName);
     }
 }

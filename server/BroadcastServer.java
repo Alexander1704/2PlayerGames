@@ -101,7 +101,7 @@ public class BroadcastServer extends Server{
                                         synchronized(clientList){
                                             int clientIndex = clientList.indexOf(client);
                                             if(clientIndex == -1){
-                                                // System.out.println("client not found" + client.toString());
+                                                send(client, "-ERR clientNotFound " + pMessage);
                                                 return;
                                             } 
                                             waitingList.add(clientList.get(clientIndex));

@@ -79,6 +79,7 @@ public class Player extends clientGame.Player implements Healthy{
         frozen = false;
         
         updateImage();
+        gamePanel.getMessageInterpreter().interpretMessage("RIGHTSIDED " + ID + " " + rightSided);
 
         final int MAX_ANIMATION = 9;
         TickThread animationThread = new TickThread(15, new Runnable(){
@@ -145,6 +146,10 @@ public class Player extends clientGame.Player implements Healthy{
 
     public PlayerInfo getPlayerInfo(){
         return playerInfo;
+    }
+    
+    public boolean isInitialized(){
+        return initialized;
     }
 
     public synchronized void freeze(int time){
@@ -222,9 +227,6 @@ public class Player extends clientGame.Player implements Healthy{
         yPos += a % POS_ACCURACY;
         // if(falling && gamePanel.checkBottom(this)) falling = false;
         if(falling) yVelo -= MAX_JUMP_VELO / 24;
-        if(!falling ){
-
-        }
         if( yPos < 0) {
             yPos = 0;
             yVelo = 0;
@@ -261,6 +263,7 @@ public class Player extends clientGame.Player implements Healthy{
                     xVelo =  gamePanel.checkLeft(this) ? 0 : -MAX_VELO;
                     if(rightSided) {
                         rightSided = false;
+                        gamePanel.getMessageInterpreter().interpretMessage("RIGHTSIDED " + ID + " " + rightSided);
                         updateImage();
                     }
 
@@ -269,6 +272,7 @@ public class Player extends clientGame.Player implements Healthy{
                     xVelo =  gamePanel.checkRight(this) ? 0 : MAX_VELO;
                     if(!rightSided){
                         rightSided = true;
+                        gamePanel.getMessageInterpreter().interpretMessage("RIGHTSIDED " + ID + " " + rightSided);
                         updateImage();
                     }
 

@@ -48,9 +48,10 @@ public class Game implements MessageInterpreter{
 
                         TickThread updatePositionThread = new TickThread(60, new Runnable(){ 
                                     @Override 
-                                    public void run(){
+                                    public void run(){ 
                                         for(int i = 0; i < clients.length; i++){
-                                            if(gameFrame.getPlayer(1 + i).isMoving() || true) sendMessage("GAME POSITION " + i + " " + gameFrame.getPlayer(1 + i).getPosition());
+                                            // if(gameFrame.getPlayer(1 + i).isMoving() || true) sendMessage("GAME POSITION " + i + " " + gameFrame.getPlayer(1 + i).getPosition());
+                                            sendMessage("GAME POSITION " + i + " " + gameFrame.getPlayer(1 + i).getPosition());
                                         }
                                     }
                                 });

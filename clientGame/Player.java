@@ -96,7 +96,8 @@ public class Player extends JLabel implements Positionable{
         return rightSided;
     }
     
-    public void setRightSided(boolean b){
-        rightSided = b;
+    public void setRightSided(boolean pRightSided){
+        this.rightSided = pRightSided;
+        update();
     }
 }

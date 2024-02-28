@@ -40,6 +40,11 @@ public class UserClient extends Client{
                         gui.switchPage(gui.getMenuPage());
                     }
             }
+            if(processMessages && pMessage.startsWith("+OK SETNAME")){
+                String[] args = pMessage.split(" ", 3);
+                gui.getLoginPage().setPlayerName(args[2]);
+                gui.getMenuPage().setPlayerName(args[2]);
+            }
         }
         if(! processMessages) {
             // System.out.println("[Muted Client]" + pMessage);
@@ -56,7 +61,10 @@ public class UserClient extends Client{
                             // System.out.println("starting in " + args[2]);
                             gui.getGamePage().setStarting(args[2]);
                         }
-                        case "PLAYERNAME" -> gui.getGamePage().setPlayerName(Integer.parseInt(args[2]), args[3]);
+                        case "PLAYERNAME" -> {
+                            args = pMessage.split(" ", 4);
+                            gui.getGamePage().setPlayerName(Integer.parseInt(args[2]), args[3]);
+                        }
                         case "ANIMATION" ->{
                                 gui.getGamePage().setAnimation(Integer.parseInt(args[2]), Integer.parseInt(args[3])); 
                             }
@@ -86,6 +94,7 @@ public class UserClient extends Client{
                                 gui.getGamePage().setHealth(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                             }
                         case "RIGHTSIDED" -> {
+                                System.out.println("SET RIGHTSIDED FROM " + args[2] + " TO " + args[3]);
                                 gui.getGamePage().setRightSided(Integer.parseInt(args[2]), Boolean.parseBoolean(args[3]));
                             }
                         case "PLAYERNUM" -> {
