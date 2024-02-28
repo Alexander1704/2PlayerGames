@@ -1,4 +1,5 @@
 package server;
+import java.util.ArrayList;
 
 public class Client{
     public final String ip;
@@ -32,6 +33,15 @@ public class Client{
         if(o instanceof Client){
             Client cl = (Client) o;
             if (ip.equals(cl.ip) && port == cl.port) return true;
+            return false;
+        }
+        if(o instanceof Game){
+            Game g = (Game) o;
+            Client[] gameClients = g.getClients();
+            for(int i = 0; i < gameClients.length; i++){
+                if(gameClients[i].equals(this)) return true;
+            }
+            return false;
         }
         return false;
     }

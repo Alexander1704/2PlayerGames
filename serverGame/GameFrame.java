@@ -32,7 +32,7 @@ public class GameFrame implements KeyListener{
     public GameFrame(MessageInterpreter mI){
         messageInterpreter = mI;
         
-        System.out.println("Program is running...");
+        // System.out.println("Program is running...");
         testFrame = new JFrame();
         testFrame.setLayout(null);
         testFrame.setTitle("[SERVER] Simple Platformer");
@@ -67,11 +67,6 @@ public class GameFrame implements KeyListener{
         
         bulletId = 0;
 
-        // test = new Bullet(this, player1);
-        // test.setSize(test.getPreferredSize());
-        // gamePanel.add(test);
-        // addBullet();
-
         int mapNum = (int) (Math.random() * 3) + 1;
         mapLabel = new JLabel(); 
         mapImgPath = "maps/World " + mapNum + ".png";
@@ -92,6 +87,10 @@ public class GameFrame implements KeyListener{
 
         // setPlayer(0, "King");
         // setPlayer(1, "King");
+    }
+    
+    public void show(){
+        testFrame.setVisible(true);
     }
     
     public void start(){
@@ -149,7 +148,7 @@ public class GameFrame implements KeyListener{
         mapLabel.setLocation(0, 0);
 
         player1.update();
-        player2.update();
+        player2.update(); 
         for(int i = 0; i < bulletList.size(); i++){
             bulletList.get(i).update();
         }
@@ -158,7 +157,6 @@ public class GameFrame implements KeyListener{
     }
 
     public void removeBullet(Bullet bullet){
-        // System.out.println("Removed bullet :)");
         bulletList.remove(bullet);
         Thread waitThread = new Thread(new Runnable(){
                     public void run(){
@@ -213,8 +211,8 @@ public class GameFrame implements KeyListener{
         }
         bufferedMap = toBufferedImage(mapLabel.getIcon());
 
-        player1.scaleImage();
-        player2.scaleImage();
+        player1.updateImage();
+        player2.updateImage();
         p1Health.scale();
         p2Health.scale();
         for(int i = 0; i < bulletList.size(); i++){
@@ -305,7 +303,6 @@ public class GameFrame implements KeyListener{
             keyPressed[0] = false;
         } else if (key == KeyEvent.VK_S) {
             keyPressed[1] = false;
-            System.out.println("Break s");
         } else if (key == KeyEvent.VK_A) {
             keyPressed[2] = false;
         } else if (key == KeyEvent.VK_D) {

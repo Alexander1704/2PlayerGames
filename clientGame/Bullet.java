@@ -37,7 +37,7 @@ public class Bullet extends JLabel implements Positionable{
     public void setYPos(double a){
         this.y = a;
     }
-
+ 
     public int getID(){
         return ID;
     }

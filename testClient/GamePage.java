@@ -266,7 +266,7 @@ public class GamePage extends Page implements KeyListener{
     }
 
     public void removeBullet(Integer id){
-        System.out.println("removing --> " + id);
+        // System.out.println("removing --> " + id);
         for(int i = 0; i < bulletList.size(); i++){
             if(bulletList.get(i).equals(id)) {
                 gamePanel.remove(bulletList.get(i));
@@ -316,7 +316,7 @@ public class GamePage extends Page implements KeyListener{
                         bannerChange += bannerSpeed;
                         bannerSpeed *= 0.995;
             
-                        System.out.println(bannerChange);
+                        // System.out.println(bannerChange);
                         
                         // Calculate time to sleep to maintain desired tick
                         long waitTime = 1000000000 / 60;
@@ -448,7 +448,7 @@ public class GamePage extends Page implements KeyListener{
             keyPressed[0] = false;
         } else if (key == KeyEvent.VK_S) {
             keyPressed[1] = false;
-            System.out.println("Break s");
+            // System.out.println("Break s");
         } else if (key == KeyEvent.VK_A) {
             keyPressed[2] = false;
         } else if (key == KeyEvent.VK_D) {
@@ -469,7 +469,7 @@ public class GamePage extends Page implements KeyListener{
     }
 
     public void gameWon(boolean b){
-        System.out.println("---> " + b);
+        // System.out.println("---> " + b);
         Thread warte = new Thread(new Runnable(){
                     public void run(){
                         FunctionLoader.warte(10);

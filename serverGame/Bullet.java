@@ -21,7 +21,7 @@ public class Bullet extends JLabel implements Positionable{
         this.player = pl;
         int bulletDirection = Integer.parseInt(player.getPlayerInfo().getBulletDirection()) ;
         this.direction = bulletDirection/ 180.0 * Math.PI;
-        if( !pl.rightSided()) direction += (180 - (bulletDirection - 90 ) * 2)/ 180.0 * Math.PI;
+        if( !pl.isRightSided()) direction += (180 - (bulletDirection - 90 ) * 2)/ 180.0 * Math.PI; 
         this.updates = 0;
         this.x = pl.getXPos();
         this.y = pl.getYPos() + 1.0 * player.getHeight() / gamePanel.getGamePanel().getHeight() / 2;
@@ -36,7 +36,7 @@ public class Bullet extends JLabel implements Positionable{
             gamePanel.removeBullet(this);
             return;
         }
-        gamePanel.getMessageInterpreter().interpretMessage("BULLET NEW " + ID + " " + x + " " + y + " " + getPlayerInfo().getBulletTexture() + " " + getPlayerInfo().getBulletDirection() + " " + player.rightSided());
+        gamePanel.getMessageInterpreter().interpretMessage("BULLET NEW " + ID + " " + x + " " + y + " " + getPlayerInfo().getBulletTexture() + " " + getPlayerInfo().getBulletDirection() + " " + player.isRightSided());
     }
 
     public int getID(){
@@ -72,7 +72,7 @@ public class Bullet extends JLabel implements Positionable{
     public void setDirection(int bulletDirection){
         if(bulletDirection == -1) return;
         this.direction = bulletDirection/ 180.0 * Math.PI;
-        if( !player.rightSided()) direction += (180 - (bulletDirection - 90 ) * 2)/ 180.0 * Math.PI;
+        if( !player.isRightSided()) direction += (180 - (bulletDirection - 90 ) * 2)/ 180.0 * Math.PI;
     }
 
     public void scaleImage(){
@@ -84,7 +84,7 @@ public class Bullet extends JLabel implements Positionable{
         }catch (Exception e){
             e.printStackTrace();
         }
-        if(!player.rightSided()) setIcon(ir.flipIcon(this.getIcon(), true, false));
+        if(!player.isRightSided()) setIcon(ir.flipIcon(this.getIcon(), true, false));
     }
 
     public boolean checkSides(){
@@ -149,12 +149,7 @@ public class Bullet extends JLabel implements Positionable{
         this.x = x;
         this.y = y;
     }
-    // @Override
-    // public void setLocation(int x, int y){
-    // this.x = x;
-    // this.y = y;
-    // gamePanel.setLocation(this);
-    // }
+    
     public Player.PlayerInfo getPlayerInfo(){
         return player.getPlayerInfo();
     }

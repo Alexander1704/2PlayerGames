@@ -2,6 +2,7 @@ package assetLoader;
 
 import javax.swing.*;
 import java.awt.Component;
+import java.util.ArrayList;
 
 public class FunctionLoader{
     public FunctionLoader(){
@@ -36,9 +37,40 @@ public class FunctionLoader{
         Component parent = pComp.getParent();
         pComp.setSize( (int) (parent.getWidth() * pX), (int) (parent.getHeight() * pY));
     }
-
-    public static void print(Object obj){
-        System.out.println(obj);
+    
+    public static String listToString(ArrayList pList){
+        String temp = "";
+        for(int i = 0; i < pList.size(); i++){
+            temp += pList.get(i).toString() + "|";
+        }
+        return pList.size() + ">" + temp;
+    }
+    
+    public static ArrayList<String> stringToList(String pString){
+        ArrayList<String> temp = new ArrayList<String>();
+        
+        int i = 0;
+        while(pString.charAt(i) != '>' && i < pString.length()){
+            i++;
+        }
+        i++;
+        
+        String listContent = "";
+        for(i = i; i< pString.length(); i++){
+            if(pString.charAt(i) == '|'){
+                temp.add(listContent);
+                listContent = "";
+            }else {
+                listContent += pString.charAt(i);
+            }
+        }
+        return temp;
+    }
+    
+    public static void printList(ArrayList pList){
+        for(int i = 0; i < pList.size(); i++){
+            System.out.println(pList.get(i).toString());
+        }
     }
 
     public static void warte(int pTime){

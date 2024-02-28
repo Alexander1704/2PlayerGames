@@ -102,21 +102,16 @@ public class MenuPage extends Page {
         playButton.addActionListener(new ActionListener(){
                 @Override 
                 public void actionPerformed(ActionEvent e){
-                    gui.switchPage(gui.getLoadingPage());
-                    gui.getUserClient().send("CONNECT SEARCHGAME");
-                    
-                    long threadStart = System.currentTimeMillis();
-                    TickThread loginThread = new TickThread(null);
-                    loginThread = new TickThread(gui.getTick(), new Runnable() {
-                        public void run(){
-                            // if(gui.getUserClient().inGame()) loginThread.finish();
-                            
-                            long elapsedTime = System.currentTimeMillis() - threadStart;
-                            // if(elapsedTime > 15000) gui.switchPage(gui.getErrorPage());
-                        }
+                    Thread leaveThread = new Thread(new Runnable(){
+                       @Override
+                       public void run(){
+                           gui.getUserClient().send("CONNECT LEAVE");
+                           gui.switchPage(gui.getMenuPage());
+                       }
                     });
-                    
-                    // loginThread.start();
+                    gui.switchPage(gui.getExitLoadingPage());
+                    gui.getExitLoadingPage().setLeaveThread(leaveThread);
+                    gui.getUserClient().send("CONNECT SEARCHGAME");
                 }
             });
         creditsButton.addActionListener(new ActionListener(){
@@ -131,7 +126,7 @@ public class MenuPage extends Page {
 
     @Override
     public void start() {
-        // playerName.setText(gui.getLoginPage().getPlayerName());
+        playerName.setText(gui.getLoginPage().getPlayerName());
     }
     
     @Override

@@ -21,7 +21,8 @@ public class GUI implements KeyListener{
     private CreditsPage creditsPage;
     private UserClient userClient;
     private UserClient userClientTest;
-    
+
+    private ExitLoadingPage exitLoadingPage;
     private PanelTest2 panelTest2;
     public GUI(){
         System.out.println("Sys start");
@@ -44,7 +45,7 @@ public class GUI implements KeyListener{
         gamePage = new GamePage(this);
         errorPage = new ErrorPage(this);
         creditsPage = new CreditsPage(this);
-        // infoPage = new InfoPage(this);
+        exitLoadingPage = new ExitLoadingPage(this);
         
         currentPage = loginPage;
         switchPage(currentPage);
@@ -126,6 +127,10 @@ public class GUI implements KeyListener{
 
     public LoadingPage getLoadingPage(){
         return loadingPage;
+    }
+    
+    public ExitLoadingPage getExitLoadingPage(){
+        return exitLoadingPage;
     }
 
     public GamePage getGamePage(){

@@ -7,37 +7,37 @@ import java.awt.*;
 
 public class Player extends JLabel implements Positionable{ 
     private JPanel panel;
-    private String name;
-    private double x; 
-    private double y;
-    private double size;
-    private int health;
-    private String texture;
-    private boolean witched;
-    private boolean rightSided;
-    private int animation; 
+    protected String name;
+    protected double xPos; 
+    protected double yPos;
+    protected double size;
+    protected int health;
+    protected String texture;
+    protected boolean witched;
+    protected boolean rightSided;
+    protected int animation; 
     public Player(JPanel pPanel){
         panel = pPanel;
-        x = 0;
-        y = 0;
+        xPos = 0;
+        yPos = 0;
         this.size = 1 / 1700.0;
         health = 100;
         texture = "";
         witched = false;
         rightSided = true;
         name = "Player";
-        animation = 1;
+        animation = 10;
     }
     
     public void update(){
-        ImageLoader imageLoader = new ImageLoader();
         double scaleImg = panel.getHeight() * this.size;
-        if(scaleImg <= 0) return;
-        // System.out.println(scaleImg);
+        if(scaleImg <= 0) {
+            return;
+        }
         try{
             this.setIcon(ImageLoader.getScaledIcon("player/" + this.name + "/animation" + this.animation + ".png", scaleImg, scaleImg));
         }catch (Exception e){
-            System.out.println("Error while loading PlayerImage, FileName: assets/player/" + this.name + "/animation" + this.animation + ".png");
+            // System.out.println("Error while loading PlayerImage, FileName: assets/player/" + this.name + "/animation" + this.animation + ".png");
             e.printStackTrace();
         }
         if(! this.rightSided) this.setIcon(ImageLoader.flipIcon(this.getIcon(), true, false));
@@ -45,19 +45,19 @@ public class Player extends JLabel implements Positionable{
     }
 
     public double getXPos(){
-        return x;
+        return xPos;
     }
 
     public double getYPos(){
-        return y;
+        return yPos;
     }
 
-    public void setX(double x){
-        this.x = x;
+    public void setX(double pXPos){
+        this.xPos = pXPos;
     }
 
-    public void setY(double y){
-        this.y = y;
+    public void setY(double pYPos){
+        this.yPos = pYPos;
     }
     
     public void setSize(double pSize){
@@ -92,6 +92,10 @@ public class Player extends JLabel implements Positionable{
         return getWidth();
     }
 
+    public boolean isRightSided(){
+        return rightSided;
+    }
+    
     public void setRightSided(boolean b){
         rightSided = b;
     }

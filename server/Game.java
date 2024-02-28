@@ -33,10 +33,11 @@ public class Game implements MessageInterpreter{
                         while(! gameFrame.isInitialized()){
                             FunctionLoader.warte(10);
                         }
+                        
                         for(int i = 0; i < clients.length; i++){
                             sendMessage("GAME POSITION " + i + " " + gameFrame.getPlayer(1 + i).getPosition());
                         }
-
+ 
                         gameState = "STARTING";
                         for(int i = 3; i > -1; i--){
                             sendMessage("GAME STARTING " + i);
@@ -159,7 +160,7 @@ public class Game implements MessageInterpreter{
         if(o == null) return false;
         if(o instanceof Client){
             Client cl = (Client) o;
-            for(int i = 0; i< clients.length; i++){
+            for(int i = 0; i < clients.length; i++){
                 if(cl.equals(clients[i])) return true;
             }
             return false;
@@ -230,10 +231,6 @@ public class Game implements MessageInterpreter{
         return -1;
     }
 
-    private void print(Object a){
-        System.out.println(a);
-    }
-
     private void warte(int a){
         try{
             Thread.sleep(a); 
@@ -246,5 +243,16 @@ public class Game implements MessageInterpreter{
     public Client getClient(int pNum){
         if(pNum >= clients.length || pNum < 0 ) return null;
         return clients[pNum];
+    }
+    
+    public Client[] getClients(){
+        return clients;
+    }
+    
+    @Override
+    public String toString(){
+        String temp = "";
+        
+        return "";
     }
 }

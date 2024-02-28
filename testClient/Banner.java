@@ -52,7 +52,7 @@ public class Banner extends JPanel{
             else ImageLoader.fitImage(bannerBackground, "banner_blue.png"); 
         }catch (Exception e){
             e.printStackTrace();
-            System.out.println("ERROR");
+            // System.out.println("ERROR");
         }
         bannerBackground.setSize(bannerBackground.getPreferredSize());
         

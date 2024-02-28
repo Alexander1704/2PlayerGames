@@ -29,7 +29,7 @@ public class UserClient extends Client{
                     }
                 case "+GAME FOUND" ->{
                         inGame = true;
-                        if(! processMessages) send("GAME INIT " + "Sword Man");
+                        if(! processMessages) send("GAME INIT " + "Player");
                         if(! processMessages)  return;
                         gui.switchPage(gui.getGamePage());
                         send("GAME INIT " + gui.getMenuPage().getCharacter());
@@ -45,12 +45,17 @@ public class UserClient extends Client{
             // System.out.println("[Muted Client]" + pMessage);
             return;
         }
+        
+        // System.out.println("[Client] received: " + pMessage);
 
         String[] args = pMessage.split(" ");
         switch(args[0]){
             case "GAME" ->{
                     switch(args[1]){
-                        case "STARTING" -> gui.getGamePage().setStarting(args[2]);
+                        case "STARTING" -> {
+                            // System.out.println("starting in " + args[2]);
+                            gui.getGamePage().setStarting(args[2]);
+                        }
                         case "PLAYERNAME" -> gui.getGamePage().setPlayerName(Integer.parseInt(args[2]), args[3]);
                         case "ANIMATION" ->{
                                 gui.getGamePage().setAnimation(Integer.parseInt(args[2]), Integer.parseInt(args[3])); 

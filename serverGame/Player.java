@@ -1,16 +1,10 @@
 package serverGame;
 
 import assetLoader.*;
+import clientGame.*;
 import database.*;
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
-import javax.imageio.ImageIO;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
-public class Player extends JLabel implements Healthy{
+public class Player extends clientGame.Player implements Healthy{
     public class PlayerInfo{
         DBController dbc;
         String name;
@@ -20,11 +14,10 @@ public class Player extends JLabel implements Healthy{
         String bullet_direction;
         PlayerInfo(String name){
             dbc = new DBController();
-            System.out.println("---" + name);
             String[] info = dbc.getPlayerInfo("Player");
             init(name, info[1], info[2], info[3], info[4]);
-            System.out.println(info[4]);
         }
+
         private void init(String name, String texture, String bullet_texture, String bullet_damage, String bullet_direction){
             this.name = name;
             this.texture = texture;
@@ -56,45 +49,41 @@ public class Player extends JLabel implements Healthy{
     private final double MAX_VELO = 0.0025;
     private final double MAX_JUMP_VELO = 0.02;
     private final double POS_ACCURACY = MAX_VELO;
+    private final int ID;
     private final PlayerInfo playerInfo;
     private boolean initialized;
-    private boolean rightSided;
     private boolean falling;
     private boolean reloadingBullet;
-    private boolean frozen, witched;
-    private double xPos, yPos;
+    private boolean frozen;
     private double xVelo, yVelo;
     private int health;
     private int animationNum;
-    private final int id;
     private GameFrame gamePanel;
-    private ImageRendering ir;
-    public Player(GameFrame pGamePanel, String name, int id){
-        this.playerInfo = new PlayerInfo(name);
-        this.xPos = id == 0 ?  0.1 : 0.9; 
-        this.yPos = 0.5;
-        this.xVelo = 0;
-        this.yVelo = 0;
-        this.health = 100;
-        this.rightSided = id == 0 ? true : false;
-        this.falling = true;
-        this.frozen = false;
-        this.witched = false;
-        this.gamePanel = pGamePanel;
-        this.reloadingBullet = false;
-        this.ir = new ImageRendering();
-        this.id = id;
-        this.animationNum = 1;
-        this.initialized = false;
-        scaleImage();
-
-        turnPlayerImage();
+    public Player(GameFrame pGamePanel, String pName, int pID){
+        super(pGamePanel.getGamePanel());
+        gamePanel = pGamePanel;
+        playerInfo = new PlayerInfo(pName);
+        ID = pID;
+        initialized = false;
         
+        xPos = ID == 0 ?  0.1 : 0.9; 
+        yPos = 0.5;
+        xVelo = 0;
+        yVelo = 0;
+        health = 100;
+        rightSided = ID == 0 ? true : false;
+        falling = true;
+        reloadingBullet = false;
+        animationNum = 10;
+        animation = 10;
+        frozen = false;
+        
+        updateImage();
+
         final int MAX_ANIMATION = 9;
         TickThread animationThread = new TickThread(15, new Runnable(){
                     @Override 
                     public void run(){
-                        // System.out.println("Server: animationNum: " + animationNum + " moving?: " + isMoving());
                         if(isMoving()){
                             animationNum += 1;
                             if(animationNum > MAX_ANIMATION) animationNum = 1;
@@ -119,25 +108,12 @@ public class Player extends JLabel implements Healthy{
                     }
                 });
         animationThread.start();
-        // animationThread.finish();
     }
-    
+
     public void sendAnimationNum(){
-        gamePanel.getMessageInterpreter().interpretMessage("ANIMATION " + id + " " + animationNum);
+        gamePanel.getMessageInterpreter().interpretMessage("ANIMATION " + ID + " " + animationNum);
     }
 
-    public boolean rightSided(){
-        return rightSided;
-    }
-
-    public double getXPos(){
-        return xPos;
-    }
-
-    public double getYPos(){
-        return yPos;
-    }
-    
     public String getPosition(){
         return xPos + " " + yPos;
     }
@@ -160,11 +136,11 @@ public class Player extends JLabel implements Healthy{
     }
 
     public String getCharacter(){
-        return "angel";
+        return playerInfo.getName();
     }
 
     public int getId(){
-        return id;
+        return ID;
     }
 
     public PlayerInfo getPlayerInfo(){
@@ -175,7 +151,7 @@ public class Player extends JLabel implements Healthy{
         Thread freezeThread = new Thread(new Runnable(){
                     public void run(){
                         frozen = true;
-                        warte (time);
+                        FunctionLoader.warte (time);
                         frozen = false;
                     }
                 });
@@ -185,13 +161,13 @@ public class Player extends JLabel implements Healthy{
     public synchronized void witch(int time){
         Thread witchThread = new Thread(new Runnable(){
                     public void run(){
-                        gamePanel.getMessageInterpreter().interpretMessage("WITCH " + id + " true");
+                        gamePanel.getMessageInterpreter().interpretMessage("WITCH " + ID + " true");
                         witched = true;
-                        scaleImage();
-                        warte (time);
-                        gamePanel.getMessageInterpreter().interpretMessage("WITCH " + id + " false");
+                        updateImage();
+                        FunctionLoader.warte (time);
+                        gamePanel.getMessageInterpreter().interpretMessage("WITCH " + ID + " false");
                         witched = false;
-                        scaleImage();
+                        updateImage();
                     }
                 });
         witchThread.start();
@@ -202,7 +178,7 @@ public class Player extends JLabel implements Healthy{
                     public void run(){
                         for(int i = 0; i < times; i++){
                             changeHealth(-damage);
-                            warte(500);
+                            FunctionLoader.warte(500);
                         }
                     }
                 });
@@ -212,19 +188,7 @@ public class Player extends JLabel implements Healthy{
     public void changeHealth(int a){
         health += a;
         if(health > 100) health = 100;
-        gamePanel.getMessageInterpreter().interpretMessage("HEALTH " + id  + " " + health);
-    }
-
-    public void scaleImage(){
-        try{
-            double scaleImg = (gamePanel.getGamePanel().getHeight() * 0.1) / 170.0;
-            if(witched) this.setIcon(ir.getScaledIcon("player_test/Frog.png", scaleImg, scaleImg));
-            else this.setIcon(ir.getScaledIcon("player/Player/animation10.png", scaleImg, scaleImg)); 
-            this.setSize(this.getPreferredSize());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        if(!rightSided) turnPlayerImage();
+        gamePanel.getMessageInterpreter().interpretMessage("HEALTH " + ID  + " " + health);
     }
 
     public void changeX(double a){
@@ -278,8 +242,11 @@ public class Player extends JLabel implements Healthy{
         changeY(yVelo * velo_change);
         xVelo *= 0.9;
         if(Math.abs(xVelo) < 0.001) xVelo = 0;
-        // if(Math.abs(yVelo) < 0.001) yVelo = 0;
         gamePanel.setLocation(this);
+    }
+    
+    public void updateImage(){
+        super.update();
     }
 
     public void getInput(String a){
@@ -294,7 +261,7 @@ public class Player extends JLabel implements Healthy{
                     xVelo =  gamePanel.checkLeft(this) ? 0 : -MAX_VELO;
                     if(rightSided) {
                         rightSided = false;
-                        turnPlayerImage();
+                        updateImage();
                     }
 
                 }
@@ -302,19 +269,18 @@ public class Player extends JLabel implements Healthy{
                     xVelo =  gamePanel.checkRight(this) ? 0 : MAX_VELO;
                     if(!rightSided){
                         rightSided = true;
-                        turnPlayerImage();
+                        updateImage();
                     }
 
                 }
             case "ability" ->{
                     if(frozen || witched) return;
                     if(!reloadingBullet){
-                        // System.out.println("ABILITY");
                         reloadingBullet = true;
                         activateAbility();
                         Thread reloadBullet = new Thread(new Runnable(){
                                     public void run(){
-                                        warte(1000);
+                                        FunctionLoader.warte(1000);
                                         reloadingBullet = false;
                                     }
                                 });
@@ -343,7 +309,7 @@ public class Player extends JLabel implements Healthy{
                 }
             case "Teleporter" ->{
                     gamePanel.addBullet(this, -1);
-                    warte(100);
+                    FunctionLoader.warte(100);
                     xPos += rightSided ? 0.11 : -0.11;
                     while(gamePanel.checkBottom(this)){
                         yPos += POS_ACCURACY;
@@ -355,26 +321,5 @@ public class Player extends JLabel implements Healthy{
                     gamePanel.addBullet(this, -1);
                 }
         }
-    }
-
-    public void turnPlayerImage(){
-        System.out.println("__ " + "RIGHTSIDED " + id  + " " + rightSided);
-        // rightSided = rightSided ? false : true;
-        ImageIcon flippedIcon = ir.flipIcon(this.getIcon(), true, false);
-        this.setIcon(flippedIcon);
-        gamePanel.getMessageInterpreter().interpretMessage("RIGHTSIDED " + id  + " " + rightSided);
-    }
-
-    public void warte(int time){
-        try{
-            Thread.sleep(time);
-        }
-        catch (InterruptedException ie){
-            ie.printStackTrace();
-        }
-    }
-
-    public int getScaleWidth(){
-        return getWidth();
     }
 }

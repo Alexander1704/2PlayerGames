@@ -32,7 +32,7 @@ public class LoadingPage extends Page{
         }
     }
         
-    private GUI gui;
+    protected GUI gui;
     private JLabel loadingLabel;
     private Rectangle[] loadingAnimation;
     private long lastUpdate;

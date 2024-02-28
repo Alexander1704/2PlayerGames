@@ -24,9 +24,17 @@ public class FontLoader{
         return customFont;
     }
     
-    public static void fitFont(JLabel label) {
+     public static void fitFont(JLabel label) {
         Font labelFont = label.getFont();
         String labelText = label.getText();
+
+        // Überprüfen, ob die Schriftgröße 0 ist
+        if (labelFont.getSize() == 0) {
+            // Wenn ja, eine neue Schriftart mit Schriftgröße 10 ableiten
+            labelFont = labelFont.deriveFont(10f);
+            // Das neue Font-Objekt verwenden
+            label.setFont(labelFont);
+        }
 
         // Berechne die Breite des Textes im JLabel
         int stringWidth = label.getFontMetrics(labelFont).stringWidth(labelText);
