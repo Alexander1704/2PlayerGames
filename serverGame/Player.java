@@ -46,8 +46,8 @@ public class Player extends clientGame.Player implements Healthy{
             return bullet_direction;
         }
     }
-    private final double MAX_VELO = 0.0025;
-    private final double MAX_JUMP_VELO = 0.02;
+    private final double MAX_VELO = 0.005;
+    private final double MAX_JUMP_VELO = 0.025;
     private final double POS_ACCURACY = MAX_VELO;
     private final int ID;
     private final PlayerInfo playerInfo;
@@ -82,19 +82,19 @@ public class Player extends clientGame.Player implements Healthy{
         gamePanel.getMessageInterpreter().interpretMessage("RIGHTSIDED " + ID + " " + rightSided);
 
         final int MAX_ANIMATION = 9;
-        TickThread animationThread = new TickThread(15, new Runnable(){
+        TickThread animationThread = new TickThread(20, new Runnable(){
                     @Override 
                     public void run(){
                         if(isMoving()){
-                            animationNum += 1;
+                            animationNum++;
                             if(animationNum > MAX_ANIMATION) animationNum = 1;
                             sendAnimationNum();
                         }else{
                             if(animationNum != 10){
-                                if (animationNum == 7) {
+                                if (animationNum == 7 || animationNum == 8 || animationNum == 9) {
                                     animationNum = 10;
                                 }else{
-                                    if(animationNum > 7 || animationNum == 2){
+                                    if(animationNum > 8 || animationNum == 2){
                                         animationNum--;
                                     }else if(animationNum == 1){
                                         animationNum = 9;
@@ -226,7 +226,7 @@ public class Player extends clientGame.Player implements Healthy{
         }
         yPos += a % POS_ACCURACY;
         // if(falling && gamePanel.checkBottom(this)) falling = false;
-        if(falling) yVelo -= MAX_JUMP_VELO / 24;
+        if(falling) yVelo -= MAX_JUMP_VELO / 15;
         if( yPos < 0) {
             yPos = 0;
             yVelo = 0;
@@ -240,7 +240,7 @@ public class Player extends clientGame.Player implements Healthy{
     public void update(){
         double velo_change = 1;
         if(frozen) velo_change = 0.2;
-        changeX(xVelo * velo_change);
+        changeX(xVelo * 0.8);
         changeY(yVelo * velo_change);
         xVelo *= 0.9;
         if(Math.abs(xVelo) < 0.001) xVelo = 0;

@@ -12,9 +12,9 @@ import clientGame.*;
 import serverGame.Positionable;
 
 public class GamePage extends Page implements KeyListener{
-    
+
     private GUI gui;
-    TickThread repaintThread;
+    private TickThread repaintThread;
     private JPanel gamePanel;
     private Player[] player;
     private HealthPanel[] healthPanel;
@@ -22,13 +22,12 @@ public class GamePage extends Page implements KeyListener{
     private JLabel mapLabel;
     private boolean[] keyPressed;
     private ArrayList<Bullet> bulletList;
-    private JLabel gameClosingLabel;
-    private JLabel winnerLabel;
+    private OutlinedLabel gameClosingLabel;
+    private OutlinedLabel winnerLabel;
     private OutlinedLabel startingLabel;
     private Banner player0Banner;
     private Banner player1Banner;
     private int mapNum;
-    
 
     GamePage(GUI gui){
         this.gui = gui;
@@ -49,7 +48,7 @@ public class GamePage extends Page implements KeyListener{
             healthPanel[i] = new HealthPanel(gamePanel);
             gamePanel.add (healthPanel[i]);
         }
-        
+
         healthPanel[0].setPosition(0., 0); 
         healthPanel[1].setPosition(1, 0);
 
@@ -62,32 +61,32 @@ public class GamePage extends Page implements KeyListener{
 
         bulletList = new ArrayList<Bullet>();
 
-        gameClosingLabel = new JLabel("GAME IS CLOSING...");
+        gameClosingLabel = new OutlinedLabel("GAME IS CLOSING...");
         gameClosingLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",50));
         gameClosingLabel.setVisible(false);
         gameClosingLabel.setForeground(Color.RED);
         gamePanel.add(gameClosingLabel);
         gamePanel.setComponentZOrder(gameClosingLabel, 0);
 
-        winnerLabel = new JLabel("YOU WON");
+        winnerLabel = new OutlinedLabel("YOU WON");
         winnerLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",50));
         winnerLabel.setVisible(false);
         winnerLabel.setForeground(Color.YELLOW);
         gamePanel.add(winnerLabel);
         gamePanel.setComponentZOrder(winnerLabel, 0);
-        
+
         player0Banner = new Banner();
         player0Banner.setLocation(0, 0);
         player0Banner.setVisible(false);
         gamePanel.add(player0Banner);
         gamePanel.setComponentZOrder(player0Banner, 0);
-        
+
         player1Banner = new Banner();
         player1Banner.setLocation(0, 0);
         player1Banner.setVisible(false);
         gamePanel.add(player1Banner);
         gamePanel.setComponentZOrder(player1Banner, 0);
-        
+
         startingLabel = new OutlinedLabel("3");
         startingLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",50));
         startingLabel.setForeground(Color.RED); 
@@ -102,30 +101,31 @@ public class GamePage extends Page implements KeyListener{
         for(int i = 0; i < keyPressed.length; i++){
             keyPressed[i] = false;
         }
+        executeKeyThread();
     }
-    
+
     public void start(){
         repaintThread = new TickThread(gui.getTick(), new Runnable(){
-            @Override
-            public void run(){
-                repaint();
-            }
-        });
+                @Override
+                public void run(){
+                    repaint();
+                }
+            });
         repaintThread.start();
-        
+
         startingLabel.setVisible(true);
         gameClosingLabel.setVisible(false);
         winnerLabel.setVisible(false);
- 
+
         for(int i = 0; i < player.length; i++){
             // player[i].setTexture("King.png");
             player[i].setHealth(100);
             // if(! player[i].rightSided) player[i].turnImage();
-            
+
             // healthbar[i].setForeground(Color.RED);
             // healthbar[i].setVisible(false);
         }
-        
+
         ArrayList<Integer> temp = new ArrayList<Integer>();
         for(int i = 0; i < bulletList.size(); i++){
             temp.add(new Integer(bulletList.get(i).getID()));
@@ -133,12 +133,12 @@ public class GamePage extends Page implements KeyListener{
         for(int i = 0; i < temp.size(); i++){
             removeBullet(temp.get(i));
         }
-        
+
     }
 
     public void finish(){
     }
-    
+
     @Override
     public void resized(){
         int panelSize = Math.min(gui.getFrame().getWidth()/16, gui.getFrame().getHeight()/ 9);
@@ -192,12 +192,12 @@ public class GamePage extends Page implements KeyListener{
             FontLoader.fitFont(winnerLabel);
             winnerLabel.setSize(gameClosingLabel.getPreferredSize());
         }
-        
+
         if(player0Banner.isVisible()) {
             player0Banner.setSize(gamePanel.getWidth(), (int) (gamePanel.getHeight() * 0.2));
             player0Banner.resized();
         }
-        
+
         if(player1Banner.isVisible()) {
             player1Banner.setSize(gamePanel.getWidth(), (int) (gamePanel.getHeight() * 0.2));
             player1Banner.resized();
@@ -209,7 +209,7 @@ public class GamePage extends Page implements KeyListener{
             FunctionLoader.position(startingLabel, 0.5, 0.5);
         }
     }
-    
+
     public void update(){
         gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth() - 20) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight() - 40) / 2);
         mapLabel.setLocation(0, 0);
@@ -224,12 +224,13 @@ public class GamePage extends Page implements KeyListener{
         if(gameClosingLabel.isVisible()) gameClosingLabel.setLocation((gamePanel.getWidth() - gameClosingLabel.getWidth() )/ 2, (int) ((gamePanel.getHeight() - gameClosingLabel.getHeight()) * 2.0/ 5));
         if(winnerLabel.isVisible()) winnerLabel.setLocation((gamePanel.getWidth() - winnerLabel.getWidth() )/ 2, gameClosingLabel.getY() + gameClosingLabel.getHeight() + 100);
     }
-    
+
     public void setPlayerName(int pPlayerId, String pName){
+        System.out.println(pPlayerId + "    " + pName);
         if(pPlayerId == 0) player0Banner.setTitle(pName);;
         if(pPlayerId == 1) player1Banner.setTitle(pName);
     }
-    
+
     private void scalePlayers(){
         for(int i = 0; i < player.length; i++){
             player[i].update();
@@ -285,7 +286,7 @@ public class GamePage extends Page implements KeyListener{
         if(pNum == 0) player0Banner.switchDesign();
         else player1Banner.switchDesign();
     }
-    
+
     public void setStarting(String pNum){
         startingLabel.setText(pNum);
         if(pNum.equals("3")){
@@ -293,43 +294,43 @@ public class GamePage extends Page implements KeyListener{
             countdownSound.playSound();
 
             Thread bannerLocationThread = new Thread(new Runnable(){
-                @Override 
-                public void run(){
-                    player0Banner.setSize(gamePanel.getWidth(), (int) (gamePanel.getHeight() * 0.2));
-                    player0Banner.resized();
-                    player0Banner.setVisible(true);
-                    player1Banner.setSize(gamePanel.getWidth(), (int) (gamePanel.getHeight() * 0.2));
-                    player1Banner.resized();
-                    player1Banner.setVisible(true);
-                    
-                    double bannerChange = 0;
-                    double bannerSpeed = 0.002;
-            
-                    long lastLoopTime = System.nanoTime();
-                    while(player0Banner.isVisible()) {
-                        long currentTime = System.nanoTime();
-                        long elapsedTime = currentTime - lastLoopTime;
-                        lastLoopTime = currentTime;
-                        
-                        player0Banner.setLocation( (int) ((gamePanel.getWidth()) * (-0.1 + bannerChange)), (int) ((gamePanel.getHeight() - player0Banner.getHeight()) * 0.2));
-                        player1Banner.setLocation( (int) ((gamePanel.getWidth()) * ( 0.65 - bannerChange)), (int) ((gamePanel.getHeight() - player1Banner.getHeight()) * 0.8));
-                        bannerChange += bannerSpeed;
-                        bannerSpeed *= 0.995;
-            
-                        // System.out.println(bannerChange);
-                        
-                        // Calculate time to sleep to maintain desired tick
-                        long waitTime = 1000000000 / 60;
-                        long sleepTime = waitTime - elapsedTime;
-            
-                        try {
-                            Thread.sleep(Math.max(0, sleepTime / 1000000));
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        @Override 
+                        public void run(){
+                            player0Banner.setSize(gamePanel.getWidth(), (int) (gamePanel.getHeight() * 0.2));
+                            player0Banner.resized();
+                            player0Banner.setVisible(true);
+                            player1Banner.setSize(gamePanel.getWidth(), (int) (gamePanel.getHeight() * 0.2));
+                            player1Banner.resized();
+                            player1Banner.setVisible(true);
+
+                            double bannerChange = 0;
+                            double bannerSpeed = 0.002;
+
+                            long lastLoopTime = System.nanoTime();
+                            while(player0Banner.isVisible()) {
+                                long currentTime = System.nanoTime();
+                                long elapsedTime = currentTime - lastLoopTime;
+                                lastLoopTime = currentTime;
+
+                                player0Banner.setLocation( (int) ((gamePanel.getWidth()) * (-0.1 + bannerChange)), (int) ((gamePanel.getHeight() - player0Banner.getHeight()) * 0.2));
+                                player1Banner.setLocation( (int) ((gamePanel.getWidth()) * ( 0.65 - bannerChange)), (int) ((gamePanel.getHeight() - player1Banner.getHeight()) * 0.8));
+                                bannerChange += bannerSpeed;
+                                bannerSpeed *= 0.995;
+
+                                // System.out.println(bannerChange);
+
+                                // Calculate time to sleep to maintain desired tick
+                                long waitTime = 1000000000 / 60;
+                                long sleepTime = waitTime - elapsedTime;
+
+                                try {
+                                    Thread.sleep(Math.max(0, sleepTime / 1000000));
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
-                    }
-                }
-            });
+                    });
             bannerLocationThread.start();
         }
         if(pNum.equals("0")){
@@ -337,12 +338,12 @@ public class GamePage extends Page implements KeyListener{
             player1Banner.setVisible(false);
             startingLabel.setText("GO!");
             Thread hideThread = new Thread(new Runnable(){
-                @Override
-                public void run(){
-                    FunctionLoader.warte(1000);
-                    startingLabel.setVisible(false);
-                }
-            });
+                        @Override
+                        public void run(){
+                            FunctionLoader.warte(1000);
+                            startingLabel.setVisible(false);
+                        }
+                    });
             hideThread.start();
         }
         startingLabel.setVisible(true);
@@ -351,7 +352,7 @@ public class GamePage extends Page implements KeyListener{
         startingLabel.setSize(startingLabel.getPreferredSize());
         FunctionLoader.position(startingLabel, 0.5, 0.5);
     }
-    
+
     public void setAnimation(int pPlayerId, int pNum){
         if(pNum != player[pPlayerId].getAnimation()){
             player[pPlayerId] .setAnimation(pNum);
@@ -362,7 +363,7 @@ public class GamePage extends Page implements KeyListener{
     public void setMap(int pMapNum){
         this.mapNum = pMapNum;
     }
-    
+
     public void setHealth(int pNum, int health){
         healthPanel[pNum].setHealth(health);
     }
@@ -395,47 +396,26 @@ public class GamePage extends Page implements KeyListener{
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         if (key == KeyEvent.VK_W) {
-            if(keyPressed[0]) return;
             keyPressed[0] = true;
-            executeKeyThread(e, 0);
         } else if (key == KeyEvent.VK_S) {
-            if(keyPressed[1]) return;
             keyPressed[1] = true;
-            executeKeyThread(e, 1);
         } else if (key == KeyEvent.VK_A) {
-            if(keyPressed[2]) return;
             keyPressed[2] = true;
-            executeKeyThread(e, 2);
         } else if (key == KeyEvent.VK_D) {
-            if(keyPressed[3]) return;
             keyPressed[3] = true;
-            executeKeyThread(e, 3);
         }
     }
 
-    public void executeKeyThread(KeyEvent e, int pressedNum){
-        Thread executeKeyThread = new Thread(new Runnable(){
+    public void executeKeyThread(){
+        TickThread executeKeyThread = new TickThread(60, new Runnable(){
                     public void run(){
-                        while( gui.getCurrentPage().equals(gui.getGamePage()) && keyPressed[pressedNum] ){
-                            executeKey(e);
-                            FunctionLoader.warte(gui.getFrameWait());
-                        }
+                        if(keyPressed[0]) gui.getUserClient().send("USERINPUT jump");
+                        if(keyPressed[1]) gui.getUserClient().send("USERINPUT ability");
+                        if(keyPressed[2]) gui.getUserClient().send("USERINPUT left");
+                        if(keyPressed[3]) gui.getUserClient().send("USERINPUT right");
                     }
                 });
         executeKeyThread.start();
-    }
-
-    private void executeKey(KeyEvent e){
-        int key = e.getKeyCode();
-        if (key == KeyEvent.VK_W) {
-            gui.getUserClient().send("USERINPUT jump");
-        } else if (key == KeyEvent.VK_S) {
-            gui.getUserClient().send("USERINPUT ability");
-        } else if (key == KeyEvent.VK_A) {
-            gui.getUserClient().send("USERINPUT left");
-        } else if (key == KeyEvent.VK_D) {
-            gui.getUserClient().send("USERINPUT right");
-        }
     }
 
     @Override
@@ -448,7 +428,6 @@ public class GamePage extends Page implements KeyListener{
             keyPressed[0] = false;
         } else if (key == KeyEvent.VK_S) {
             keyPressed[1] = false;
-            // System.out.println("Break s");
         } else if (key == KeyEvent.VK_A) {
             keyPressed[2] = false;
         } else if (key == KeyEvent.VK_D) {

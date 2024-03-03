@@ -39,7 +39,7 @@ public class GameFrame implements KeyListener{
         testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         testFrame.setPreferredSize(new Dimension(710, 400));
         testFrame.setLocationRelativeTo(null);
-        testFrame.setVisible(false);
+        testFrame.setVisible(true);
         testFrame.pack();
 
         keyPressed = new boolean[8];
@@ -319,8 +319,25 @@ public class GameFrame implements KeyListener{
     }
 
     public void getUserInput(int player, String input){
-        if(player == 0) player1.getInput(input);
-        if(player == 1) player2.getInput(input);
+        if(player == 0 && player1 != null) player1.getInput(input);
+        if(player == 1 && player1 != null) player2.getInput(input);
+        
+        // int key = -1;
+        // switch(input){
+            // case "jump" -> key = 0;
+            // case "ability" -> key = 1;
+            // case "left" -> key = 2;
+            // case "right" -> key = 3;
+        // }
+        
+        // if(player == 0) key = -1;
+        // else if(player == 1) key += 4;
+        
+        // if(key == -1) return;
+        
+        // if(keyPressed[key]) return;
+        // keyPressed[key] = true;
+        // executeKeyThread(e, key);
     }
 
     public Player getPlayer(int player){

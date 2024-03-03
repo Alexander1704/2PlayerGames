@@ -4,7 +4,6 @@ import assetLoader.*;
 import java.util.*;
 import java.awt.*;
 import serverGame.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BroadcastServer extends Server{
     private ArrayList<Client> clientList;
@@ -15,19 +14,21 @@ public class BroadcastServer extends Server{
         clientList = new ArrayList<Client>(); 
         gamesList = new ArrayList<Game>();
         waitingList = new ArrayList<Client>();
+        
         // System.out.println("Server gestartet auf Port " + pPortNum + ".");
 
         TickThread searchGameThread = new TickThread(60, new Runnable() {
                     @Override
                     public void run() {
-                        if(waitingList.size() > 1){
-                            // synchronized(waitingList){
+                        synchronized(waitingList){
+                            if(waitingList.size() > 1){
                                 gamesList.add(new Game(getServer(), waitingList.get(0), waitingList.get(1)));
                                 send(waitingList.get(0), "+GAME FOUND");
                                 send(waitingList.get(1), "+GAME FOUND");
                                 waitingList.remove(0);
                                 waitingList.remove(0);
-                            // }
+                                System.out.println("There are " + waitingList.size() + " players left waiting and there are " + gamesList.size() + "games");
+                            }
                         }
                     }
                 });
@@ -44,6 +45,8 @@ public class BroadcastServer extends Server{
             clientList.add(new Client(pClientIP, pClientPort));
         }
         send(pClientIP, pClientPort, "+SPIELER OK");
+        
+        // System.out.println("There are " + clientList.size() + " clients using this server");
     }
 
     public void processMessage(String pClientIP, int pClientPort, String pMessage){
@@ -104,7 +107,10 @@ public class BroadcastServer extends Server{
                                                 send(client, "-ERR clientNotFound " + pMessage);
                                                 return;
                                             } 
-                                            waitingList.add(clientList.get(clientIndex));
+                                            synchronized(gamesList){
+                                                if(! gamesList.contains(client))waitingList.add(clientList.get(clientIndex));
+                                            }
+                                            
                                         }
                                     }
                                 }
@@ -120,7 +126,7 @@ public class BroadcastServer extends Server{
                                 synchronized(waitingList){
                                     int waitingIndex = waitingList.indexOf(client);
                                     if(waitingIndex != -1) {
-                                        waitingList.remove(waitingList);
+                                        waitingList.remove(waitingIndex);
                                     }
                                 }
                             }
@@ -131,18 +137,19 @@ public class BroadcastServer extends Server{
                     message = message[1].split(" ", 2);
                     switch(message[0]){
                         case "INIT" -> {
-                                synchronized(gamesList){
+                                // synchronized(gamesList){
                                     int gameIndex = gamesList.indexOf(client);
                                     if(gameIndex != -1) {
                                         gamesList.get(gameIndex).setPlayer(client, message [1]);
                                     }
-                                }
+                                // }
                             }
                     }
                 }
 
                 // case "USERINPUT"
             case "USERINPUT"->{
+                    System.out.println("new userinput");
                     synchronized(gamesList){
                         int gameIndex = gamesList.indexOf(client);
                         if(gameIndex != -1) {

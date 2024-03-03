@@ -43,7 +43,7 @@ public class LoginPage extends Page{
                     Thread loginThread = new Thread(new Runnable() {
                         @Override
                         public void run(){
-                            gui.login(ipText.getText(), Integer.parseInt(portText.getText()), nameText.getText());
+                            login(ipText.getText(), Integer.parseInt(portText.getText()), nameText.getText());
                         }
                     });
                     loginThread.start();
@@ -112,6 +112,32 @@ public class LoginPage extends Page{
     
     public void update(){
         
+    }
+    
+    private void login(String pIP, int pPort, String pName){
+        gui.switchPage(gui.getLoadingPage());   
+        Thread connectToGame = new Thread(new Runnable() {
+                    public void run(){
+                        int counter = 0;
+                        final int WAIT_TIME = 5000;
+                        UserClient userClient = null;
+                        while(counter < WAIT_TIME && (userClient == null || !userClient.hasConnected())){
+                            FunctionLoader.warte (100);
+                            counter += 100;
+                            userClient = gui.getUserClient();
+                        }
+                        if(userClient != null && userClient.hasConnected()) gui.switchPage(gui.getMenuPage());
+                        else gui.switchPage(gui.getErrorPage());
+                    }
+                });
+        connectToGame.start();
+
+        gui.setUserClient(pIP, pPort);
+        while(! gui.getUserClient().hasConnected()){
+            FunctionLoader.warte(100);
+        }
+        gui.getUserClient().send("CONNECT SETNAME " + pName);
+        StressTest stressTest = new StressTest(21, pIP, pPort);
     }
     
     public String getPlayerName(){

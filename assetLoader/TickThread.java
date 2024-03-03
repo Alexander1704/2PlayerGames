@@ -7,7 +7,6 @@ package assetLoader;
 public class TickThread extends Thread{
     private int ticks;
     private boolean running;
-    
     /**Konstruktor, der einen TickThread erstellt
      * Standardmäßig werden die ticks auf 60 gesetzt
      */
@@ -50,7 +49,6 @@ public class TickThread extends Thread{
      * Diese run-Methode wird ticks mal pro Sekunde aufgerufen und läuft bis der Thread 
      * durch die Methode finish() beendet wird
      * 
-     * Stack Overflow
      */
     @Override 
     public void run(){
@@ -63,12 +61,13 @@ public class TickThread extends Thread{
             long elapsedTime = currentTime - lastLoopTime;
             lastLoopTime = currentTime;
 
+            // super.run();
             super.run();
 
             // Calculate time to sleep to maintain desired tick
             long waitTime = 1000000000 / ticks;
-            long sleepTime = waitTime - elapsedTime;
-
+            long sleepTime = waitTime - (elapsedTime - waitTime); //tweaked it so it would run twice
+            
             try {
                 Thread.sleep(Math.max(0, sleepTime / 1000000));
             } catch (InterruptedException e) {

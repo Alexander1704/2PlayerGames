@@ -5,11 +5,13 @@ public class Client{
     public final String ip;
     public final int port;
     private String name;
+    private Game game;
     
     public Client(String pIP, int pPort){
         ip = pIP;
         port = pPort;
         name = "";
+        game = null;
     }
 
     public String getIp(){
@@ -28,6 +30,14 @@ public class Client{
         return name;
     }
     
+    public void setGame(Game pGame){
+        this.game = pGame;
+    }
+    
+    public Game getGame(){
+        return this.game;
+    }
+    
     @Override 
     public boolean equals(Object o){
         if(o instanceof Client){
@@ -38,6 +48,7 @@ public class Client{
         if(o instanceof Game){
             Game g = (Game) o;
             Client[] gameClients = g.getClients();
+            if(gameClients == null) return false;
             for(int i = 0; i < gameClients.length; i++){
                 if(gameClients[i].equals(this)) return true;
             }
@@ -48,6 +59,6 @@ public class Client{
 
     @Override 
     public String toString(){
-        return ip + ":" + port;
+        return ip + ":" + port + "; " + name + "; " + (game != null);
     }
 }

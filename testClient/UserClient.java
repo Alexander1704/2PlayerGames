@@ -1,36 +1,58 @@
 package testClient;
 
+/**Der UserClient erhält Nachrichten vom Server und leitet diese an 
+ * passende Teile des Programms weiter
+ * 
+ * Außerdem können über den UserClient Nachrichten an der Server gesendet
+ * werden.
+ */
 public class UserClient extends Client{
+    //Deklaration der Objekte
     private boolean connected;
     private boolean inGame;
     private boolean processMessages;
     private GUI gui;
+
+    /**Erstellt ein neues Objekt der Klasse UserClient und initialiert dieses
+     * 
+     * @param pGUI Parameter, damit die Nachrichten vom Server von der GUI umgesetzt werden
+     * @param pIPAdresse IP-Adresse des Servers, der mit dem Client verbunden wird
+     * @param pPort Port des Servers, der mit dem Client verbunden wird
+     */
     public UserClient(GUI pGUI, String pIPAdresse, int pPort){
         super(pIPAdresse, pPort);
         this.gui = pGUI;
-        connected = false;
-        inGame = false;
-        processMessages = true;
+
+        connected = false;  //UserClient ist anfangs noch nicht mit Server verbunden
+        inGame = false;     //UserClient ist anfangs in keinem Spiel 
+        processMessages = true;     //UserClient leitet standardmäßig die Nachrichten an die GUI weiter
     }
 
+    /**Sendet eine Nachricht an den Server
+     * 
+     * @param pMessage Nachricht, die an den Server geht
+     */
     @Override
     public void send(String pMessage){
-        // System.out.println("Sende Nachricht an Server: " + pMessage);
         super.send(pMessage);
     }
 
+    /**UserClient erhält Nachricht vom Server und verwertet diese, indem es diese an passende Teile
+     * des Programms schickt
+     */
     public void processMessage(String pMessage){
+        //Rückmeldungen des Servers
         if(pMessage.charAt(0) == '+') {
             switch(pMessage){
                 case "+SPIELER OK" ->{
                         this.connected = true;
-                        // if(!processMessages)  return;
-                        // gui.switchPage(gui.getMenuPage());
                     }
                 case "+GAME FOUND" ->{
                         inGame = true;
-                        if(! processMessages) send("GAME INIT " + "Player");
-                        if(! processMessages)  return;
+                        if(! processMessages) {     //Wenn ein UserClient keine Nachrichten verarbeitet, dann setze Spieler auf "Player"
+                            send("GAME INIT " + "Player");
+                            return;
+                        }
                         gui.switchPage(gui.getGamePage());
                         send("GAME INIT " + gui.getMenuPage().getCharacter());
                     }
@@ -47,24 +69,24 @@ public class UserClient extends Client{
             }
         }
         if(! processMessages) {
-            // System.out.println("[Muted Client]" + pMessage);
             return;
         }
-        
-        // System.out.println("[Client] received: " + pMessage);
 
+        // if(!pMessage.startsWith("GAME POSITION")) System.out.println("[Client] received: " + pMessage);
+
+        //Verwerte GUI-relevante Nachrichten
         String[] args = pMessage.split(" ");
         switch(args[0]){
             case "GAME" ->{
                     switch(args[1]){
                         case "STARTING" -> {
-                            // System.out.println("starting in " + args[2]);
-                            gui.getGamePage().setStarting(args[2]);
-                        }
+                                // System.out.println("starting in " + args[2]);
+                                gui.getGamePage().setStarting(args[2]);
+                            }
                         case "PLAYERNAME" -> {
-                            args = pMessage.split(" ", 4);
-                            gui.getGamePage().setPlayerName(Integer.parseInt(args[2]), args[3]);
-                        }
+                                args = pMessage.split(" ", 4);
+                                gui.getGamePage().setPlayerName(Integer.parseInt(args[2]), args[3]);
+                            }
                         case "ANIMATION" ->{
                                 gui.getGamePage().setAnimation(Integer.parseInt(args[2]), Integer.parseInt(args[3])); 
                             }
@@ -72,9 +94,10 @@ public class UserClient extends Client{
                                 gui.getGamePage().setPosition(Integer.parseInt(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4]));                     
                             }
                         case "UPDATE" ->{
-                                // gui.getGamePage().setPosition(Integer.parseInt(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4]), Integer.parseInt(args[7]));
-
-                                // gui..setPosition(Integer.parseInt(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2]));                        
+                                gui.getGamePage().setPosition(Integer.parseInt(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4]));
+                                gui.getGamePage().setHealth(Integer.parseInt(args[2]), Integer.parseInt(args[5]));
+                                gui.getGamePage().witchPlayer(Integer.parseInt(args[2]), Boolean.parseBoolean(args[6]));
+                                gui.getGamePage().setAnimation(Integer.parseInt(args[2]), Integer.parseInt(args[7]));                   
                             }
                         case "INIT" -> {
                                 if(args.length >= 5) {
@@ -94,7 +117,6 @@ public class UserClient extends Client{
                                 gui.getGamePage().setHealth(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                             }
                         case "RIGHTSIDED" -> {
-                                System.out.println("SET RIGHTSIDED FROM " + args[2] + " TO " + args[3]);
                                 gui.getGamePage().setRightSided(Integer.parseInt(args[2]), Boolean.parseBoolean(args[3]));
                             }
                         case "PLAYERNUM" -> {
@@ -125,19 +147,36 @@ public class UserClient extends Client{
         }
     }
 
+    /**Gibt zurück, ob der UserClient mit dem Server verbunden ist
+     * 
+     * @return connected
+     */
     public boolean hasConnected(){
         return this.connected;
     }
 
+    /**Gibt zurück, ob sich der UserClient gerade in einem Spiel befindet
+     * 
+     * @return inGame
+     */
     public boolean inGame(){
-        return inGame;
+        return this.inGame;
     }
 
-    public void setProcessingMessages(boolean b){
-        processMessages = b;
+    /**Setzt, ob der UserClient Nachrichten an die GUI weiter leiten soll oder 
+     * nicht
+     * 
+     * @param pProcessMessages Boolean-Wert, ob Nachrichten verarbeitet werden sollen
+     */
+    public void setProcessingMessages(boolean pProcessMessages){
+        this.processMessages = pProcessMessages;
     }
 
+    /**Gibt zurück, ob der UserClient Nachrichten verarbeitet
+     * 
+     * @return processMessages
+     */
     public boolean processingMesssages(){
-        return processMessages;
+        return this.processMessages;
     }
 }

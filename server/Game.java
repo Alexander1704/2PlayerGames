@@ -19,6 +19,10 @@ public class Game implements MessageInterpreter{
         clients = new Client[2];
         clients[0] = clientA;
         clients[1] = clientB;
+        
+        for(int i = 0; i < clients.length; i++){
+            clients[i].setGame(this);
+        }
 
         viewer = new ArrayList<Client>();
         gameFrame = new GameFrame(this);
@@ -103,13 +107,6 @@ public class Game implements MessageInterpreter{
         }
     }
 
-    // public Client getOtherPlayer(Client a){
-    // // if(!plays(a)) return null;
-    // // if(a.equals(player[0])) return player[1];
-    // // if(a.equals(player[1])) return player[0];
-    // // return null;
-    // }
-
     public void exit(Client a){
         for(int i = 0; i < clients.length; i++){
             if(clients[i] != null && clients[i].equals(a)) clients[i] = null;
@@ -129,6 +126,9 @@ public class Game implements MessageInterpreter{
     }
 
     public void closeThisGame(){
+        for(int i = 0; i < clients.length; i++){
+            clients[i].setGame(null);
+        }
         gameFrame.dispose();
         closed = true;
         server.closeGame(this);
