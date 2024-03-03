@@ -60,8 +60,7 @@ public class TickThread extends Thread{
             long currentTime = System.nanoTime();
             long elapsedTime = currentTime - lastLoopTime;
             lastLoopTime = currentTime;
-
-            // super.run();
+            
             super.run();
 
             // Calculate time to sleep to maintain desired tick

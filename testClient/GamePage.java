@@ -14,7 +14,7 @@ import serverGame.Positionable;
 public class GamePage extends Page implements KeyListener{
 
     private GUI gui;
-    private TickThread repaintThread;
+    private TickThread executeKeyThread;
     private JPanel gamePanel;
     private Player[] player;
     private HealthPanel[] healthPanel;
@@ -29,7 +29,9 @@ public class GamePage extends Page implements KeyListener{
     private Banner player1Banner;
     private int mapNum;
 
-    GamePage(GUI gui){
+    /**Erstellt ein neues Objekt der Klasse GamePage und initialiert dieses
+     */
+    public GamePage(GUI gui){
         this.gui = gui;
         setLayout(null);
 
@@ -95,35 +97,20 @@ public class GamePage extends Page implements KeyListener{
         gamePanel.setComponentZOrder(startingLabel, 0);
 
         mapNum = 0;
-        resized();
-
         keyPressed = new boolean[4];
-        for(int i = 0; i < keyPressed.length; i++){
-            keyPressed[i] = false;
-        }
-        executeKeyThread();
+        
+        resized();
     }
 
+    @Override
     public void start(){
-        repaintThread = new TickThread(gui.getTick(), new Runnable(){
-                @Override
-                public void run(){
-                    repaint();
-                }
-            });
-        repaintThread.start();
-
         startingLabel.setVisible(true);
         gameClosingLabel.setVisible(false);
         winnerLabel.setVisible(false);
 
         for(int i = 0; i < player.length; i++){
-            // player[i].setTexture("King.png");
-            player[i].setHealth(100);
-            // if(! player[i].rightSided) player[i].turnImage();
-
-            // healthbar[i].setForeground(Color.RED);
-            // healthbar[i].setVisible(false);
+            player[i].setAnimation(10);
+            healthPanel[i].setHealth(100);
         }
 
         ArrayList<Integer> temp = new ArrayList<Integer>();
@@ -134,9 +121,22 @@ public class GamePage extends Page implements KeyListener{
             removeBullet(temp.get(i));
         }
 
-    }
-
-    public void finish(){
+        player0Banner.setDesign(true);
+        player1Banner.setDesign(true);
+        
+        for(int i = 0; i < keyPressed.length; i++){
+            keyPressed[i] = false;
+        }
+        //Wenn eine Taste (WASD) gedrückt wird, sende die jeweilige resultierende Aktion an den Server
+        executeKeyThread = new TickThread(60, new Runnable(){
+                    public void run(){
+                        if(keyPressed[0]) gui.getUserClient().send("USERINPUT jump");
+                        if(keyPressed[1]) gui.getUserClient().send("USERINPUT ability");
+                        if(keyPressed[2]) gui.getUserClient().send("USERINPUT left");
+                        if(keyPressed[3]) gui.getUserClient().send("USERINPUT right");
+                    }
+                });
+        executeKeyThread.start();
     }
 
     @Override
@@ -145,6 +145,10 @@ public class GamePage extends Page implements KeyListener{
         gamePanel.setSize(panelSize * 16, panelSize* 9);
         gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth()) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight()) / 2);
 
+        for(int i = 0; i < healthPanel.length; i++){
+            healthPanel[i].update();
+        }
+        
         scalePlayers();
         double scaleBullet = (gamePanel.getHeight() * 0.5) / 170.0;
         for(int i = 0; i < bulletList.size(); i++){
@@ -210,7 +214,9 @@ public class GamePage extends Page implements KeyListener{
         }
     }
 
+    @Override
     public void update(){
+        repaint();
         gamePanel.setLocation((gui.getFrame().getWidth() - gamePanel.getWidth() - 20) / 2, (gui.getFrame().getHeight() - gamePanel.getHeight() - 40) / 2);
         mapLabel.setLocation(0, 0);
         for(int i = 0; i < player.length; i++){
@@ -224,26 +230,73 @@ public class GamePage extends Page implements KeyListener{
         if(gameClosingLabel.isVisible()) gameClosingLabel.setLocation((gamePanel.getWidth() - gameClosingLabel.getWidth() )/ 2, (int) ((gamePanel.getHeight() - gameClosingLabel.getHeight()) * 2.0/ 5));
         if(winnerLabel.isVisible()) winnerLabel.setLocation((gamePanel.getWidth() - winnerLabel.getWidth() )/ 2, gameClosingLabel.getY() + gameClosingLabel.getHeight() + 100);
     }
-
-    public void setPlayerName(int pPlayerId, String pName){
-        System.out.println(pPlayerId + "    " + pName);
-        if(pPlayerId == 0) player0Banner.setTitle(pName);;
-        if(pPlayerId == 1) player1Banner.setTitle(pName);
+    
+    @Override
+    public void finish(){
+        executeKeyThread.finish();
     }
-
+    
+    /**Aktualisiert alle Spieler
+     */
     private void scalePlayers(){
         for(int i = 0; i < player.length; i++){
             player[i].update();
-            healthPanel[i].update();
         }
     }
 
-    public void addBullet(Integer id, String texture, double x, double y, boolean rightSided){
-        Bullet bullet = new Bullet(gamePanel, id, texture, x, y, rightSided);
+    /**Setze den Namen der Spieler, die auf den Banner angezeigt werden
+     * 
+     * @param pPlayerId PlayerId des Players
+     * @param pName Name des Spielers
+     */
+    public void setPlayerName(int pPlayerId, String pName){
+        if(pPlayerId == 0) player0Banner.setTitle(pName);;
+        if(pPlayerId == 1) player1Banner.setTitle(pName);
+    }
+    
+    /**Setze den Charakter eines Spielers 
+     * 
+     * @param pPlayer PlayerId des Spielers
+     * @param pCharacter Charakter des Spielers
+     */
+    public void setCharacter(int pPlayerId, String pCharacter){
+        player[pPlayerId].setCharacter(pCharacter);
+        player[pPlayerId].update();
+    }
+    
+    /**Setze den Player deines UserClients. Verändert die Farbe des HealthPanels
+     * und des Banners
+     * 
+     * @param pPlayerID ID deines Spielers
+     */
+    public void setYourPlayer(int pPlayerID){
+        healthPanel[pPlayerID].setColor(new Color(94, 144, 252));
+        if(pPlayerID == 0) player0Banner.setDesign(false);
+        else if(pPlayerID == 1)player1Banner.setDesign(false);
+    }
+    
+    /**Setze die Map
+     * 
+     * @param pMapNum Nummer der ausgewählten Map
+     */
+    public void setMap(int pMapNum){
+        this.mapNum = pMapNum;
+    }
+
+    /**Füge einen Schuss hinzu
+     * 
+     * @param pID des Schusses
+     * @param pTexture Textur des Schusses
+     * @param pXPos x-Position des Schusses
+     * @param pYPOS y-Position des Schusses
+     * @param pRightSided Richtung des Schusses (true: nach rechts, false: nach links)
+     */
+    public void addBullet(Integer pID, String pTexture, double pXPos, double pYPos, boolean pRightSided){
+        Bullet bullet = new Bullet(gamePanel, pID, pTexture, pXPos, pYPos, pRightSided);
 
         double scaleImg = (gamePanel.getHeight() * 0.5) / 170.0;
         try{
-            bullet.setIcon(ImageLoader.getScaledIcon("bullets/" + texture, scaleImg, scaleImg));
+            bullet.setIcon(ImageLoader.getScaledIcon("bullets/" + pTexture, scaleImg, scaleImg));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -255,21 +308,31 @@ public class GamePage extends Page implements KeyListener{
         bulletList.add(bullet);
     }
 
-    public void updateBullet(Integer id, String texture, double x, double y){
+    /**Aktualisiert die Position eines Schusses
+     * 
+     * @param pID ID des zu setzenden Schusses
+     * @param pTexture
+     * @param pXPos x-Position des Schusses
+     * @param pYPos y-Position des Schusses
+     */
+    public void updateBullet(Integer pID, String pTexture, double pXPos, double pYPos){
         for(int i = 0; i < bulletList.size(); i++){
-            if(bulletList.get(i).equals(id)) {
-                bulletList.get(i).setXPos(x);
-                bulletList.get(i).setYPos(y);
+            if(bulletList.get(i).getID() == pID) {
+                bulletList.get(i).setXPos(pXPos);
+                bulletList.get(i).setYPos(pYPos);
                 return;
             }
         }
 
     }
 
-    public void removeBullet(Integer id){
-        // System.out.println("removing --> " + id);
+    /**Entfernt einen Schuss
+     * 
+     * @param pID ID des zu löschenden Schusses
+     */
+    public void removeBullet(Integer pID){
         for(int i = 0; i < bulletList.size(); i++){
-            if(bulletList.get(i).equals(id)) {
+            if(bulletList.get(i).getID() == pID) {
                 gamePanel.remove(bulletList.get(i));
                 bulletList.remove(i);
                 return;
@@ -277,16 +340,10 @@ public class GamePage extends Page implements KeyListener{
         }
     }
 
-    public void setCharacter(int pNum, String character){
-        resized();
-    }
-
-    public void setYourPlayer(int pNum){
-        healthPanel[pNum].setColor(new Color(94, 144, 252));
-        if(pNum == 0) player0Banner.switchDesign();
-        else player1Banner.switchDesign();
-    }
-
+    /**Setze die verbleibenden Sekunden des Countdowns
+     * 
+     * @param pNum verbleibende Sekunden bis zum Start des Spiels
+     */
     public void setStarting(String pNum){
         startingLabel.setText(pNum);
         if(pNum.equals("3")){
@@ -316,8 +373,6 @@ public class GamePage extends Page implements KeyListener{
                                 player1Banner.setLocation( (int) ((gamePanel.getWidth()) * ( 0.65 - bannerChange)), (int) ((gamePanel.getHeight() - player1Banner.getHeight()) * 0.8));
                                 bannerChange += bannerSpeed;
                                 bannerSpeed *= 0.995;
-
-                                // System.out.println(bannerChange);
 
                                 // Calculate time to sleep to maintain desired tick
                                 long waitTime = 1000000000 / 60;
@@ -352,46 +407,114 @@ public class GamePage extends Page implements KeyListener{
         startingLabel.setSize(startingLabel.getPreferredSize());
         FunctionLoader.position(startingLabel, 0.5, 0.5);
     }
+    
+    /**Setze die Position eines Spielers
+     * 
+     * @param pPlayerNum Id des Spielers
+     * @param pXPos x-Position des Spielers (0 - 1)
+     * @param pYPos y-Position des Spielers (0 - 1)
+     */
+    public void setPosition(int pPlayerNum, double pXPos, double pYPos){
+        player[pPlayerNum] .setX(pXPos);
+        player[pPlayerNum] .setY(pYPos);
+    }
 
+    /**Setze die Animationsnummer eines Spielers
+     * 
+     * @param pPlayerId Id des Spielers
+     * @param pNum Nummer der Animation
+     */
     public void setAnimation(int pPlayerId, int pNum){
         if(pNum != player[pPlayerId].getAnimation()){
             player[pPlayerId] .setAnimation(pNum);
-            scalePlayers();
+            player[pPlayerId].update();
         }
     }
 
-    public void setMap(int pMapNum){
-        this.mapNum = pMapNum;
+    /**Setze die Leben eines Spielers
+     * 
+     * @param pPlayerId Id des Spielers
+     * @param pHealth Leben des Spielers
+     */
+    public void setHealth(int pPlayerId, int pHealth){
+        healthPanel[pPlayerId].setHealth(pHealth);
     }
 
-    public void setHealth(int pNum, int health){
-        healthPanel[pNum].setHealth(health);
+    /**Setze Richtung eines Spielers 
+     * 
+     * @param pPlayerId Id des Spielers
+     * @param pRughtSided Richtung des Spielers (true: rechts, false: links)
+     */
+    public void setRightSided(int pPlayerId, boolean pRightSided){
+        player[pPlayerId].setRightSided(pRightSided);
+        player[pPlayerId].update();
     }
 
-    public void setRightSided(int pNum, boolean pRightSided){
-        player[pNum].setRightSided(pRightSided);
+    /**Setze den witch-Effekt eines Spielers
+     * 
+     * @param pPlayerId Id des Spielers
+     * @param pWitched Witch-Effekt des Spielers (true: Spieler hat Effekt. false: Spieler hat Effekt nicht)
+     */
+    public void witchPlayer(int pPlayerId, boolean pWitched){
+        player[pPlayerId].setWitched(pWitched);
+        player[pPlayerId].update();
     }
 
-    public void witchPlayer(int pNum, boolean b){
-        player[pNum].setWitched(b);
-        player[pNum].update();
-    }
-
-    public ImageIcon getImageIcon (String path)  throws IOException {
-        return  new ImageIcon(ImageIO.read(new File("assets/" + path))); 
-    }
-
-    public void setPosition(int pPlayerNum, double x, double y){
-        player[pPlayerNum] .setX(x);
-        player[pPlayerNum] .setY(y);
-    }
-
+    /**Positioniere ein Positionable-Objekt
+     * xPos (0 - 1); je höher die x-Position ist, desto weiter rechts ist das Positionable-Objekt
+     * yPos (0 - 1); je höher die y-Position ist, desto weiter oben ist das Positionable-Objekt
+     */
     public void setPosition(Positionable o){
         int frameWidth = gamePanel.getWidth();
         int frameHeight = gamePanel.getHeight();
         o.setLocation((int) ((frameWidth - o.getScaleWidth()) * o.getXPos()), (int) ((frameHeight- o.getHeight()) * (1-o.getYPos())));
     }
+    
+    /**Setzt den Countdown zum Schließen des Spiels
+     * 
+     * @param pTime Zeit in Sekunden, wann das Spiel schließt
+     */
+    public void closingGame(String pTime){
+        gameClosingLabel.setText("GAME IS CLOSING IN " + pTime + "s");
+        gameClosingLabel.setSize((int) (gamePanel.getWidth() * 0.75), (int) (gamePanel.getWidth() * 0.5));
+        FontLoader.fitFont(gameClosingLabel);
+        gameClosingLabel.setSize(gameClosingLabel.getPreferredSize());
+        if(! gameClosingLabel.isVisible()){
+            resized();
+            gameClosingLabel.setVisible(true);
+        }
 
+    }
+    
+    /**Setze das Label, ob das Spiel gewonnen wurde oder nicht
+     * 
+     * @param pWon Spiel gewonnen? (true: Spiel wurde gewonnen, false: Spiel wurde verloren)
+     */
+    public void gameWon(boolean pWon){
+        Thread warte = new Thread(new Runnable(){
+                    public void run(){
+                        if(pWon){
+                            winnerLabel.setText("YOU WON!");
+                            winnerLabel.setForeground(Color.YELLOW);
+                        }
+                        else {
+                            winnerLabel.setText("YOU LOST!");
+                            winnerLabel.setForeground(Color.RED);
+                        }
+                        winnerLabel.setVisible(true);
+                    }
+                });
+        warte.start();
+    }
+
+    /**Wenn eine Taste gedrückt wird, und es WASD ist, dann setze den jeweiligen Boolean-Wert
+     * des Arrays keyPressed, der anzeigt, ob eine Taste gedrückt wird, auf true
+     * 
+     * W -> 0
+     * A -> 2
+     * S -> 1
+     * D -> 3
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
@@ -405,22 +528,17 @@ public class GamePage extends Page implements KeyListener{
             keyPressed[3] = true;
         }
     }
-
-    public void executeKeyThread(){
-        TickThread executeKeyThread = new TickThread(60, new Runnable(){
-                    public void run(){
-                        if(keyPressed[0]) gui.getUserClient().send("USERINPUT jump");
-                        if(keyPressed[1]) gui.getUserClient().send("USERINPUT ability");
-                        if(keyPressed[2]) gui.getUserClient().send("USERINPUT left");
-                        if(keyPressed[3]) gui.getUserClient().send("USERINPUT right");
-                    }
-                });
-        executeKeyThread.start();
-    }
-
+    
+    /**Leere Methode, die implementiert werden muss, damit diese Page alle Methoden
+     * eines KeyListeners implementiert
+     */
     @Override
     public void keyTyped(KeyEvent e) {}
 
+    /**Wenn eine Taste nicht mehr gedrückt wird, setze den zugehörigen Boolean-Wert
+     * des Arrays keyPressed (nur für WASD), der anzeigt, ob eine Tast gedrückt wird, auf false
+     * 
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
@@ -434,35 +552,12 @@ public class GamePage extends Page implements KeyListener{
             keyPressed[3] = false;
         }
     }
-
-    public void closingGame(String time){
-        gameClosingLabel.setText("GAME IS CLOSING IN " + time + "s");
-        gameClosingLabel.setSize((int) (gamePanel.getWidth() * 0.75), (int) (gamePanel.getWidth() * 0.5));
-        FontLoader.fitFont(gameClosingLabel);
-        gameClosingLabel.setSize(gameClosingLabel.getPreferredSize());
-        if(! gameClosingLabel.isVisible()){
-            resized();
-            gameClosingLabel.setVisible(true);
-        }
-
-    }
-
-    public void gameWon(boolean b){
-        // System.out.println("---> " + b);
-        Thread warte = new Thread(new Runnable(){
-                    public void run(){
-                        FunctionLoader.warte(10);
-                        if(b){
-                            winnerLabel.setText("YOU WON!");
-                            winnerLabel.setForeground(Color.YELLOW);
-                        }
-                        else {
-                            winnerLabel.setText("YOU LOST!");
-                            winnerLabel.setForeground(Color.RED);
-                        }
-                        winnerLabel.setVisible(true);
-                    }
-                });
-        warte.start();
+    
+    /**Gib ein ImageIcon zurück
+     * 
+     * @param path Pfad des Bildes ausgehend vom asset-Ordner
+     */
+    public ImageIcon getImageIcon (String path)  throws IOException {
+        return  new ImageIcon(ImageIO.read(new File("assets/" + path))); 
     }
 }

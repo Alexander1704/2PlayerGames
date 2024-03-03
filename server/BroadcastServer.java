@@ -137,19 +137,18 @@ public class BroadcastServer extends Server{
                     message = message[1].split(" ", 2);
                     switch(message[0]){
                         case "INIT" -> {
-                                // synchronized(gamesList){
+                                synchronized(gamesList){
                                     int gameIndex = gamesList.indexOf(client);
                                     if(gameIndex != -1) {
                                         gamesList.get(gameIndex).setPlayer(client, message [1]);
                                     }
-                                // }
+                                }
                             }
                     }
                 }
 
                 // case "USERINPUT"
             case "USERINPUT"->{
-                    System.out.println("new userinput");
                     synchronized(gamesList){
                         int gameIndex = gamesList.indexOf(client);
                         if(gameIndex != -1) {

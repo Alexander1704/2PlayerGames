@@ -9,6 +9,9 @@ import javax.imageio.ImageIO;
 import java.io.*;
 import java.awt.event.*;
 
+/**Page, in der der Nutzer vor einem Spiel eingeloggt ist. Hier kann der Charakter 
+ * ausgeählt werden
+ */
 public class MenuPage extends Page { 
     private GUI gui;
     private String character;
@@ -21,6 +24,9 @@ public class MenuPage extends Page {
     private JButton nextPlayerButton;
     private JButton previousPlayerButton;
     private JButton creditsButton;
+    
+    /**Erstellt ein neues Objekt der Klasse MenuPage und initialiert dieses
+     */
     public MenuPage(GUI gui) {
         setLayout(null);
         setBackground(new Color(94, 144, 252));
@@ -171,15 +177,29 @@ public class MenuPage extends Page {
     @Override
     public void update(){}
     
+    /**Setzt den Namen des Players,der in einem JLabel dargestellt wird
+     * 
+     * @param pPlayerName Name des Nutzers
+     */
     public void setPlayerName(String pPlayerName){
         playerName.setText(pPlayerName);
     }
+    
+    /**Gibt den ausgewählten Charakter zurück
+     * 
+     * @return Name des ausgewählten Charakters
+     */
     public String getCharacter(){
         return character;
     }
-    public void setCharacter(String name){
-        character = name;
-        characterName.setText(name);
+    
+    /**Setzt den Namen des Characters und passt auch das Bild des Charakters an
+     * 
+     * @param pName Name des Charakters
+     */
+    private void setCharacter(String pName){
+        character = pName;
+        characterName.setText(pName);
         
         characterImage.setSize((int) (gui.getFrame().getWidth() / 3.0), gui.getFrame().getHeight() / 2);
         try {

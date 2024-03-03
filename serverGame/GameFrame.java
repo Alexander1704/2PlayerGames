@@ -320,7 +320,7 @@ public class GameFrame implements KeyListener{
 
     public void getUserInput(int player, String input){
         if(player == 0 && player1 != null) player1.getInput(input);
-        if(player == 1 && player1 != null) player2.getInput(input);
+        if(player == 1 && player2 != null) player2.getInput(input);
         
         // int key = -1;
         // switch(input){

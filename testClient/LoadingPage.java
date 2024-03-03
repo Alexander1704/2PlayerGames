@@ -5,7 +5,11 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
+/**Ladeseite, die augerufen wird, wenn es Prozesse gibt, die länger brauchen
+ */
 public class LoadingPage extends Page{
+    /**Ein Rectangle stellt einen Ladebalken der Ladeanimation dar
+     */
     private class Rectangle extends JPanel{
         int x,y,width,height;
         Rectangle(int x, int y, int width, int height){
@@ -23,7 +27,7 @@ public class LoadingPage extends Page{
         void setHeight(int height){
             this.height = height;
         }
-        protected void paintComponent(Graphics g) {
+        public void paintComponent(Graphics g) {
             if(x < 70 || x > gui.getFrame().getWidth() - 80) return;
             super.paintComponent(g);
             g.setColor(new Color(93, 252, 153));
@@ -36,6 +40,9 @@ public class LoadingPage extends Page{
     private JLabel loadingLabel;
     private Rectangle[] loadingAnimation;
     private long lastUpdate;
+    
+    /**Erstellt ein neues Objekt der Klasse LoadingPage und initialiert dieses
+     */
     public LoadingPage(GUI gui){
         this.gui = gui;
         setBackground(new Color(94, 144, 252));
@@ -70,6 +77,10 @@ public class LoadingPage extends Page{
         repaint();
     }
     
+    /**Überschreibe die paintComponent-Methode, um die Ladeanimation zu malen
+     * 
+     * @param g Graphik Objekt, auf dem die Ladeanimation gemalt wird
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

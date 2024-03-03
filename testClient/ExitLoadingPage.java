@@ -5,9 +5,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**Eine Ladeseiten mit einem Button, um diese wieder zu verlassen.
+ * Wenn dieser Button gefrückt wird, wird ein übergebener Thread 
+ * ausgeführt
+ */
 public class ExitLoadingPage extends LoadingPage{
     private JButton exitButton;
     private Thread leaveThread;
+    
+     /**Erstellt ein neues Objekt der Klasse ExitLoadingPage und initialiert dieses
+     */
     public ExitLoadingPage(GUI pGUI){
         super(pGUI);
         
@@ -45,6 +52,13 @@ public class ExitLoadingPage extends LoadingPage{
         FunctionLoader.position(exitButton, 0.9, 0.95);
     }
     
+    /**Setze den Thread, der ausgeführt wird, wenn auf den Button zum Verlassen der Page
+     * gedrückt wird. Dieser Thread darf erst nach dem Wechseln zu dieser Page gesetzt 
+     * werden.
+     * 
+     * @param pLeaveThread Thread, der ausgeführt wird, wenn auf den Button zum Verlassen
+     *          der Page geklickt wird
+     */
     public void setLeaveThread(Thread pLeaveThread){
         synchronized(leaveThread){
             this.leaveThread = pLeaveThread;

@@ -3,29 +3,18 @@ package testClient;
 import assetLoader.*;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.awt.image.BufferedImage;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.*;
-import javax.imageio.ImageIO;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.*;
-import javax.imageio.ImageIO;
-
+/**Erstellt ein Banner mit einem Titel. Wenn die Größe geändert wird, muss das Banner auch
+ * durch die Methode resized() aktualisiert werden, damit es sich an die Größe anpasst.
+ */
 public class Banner extends JPanel{
     private JLabel bannerBackground; 
     private JLabel bannerPlayerName;
     private boolean redDesign;
-    public Banner (){
+    
+    /**Erstellt ein neues Objekt der Klasse Banner und initialiert dieses
+     */
+    public Banner(){
         setLayout(null);
         setOpaque(false);
         setSize(100, 100);
@@ -45,6 +34,8 @@ public class Banner extends JPanel{
         setComponentZOrder(bannerPlayerName, 0);
     }
 
+    /**Passe das Banner an die momentane Größe des Banners an
+     */
     public void resized(){
         bannerBackground.setSize(getSize());
         try{
@@ -52,7 +43,6 @@ public class Banner extends JPanel{
             else ImageLoader.fitImage(bannerBackground, "banner_blue.png"); 
         }catch (Exception e){
             e.printStackTrace();
-            // System.out.println("ERROR");
         }
         bannerBackground.setSize(bannerBackground.getPreferredSize());
         
@@ -63,14 +53,38 @@ public class Banner extends JPanel{
         bannerPlayerName.setLocation( (int) ((bannerBackground.getWidth() - bannerPlayerName.getWidth()) * 0.75) , (bannerBackground.getHeight() - bannerPlayerName.getHeight()) / 2);
     }
     
+    /**Setze den Titel des Banners und aktualisiere das Banner
+     * 
+     * @param pTitle Titel des Banners, der angezeigt wird
+     */
     public void setTitle(String pTitle){
         bannerPlayerName.setText(pTitle);
         resized();
     }
+
+    /**Setze die Designart des Banners
+     * 
+     * @param pRedDesign setze das Design (true: rotes Design, false: blaues Design)
+     */
+    public void setDesign(boolean pRedDesign){
+        if(pRedDesign != redDesign){
+            switchDesign();
+        }
+    }
     
+    /**Wechlse das Design, wenn das Banner gerade im roten Design ist, wechsle zum 
+     * Blauen und andersherum. Außerdem wird das Banner aktualisiert
+     */
     public void switchDesign(){
         redDesign = !redDesign;
+        resized();
     }
+    
+    /**Gibt das Design zurück. Wenn das banner im roten Design ist, wird true, wenn 
+     * es im blauen Design ist, wird false zurückgegeben.
+     * 
+     * @return ist das Banner im roten Design
+     */
     public boolean getDesign(){
         return redDesign;
     }

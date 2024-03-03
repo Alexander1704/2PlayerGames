@@ -6,6 +6,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.awt.event.*;
 
+/**Page, in der die mitarbeitenden Personen aufgelistet wird. Nachdem alle Personen angezeigt
+ * worden sind oder die Präsentation durch einen Mausklick beendet worden ist, wird zur
+ * MenuPage zurückgekehrt
+ */
 public class CreditsPage extends Page{
     private class Eintrag{
         String arbeit;
@@ -22,6 +26,9 @@ public class CreditsPage extends Page{
     private JLabel nameLabel;
     private Thread changeEintragThread;
     private volatile boolean changeEintragRunning;
+    
+     /**Erstellt ein neues Objekt der Klasse CreditPage und initialiert dieses
+     */
     public CreditsPage(GUI pGUI){
         gui = pGUI;
         setLayout(null);
@@ -73,9 +80,8 @@ public class CreditsPage extends Page{
                         try{
                             Thread.sleep(2000);
                         }catch (Exception e){
-                            //Thread wurde interrupted, da die Page gewechselt worden ist
-                        }
-                        
+                            //Thread wurde beendet, da zu einer anderen Page gewechselt worden ist
+                        }                        
                         currentEintrag++;
                     }
                     if(changeEintragRunning){
@@ -115,5 +121,7 @@ public class CreditsPage extends Page{
     }
 
     @Override
-    public void update(){}
+    public void update(){
+    
+    }
 }

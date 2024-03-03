@@ -64,6 +64,14 @@ public class Player extends JLabel implements Positionable{
         this.size = pSize;
     }
 
+    public void setCharacter(String pName){
+        this.name = pName;
+    }
+    
+    public String getCharacter(){
+        return this.name;
+    }
+    
     public void setHealth(int a){
         health = a;
     }

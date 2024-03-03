@@ -50,7 +50,7 @@ public class Client{
             Client[] gameClients = g.getClients();
             if(gameClients == null) return false;
             for(int i = 0; i < gameClients.length; i++){
-                if(gameClients[i].equals(this)) return true;
+                if(gameClients[i] != null && gameClients[i].equals(this)) return true;
             }
             return false;
         }
