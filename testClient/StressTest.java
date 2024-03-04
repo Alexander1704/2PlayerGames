@@ -24,6 +24,7 @@ public class StressTest{
                             }
                             if(userClients[i].inGame()){
                                 userClients[i].send("USERINPUT jump");
+                                userClients[i].send("USERINPUT ability");
                             }
                         }
                     }

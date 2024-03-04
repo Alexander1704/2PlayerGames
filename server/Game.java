@@ -178,9 +178,11 @@ public class Game implements MessageInterpreter{
 
     @Override 
     public void interpretMessage(String str){
-        if(!closed && str.startsWith("HEALTH")){
+        if(!closed  && str.startsWith("HEALTH")){
+            if(! gameState.equals("GAME")) return; 
             String[] temp = str.split(" ");
             if(Integer.parseInt(temp[2]) <= 0){
+                gameState = "CLOSING";
                 Thread closeServer = new Thread(new Runnable(){
                             public void run(){
                                 if(temp[1].equals("0")){
