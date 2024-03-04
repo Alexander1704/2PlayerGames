@@ -15,7 +15,7 @@ public class BroadcastServer extends Server{
         gamesList = new ArrayList<Game>();
         waitingList = new ArrayList<Client>();
         
-        // System.out.println("Server gestartet auf Port " + pPortNum + ".");
+        System.out.println("Server gestartet auf Port " + pPortNum + ".");
 
         TickThread searchGameThread = new TickThread(60, new Runnable() {
                     @Override
@@ -166,12 +166,12 @@ public class BroadcastServer extends Server{
         // System.out.println("!Abmeldung Client " + pClientIP + ":" + pClientPort);
 
         processMessage(pClientIP, pClientPort, "CONNECT LEAVE");
-        // synchronized(clientList){
+        synchronized(clientList){
             int clientIndex = clientList.indexOf(new Client(pClientIP, pClientPort));
             if(clientIndex != -1){
                 clientList.remove(clientIndex);
             }
-        // }
+        }
     }
 
     public void send(Client pClient, String pMessage){

@@ -46,10 +46,12 @@ public class TickThread extends Thread{
     }
 
     /**Diese Methode überschreibt die run()-Methode eines Threads.
-     * Diese run-Methode wird ticks mal pro Sekunde aufgerufen und läuft bis der Thread 
-     * durch die Methode finish() beendet wird
+     * Diese run-Methode des Runnable-Objektes wird ticks mal pro Sekunde aufgerufen 
+     * und läuft bis der Thread durch die Methode finish() beendet wird.
      * 
+     * Ein TickThread kann nicht zweimal gleichzeitug gestartet bzw. durchlaufen werden.
      */
+    //mithilfe von StackOverflow erstellt
     @Override 
     public void run(){
         if(running) return;
@@ -63,9 +65,8 @@ public class TickThread extends Thread{
             
             super.run();
 
-            // Calculate time to sleep to maintain desired tick
             long waitTime = 1000000000 / ticks;
-            long sleepTime = waitTime - (elapsedTime - waitTime); //tweaked it so it would run twice
+            long sleepTime = waitTime - (elapsedTime - waitTime); 
             
             try {
                 Thread.sleep(Math.max(0, sleepTime / 1000000));

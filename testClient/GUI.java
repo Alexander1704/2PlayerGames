@@ -10,7 +10,8 @@ import java.awt.event.*;
  * und alle Pages 
  * 
  * Außerdem erbt die GUI von einem KeyListener, sodass Tastenanschläge an die 
- * zugehörigen Pages weitergeleitet werden können
+ * zugehörigen Pages weitergeleitet werden können, wenn die Pages diese verarbeiten 
+ * können.
  */
 public class GUI implements KeyListener{
     //Deklaration der Objekte

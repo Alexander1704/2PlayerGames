@@ -10,25 +10,33 @@ import java.io.*;
 import java.net.URL;
 import javax.sound.sampled.*;
 
+/**Mithilfe des Klasse Sound kann eine Sounddatei abgespielt werden.
+ */
 public class Sound {
     private AudioClip clip;
     private URL url;
 
-    public Sound (String pSoundName) {
+    /**Konstruktor, der ein neues Objekt der Klasse Sound erstellt und es initialisiert
+     * 
+     * @param pSoundPath Pfad der Sounddatei, die im assets/sounds/-Ordner liegt
+     */
+    public Sound (String pSoundPath) {
         try {
-            url = this.getClass().getClassLoader().getResource("assets/sounds/" + pSoundName);
+            url = this.getClass().getClassLoader().getResource("assets/sounds/" + pSoundPath);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Fehler beim Laden des Sounds: " + e.getMessage());
         }
     }
 
+    /**Spiele den Sound der Sounddatei ab, die im Konstruktor als Pfad übergeben worden
+     * ist
+     */
+    //mit StackOverflow erstellt
     public void playSound(){
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-            // Get a sound clip resource.
             Clip clip = AudioSystem.getClip();
-            // Open audio clip and load samples from the audio input stream.
             clip.open(audioIn);
             clip.start();
         } catch (UnsupportedAudioFileException e) {
@@ -40,14 +48,12 @@ public class Sound {
         }
     }
 
+    /**Stoppe den Sound, falls er gerade abgespielt wird
+     */
+    //mithilfe von StackOverflow erstellt
     public void stopSound() {
         if (clip != null) {
             clip.stop();
         }
-    }
-
-    public static void main(String[] args) {
-        Sound player = new Sound("test.wav");
-        player.playSound();
     }
 }

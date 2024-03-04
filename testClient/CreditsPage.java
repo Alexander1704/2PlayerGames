@@ -45,12 +45,12 @@ public class CreditsPage extends Page{
         //initialisiere Elemente der Page
         arbeitLabel = new JLabel("ARBEIT");
         arbeitLabel.setForeground(Color.YELLOW);
-        arbeitLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        arbeitLabel.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         add(arbeitLabel);
 
         nameLabel = new JLabel("NAME");
         nameLabel.setForeground(Color.WHITE);
-        nameLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        nameLabel.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         add(nameLabel);
 
         changeEintragRunning = false;

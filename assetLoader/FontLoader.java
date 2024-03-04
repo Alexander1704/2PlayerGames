@@ -4,18 +4,30 @@ import java.awt.*;
 import java.io.*; 
 import javax.swing.*;
 
-
+/**In dieser Klasse werden typische Funktionen, die in Verbindung mit dem Laden 
+ * einer Schriftart stehen, zur Verfügung gestellt.
+ */
 public class FontLoader{
     
+    /**Erstellt ein neues Objekt der Klasse FontLoader. Ein FontLoader-Objekt wird
+     * meist allerdings nicht benötigt, da alle Methoden statisch sind.
+     */
     public FontLoader(){
         
     }
     
-    public static Font loadFont(String fontPath, int size) {
+    /**Lädt FontArt mithilfe einer FontDatei, die sich in einem abgespeicherten Pfad befindet
+     * und einer Größe
+     * 
+     * @param pFontPath Pfad der Font , welche im Asset-Ordner startet
+     * @param pSize Größe der Font
+     */
+    //mithilfe StackOverflow erstellt
+    public static Font loadFont(String pFontPath, int pSize) {
         Font customFont = null;
         try {
-            File fontFile = new File(fontPath);
-            customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont(Font.PLAIN, 24);
+            File fontFile = new File("assets/" + pFontPath);
+            customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont(Font.PLAIN, pSize);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(customFont);
         } catch (IOException | FontFormatException e) {
@@ -24,15 +36,18 @@ public class FontLoader{
         return customFont;
     }
     
+    /**Setzt die Größe der Font eines JLabels, sodass diese an die Größe des Labels angepasst ist
+     *
+     *@param label JLabel bei dem die Fontgröße angepasst werden soll 
+     */
+    //mithilfe von chatgpt erstellt
      public static void fitFont(JLabel label) {
         Font labelFont = label.getFont();
         String labelText = label.getText();
 
-        // Überprüfen, ob die Schriftgröße 0 ist
-        if (labelFont.getSize() == 0) {
-            // Wenn ja, eine neue Schriftart mit Schriftgröße 10 ableiten
+        //damit Division durch 0 nicht zu einer zu kleinen Fontgröße führt
+        if (labelFont.getSize() == 0) { 
             labelFont = labelFont.deriveFont(10f);
-            // Das neue Font-Objekt verwenden
             label.setFont(labelFont);
         }
 
@@ -52,6 +67,11 @@ public class FontLoader{
         label.setFont(new Font(labelFont.getName(), labelFont.getStyle(), fontSizeToUse));
     }
     
+    /**Setzt die Größe der Font eines JButtons, sodass diese an die Größe des Buttons angepasst ist
+     *
+     *@param label JButton bei dem die Fontgröße angepasst werden soll  
+     */
+    //mithilfe von chatgpt erstellt
     public static void fitFont(JButton label) {
         Font labelFont = label.getFont();
         String labelText = label.getText();
@@ -70,16 +90,5 @@ public class FontLoader{
         // Setze die neue Schriftgröße, sodass der Text passt
         int fontSizeToUse = Math.min(newFontSize, componentHeight); // verhindere zu große Schrift
         label.setFont(new Font(labelFont.getName(), labelFont.getStyle(), fontSizeToUse));
-    }
-    
-    // Methode zum Ändern der Transparenz eines JLabels
-    public static void setLabelTransparency(JLabel label, int alpha) {
-        // Stellen Sie sicher, dass der Alpha-Wert im gültigen Bereich von 0 bis 255 liegt
-        alpha = Math.max(0, Math.min(alpha, 255));
-
-        // Aktualisieren Sie die Hintergrundfarbe des Labels mit dem neuen Alpha-Wert
-        Color backgroundColor = label.getBackground();
-        Color newColor = new Color(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), alpha);
-        label.setBackground(newColor);
     }
 }

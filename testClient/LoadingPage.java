@@ -50,7 +50,7 @@ public class LoadingPage extends Page{
         
         loadingLabel = new JLabel ("loading");
         loadingLabel.setForeground(Color.WHITE);
-        loadingLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf", 40)); // Set the font to plain monospaced
+        loadingLabel.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf", 40)); // Set the font to plain monospaced
         loadingLabel.setSize(loadingLabel.getPreferredSize());
         add (loadingLabel);
         

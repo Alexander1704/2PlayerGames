@@ -37,7 +37,7 @@ public class MenuPage extends Page {
         
         playerName = new JLabel("PLAYER");
         playerName.setForeground(Color.WHITE);
-        playerName.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        playerName.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         playerName.setLocation(0, 0);
         playerName.setSize(playerName.getPreferredSize());
         add(playerName);
@@ -47,7 +47,7 @@ public class MenuPage extends Page {
         characterName.setBackground(Color.WHITE);
         characterName.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5)); // Schwarzer Rand
         characterName.setHorizontalAlignment(SwingConstants.CENTER);
-        characterName.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        characterName.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         add(characterName);
 
         characterImage = new JLabel();
@@ -60,25 +60,25 @@ public class MenuPage extends Page {
         playButton = new JButton("Play");
         playButton.setBackground(new Color(93, 252, 153));
         playButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
-        playButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        playButton.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         add(playButton);
 
         nextPlayerButton = new JButton(">");
         nextPlayerButton.setBackground(new Color(93, 252, 153));
         nextPlayerButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
-        nextPlayerButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        nextPlayerButton.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         add(nextPlayerButton);
 
         previousPlayerButton = new JButton("<");
         previousPlayerButton.setBackground(new Color(93, 252, 153));
         previousPlayerButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
-        previousPlayerButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        previousPlayerButton.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         add(previousPlayerButton);
         
         creditsButton = new JButton("credits");
         creditsButton.setBackground(new Color(93, 252, 153));
         creditsButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
-        creditsButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        creditsButton.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         add(creditsButton);
 
         nextPlayerButton.addActionListener(new ActionListener(){

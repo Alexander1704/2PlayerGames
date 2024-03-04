@@ -70,7 +70,7 @@ public class Game implements MessageInterpreter{
     }
 
     public void userInput(Client a, String input){
-        if(gameState == "GAME" || true) {
+        if(gameState.equals("GAME") || (!input.contains("ability") || gameState.equals("CLOSE_COUNTDOWN"))) {
             int index = getIndex(clients, a);
             gameFrame.getUserInput(index, input); 
         }
@@ -134,8 +134,9 @@ public class Game implements MessageInterpreter{
         server.closeGame(this);
     }
 
-    private synchronized void closeCountDown(){
-        if(closed) return;
+    private void closeCountDown(){
+        if(gameState.equals("CLOSING"))return;
+        gameState = "CLOSING";
         for(int i = 11; i >= 0; i--){
             try{
                 sendMessage("GAME CLOSING " + i);
@@ -145,6 +146,7 @@ public class Game implements MessageInterpreter{
                 ie.printStackTrace();
             }
         }
+        gameState = "CLOSED";
         sendMessage("+GAME CLOSED");
         if(!closed) closeThisGame();
     }
@@ -182,7 +184,7 @@ public class Game implements MessageInterpreter{
             if(! gameState.equals("GAME")) return; 
             String[] temp = str.split(" ");
             if(Integer.parseInt(temp[2]) <= 0){
-                gameState = "CLOSING";
+                gameState = "END_GAME";
                 Thread closeServer = new Thread(new Runnable(){
                             public void run(){
                                 if(temp[1].equals("0")){

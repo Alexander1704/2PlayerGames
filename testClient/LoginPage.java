@@ -27,7 +27,7 @@ public class LoginPage extends Page{
         this.gui = gui;
         setBackground(new Color(94, 144, 252));
         setLayout (null);
-        setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
 
         loginPanel = new JPanel();
         loginPanel.setBackground(getBackground());
@@ -37,7 +37,7 @@ public class LoginPage extends Page{
 
         connectButton = new JButton ("connect");
         connectButton.setSize(200, 50);
-        connectButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        connectButton.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         connectButton.setBackground(new Color(93, 252, 153));
         connectButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
         connectButton.addActionListener(new ActionListener(){
@@ -55,19 +55,19 @@ public class LoginPage extends Page{
         loginPanel.add (connectButton);
 
         ipLabel = new JLabel ("IP:");
-        ipLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        ipLabel.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         ipLabel.setSize(ipLabel.getPreferredSize());
         ipLabel.setForeground(Color.WHITE);
         loginPanel.add (ipLabel);
 
         portLabel = new JLabel ("PORT:");
-        portLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        portLabel.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         portLabel.setSize(portLabel.getPreferredSize());
         portLabel.setForeground(Color.WHITE);
         loginPanel.add (portLabel);
 
         nameLabel = new JLabel ("NAME:");
-        nameLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        nameLabel.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         nameLabel.setSize(nameLabel.getPreferredSize());
         nameLabel.setForeground(Color.WHITE);
         loginPanel.add (nameLabel);        
@@ -75,7 +75,7 @@ public class LoginPage extends Page{
         ipText = new JTextField (1);
         ipText.setText("localhost");
         ipText.setSize(300, 50);
-        ipText.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        ipText.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         ipText.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
         loginPanel.add (ipText);
 
@@ -83,14 +83,14 @@ public class LoginPage extends Page{
         portText.setText("55555");
         portText.setSize(300, 50);
         portText.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-        portText.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        portText.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         loginPanel.add (portText);
 
         nameText = new JTextField (1);
         nameText.setText("player" + ((int) (Math.random() * 10000) + ""));
         nameText.setSize(300, 50);
         nameText.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-        nameText.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        nameText.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         loginPanel.add (nameText);
     }
 
@@ -150,7 +150,7 @@ public class LoginPage extends Page{
         if(pName.equals(""))  gui.getUserClient().send("CONNECT SETNAME unnamed");
         else  gui.getUserClient().send("CONNECT SETNAME " + pName);
        
-        StressTest stressTest = new StressTest(1, pIP, pPort);      //erstellt einen Dummy-Player
+        StressTest stressTest = new StressTest(21, pIP, pPort);      //erstellt einen Dummy-Player
     }
 
     /**Gib Namen des Players wieder

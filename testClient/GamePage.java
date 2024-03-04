@@ -64,14 +64,14 @@ public class GamePage extends Page implements KeyListener{
         bulletList = new ArrayList<Bullet>();
 
         gameClosingLabel = new OutlinedLabel("GAME IS CLOSING...");
-        gameClosingLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",50));
+        gameClosingLabel.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",50));
         gameClosingLabel.setVisible(false);
         gameClosingLabel.setForeground(Color.RED);
         gamePanel.add(gameClosingLabel);
         gamePanel.setComponentZOrder(gameClosingLabel, 0);
 
         winnerLabel = new OutlinedLabel("YOU WON");
-        winnerLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",50));
+        winnerLabel.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",50));
         winnerLabel.setVisible(false);
         winnerLabel.setForeground(Color.YELLOW);
         gamePanel.add(winnerLabel);
@@ -90,7 +90,7 @@ public class GamePage extends Page implements KeyListener{
         gamePanel.setComponentZOrder(player1Banner, 0);
 
         startingLabel = new OutlinedLabel("3");
-        startingLabel.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",50));
+        startingLabel.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",50));
         startingLabel.setForeground(Color.RED); 
         startingLabel.setVisible(false);
         gamePanel.add(startingLabel);
@@ -111,6 +111,7 @@ public class GamePage extends Page implements KeyListener{
         for(int i = 0; i < player.length; i++){
             player[i].setAnimation(10);
             healthPanel[i].setHealth(100);
+            healthPanel[i].setColor(Color.RED);
         }
 
         ArrayList<Integer> temp = new ArrayList<Integer>();

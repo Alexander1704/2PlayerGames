@@ -27,7 +27,7 @@ public class Banner extends JPanel{
         
         bannerPlayerName = new JLabel();
         bannerPlayerName.setForeground(Color.WHITE);
-        bannerPlayerName.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf", 20));
+        bannerPlayerName.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf", 20));
         bannerPlayerName.setSize(bannerPlayerName.getPreferredSize());
         bannerPlayerName.setLocation(0, 0);
         add(bannerPlayerName);

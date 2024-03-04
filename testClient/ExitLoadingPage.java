@@ -21,7 +21,7 @@ public class ExitLoadingPage extends LoadingPage{
         exitButton = new JButton("Leave");
         exitButton.setBackground(new Color(255, 171, 25));
         exitButton.setForeground(Color.WHITE);
-        exitButton.setFont(FontLoader.loadFont("assets/LilitaOne-Regular.ttf",25));
+        exitButton.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         exitButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
         add(exitButton);
         

@@ -7,46 +7,85 @@ import java.io.*;
 import javax.imageio.ImageIO;
 import java.awt.image.*;
 import java.awt.geom.AffineTransform;
+
+/**In dieser Klasse werden typische Funktionen, die in Verbindung mit dem Laden 
+ * eines Bildes stehten, zur Verfügung gestellt.
+ */
 public class ImageLoader{
 
+    /**Erstellt ein neues Objekt der Klasse ImageLoader. Ein ImageLoader-Objekt wird
+     * meist allerdings nicht benötigt, da alle Methoden statisch sind.
+     */
     public ImageLoader(){
 
     }
-    
-    public static void fitImage(JLabel pLabel, String pImagePath) throws IOException {
+
+    /**Setze das ImageIcon eines JLabels mithilfe eines Pfades eines Bildes so, dass 
+     * es die größtmögliche Größe erreicht ohne die Relationen des Bildes zu ändern.
+     * Wenn das Bild nicht gefunden werden kann, wird ein Fehler ausgegeben.
+     * 
+     * @param pLabel JLabel, bei dem das ImageIcon gesetzt werden soll
+     * @param pImagePath Pfad des zu setzenden Bildes (Pfad startet im assets-Ordner)
+     */
+    public static void fitImage(JLabel pLabel, String pImagePath) throws IOException{
         Dimension imgSize = getImageSize(pImagePath);
+        if(imgSize == null) {
+            System.err.println("Bild mit dem Pfad: assets/" + pImagePath + " konnte nicht gefunden werden :(");
+            return;
+        }
         Dimension labelSize = pLabel.getSize();
-        
-        double xRatio = 1.0 *  labelSize.getWidth() / imgSize.getWidth();
+
+        double xRatio = 1.0 * labelSize.getWidth()  / imgSize.getWidth();
         double yRatio = 1.0 * labelSize.getHeight() / imgSize.getHeight();
-        
+
         double ratio = Math.min(xRatio, yRatio);
         pLabel.setIcon(getScaledIcon(pImagePath, ratio, ratio));
     }
-    public static ImageIcon getResizedIcon(String path, int x_scale, int y_scale) throws IOException {
-            // Lade das Bild von der Datei
-            Image img = ImageIO.read(new File("assets/" + path));
-            
-            // Skaliere das Bild auf die Größe des JLabels
-            Image scaledImg = img.getScaledInstance(x_scale, y_scale, Image.SCALE_SMOOTH);
-            return new ImageIcon(scaledImg);
+
+    /**Erstelle ein ImageIcon, mit einer absoluten festgelegten Größe und gib
+     * es zurück. Das ImageIcon kann bei einem anderen Verhältnis als das Ausgangsbild
+     * auch verzerrt werden.
+     * 
+     * @param pPath Pfad in dem das Bild liegt (Pfad startet im assets-Ordner)
+     * @param pXScale absolute Breite des ImageIcons
+     * @param pYScale absolute Höhe des ImageIcons
+     */
+    public static ImageIcon getResizedIcon(String pPath, int pXScale, int pYScale) throws IOException {
+        Image img = ImageIO.read(new File("assets/" + pPath));
+        Image scaledImg = img.getScaledInstance(pXScale, pYScale, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImg);
     }
-    public static ImageIcon getScaledIcon(String path, double x_scale, double y_scale) throws IOException {
-        ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File("assets/" + path))); 
+
+    /**Erstelle ein ImageIcon, das relativ zu der Größe des Bildes skaliert wird, und gib
+     * es zurück.
+     * 
+     * @param pPath Pfad in dem das Bild liegt (Pfad startet im assets-Ordner)
+     * @param pXScale relative Breite des ImageIcons im Verhältnis zur Originalbreite des Bildes
+     * @param pYScale relative Höhe des ImageIcons im Verhältnis zur Originalhöhe des Bildes
+     */
+    public static ImageIcon getScaledIcon(String pPath, double pXScale, double pYScale) throws IOException {
+        ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File("assets/" + pPath))); 
         Image image = imageIcon.getImage(); 
-        Image newimg = image.getScaledInstance((int)(imageIcon.getIconWidth() * x_scale), (int) (imageIcon.getIconHeight()*y_scale),  java.awt.Image.SCALE_SMOOTH); 
+        Image newimg = image.getScaledInstance((int)(imageIcon.getIconWidth() * pXScale), (int) (imageIcon.getIconHeight()*pYScale),  java.awt.Image.SCALE_SMOOTH); 
         imageIcon = new ImageIcon(newimg);  
         return imageIcon;
     }
-    
+
+    /**Gib die Größe eines Bildes als Dimension zurück. Wenn das Bild nicht gefunden werden
+     * kann bzw. das Bild nicht geladen werden kann, wird null zurückgegeben.
+     * 
+     * @param pPath Pfad des Bildes, im assets-Ordner startend
+     * @return Dimension des Bildes
+     */
+    //mithilfe von StackOverflow erstellt
     public static Dimension getImageSize(String path){
         try {
             File file = new File("assets/" + path); 
             Image image = ImageIO.read(file);
 
             if (image != null) {
-                int width = image.getWidth(null); // Breite des Bildes
-                int height = image.getHeight(null); // Höhe des Bildes
+                int width = image.getWidth(null); 
+                int height = image.getHeight(null);
                 return new Dimension(width, height);
             } else {
                 System.out.println("Das Bild konnte nicht geladen werden.");
@@ -57,6 +96,13 @@ public class ImageLoader{
         return null;
     }
 
+    /**Dreht ein ImageIcon horizontal und vertical und gibt es zurück.
+     * 
+     *@param originalIcon Icon, das  gedreht werden soll.
+     *@param horizontal soll Icon horizontal gedreht werden? 
+     *@param vertical soll Icon vertikal gedreht werden?
+     */
+    //mithilfe von chatgpt erstellt
     public static ImageIcon flipIcon(Icon originalIcon, boolean horizontal, boolean vertical) {
         int width = originalIcon.getIconWidth();
         int height = originalIcon.getIconHeight();
@@ -76,6 +122,9 @@ public class ImageLoader{
         return new ImageIcon(flippedImage);
     }
 
+    /**Hilfsmethode für die flipIcon-Methode
+     */ 
+    //mithilfe von chatgpt erstellt
     private static BufferedImage flipBufferedImage(BufferedImage image, boolean horizontal, boolean vertical) {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -100,35 +149,4 @@ public class ImageLoader{
 
         return flippedImage;
     }
-
-    public static Icon rotateIcon(ImageIcon originalIcon, double angle) {
-        Image image = originalIcon.getImage();
-        double sin = Math.abs(Math.sin(angle));
-        double cos = Math.abs(Math.cos(angle));
-        int newWidth = (int) Math.floor(image.getWidth(null) * cos + image.getHeight(null) * sin);
-        int newHeight = (int) Math.floor(image.getHeight(null) * cos + image.getWidth(null) * sin);
-
-        BufferedImage rotatedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = rotatedImage.createGraphics();
-        AffineTransform transform = new AffineTransform();
-        transform.translate((newWidth - image.getWidth(null)) / 2, (newHeight - image.getHeight(null)) / 2);
-        transform.rotate(angle, image.getWidth(null) / 2, image.getHeight(null) / 2);
-        g2d.setTransform(transform);
-        g2d.drawImage(image, 0, 0, null);
-        g2d.dispose(); 
-
-        return new ImageIcon(rotatedImage);
-    }
-
-    public static ImageIcon cropIcon(ImageIcon originalIcon, int leftCrop, int rightCrop, int topCrop, int bottomCrop){
-        // Zuschneiden des Bildes
-        BufferedImage originalImage = new BufferedImage(originalIcon.getIconWidth(), originalIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = originalImage.createGraphics();
-        g2d.drawImage(originalIcon.getImage(), 0, 0, null);
-        BufferedImage croppedImage = originalImage.getSubimage(leftCrop, topCrop, originalImage.getWidth() - leftCrop - rightCrop, originalImage.getHeight() - topCrop - bottomCrop);
-        return new ImageIcon(croppedImage);
-        
-    }
-    
-
 }

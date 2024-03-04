@@ -39,7 +39,7 @@ public class GameFrame implements KeyListener{
         testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         testFrame.setPreferredSize(new Dimension(710, 400));
         testFrame.setLocationRelativeTo(null);
-        testFrame.setVisible(true);
+        testFrame.setVisible(false);
         testFrame.pack();
 
         keyPressed = new boolean[8];
