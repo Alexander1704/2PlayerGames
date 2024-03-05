@@ -23,6 +23,7 @@ public class BroadcastServer extends Server{
                         synchronized(waitingList){
                             if(waitingList.size() > 1){
                                 gamesList.add(new Game(getServer(), waitingList.get(0), waitingList.get(1)));
+                                System.out.println("+GAME : " + waitingList.get(0).toString() + " _ " + waitingList.get(1).toString());
                                 send(waitingList.get(0), "+GAME FOUND");
                                 send(waitingList.get(1), "+GAME FOUND");
                                 waitingList.remove(0);
@@ -109,6 +110,7 @@ public class BroadcastServer extends Server{
                                             } 
                                             synchronized(gamesList){
                                                 if(! gamesList.contains(client))waitingList.add(clientList.get(clientIndex));
+                                                else send(client, "-ERR illegalState " + pMessage + clientList.get(clientIndex).toString()); //Client ist noch in Spiel
                                             }
                                             
                                         }
@@ -163,7 +165,7 @@ public class BroadcastServer extends Server{
     }
 
     public void processClosingConnection(String pClientIP, int pClientPort){
-        // System.out.println("!Abmeldung Client " + pClientIP + ":" + pClientPort);
+        System.out.println("!Abmeldung Client " + pClientIP + ":" + pClientPort);
 
         processMessage(pClientIP, pClientPort, "CONNECT LEAVE");
         synchronized(clientList){
@@ -178,8 +180,14 @@ public class BroadcastServer extends Server{
         send(pClient.ip, pClient.port, pMessage);
     } 
 
-    public void closeGame(Game a){
-        gamesList.remove(0);
+    public void closeGame(Game pGame){
+        synchronized(gamesList){
+            int gameIndex = gamesList.indexOf(pGame);
+            if(gameIndex == -1) {
+                System.err.println("Game: " + pGame.toString() + " could not be find and removed");
+            }
+            gamesList.remove(gameIndex);
+        }
     } 
 
     public int getIndex(Object[] arr, Object o){

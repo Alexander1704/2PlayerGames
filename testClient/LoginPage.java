@@ -150,7 +150,7 @@ public class LoginPage extends Page{
         if(pName.equals(""))  gui.getUserClient().send("CONNECT SETNAME unnamed");
         else  gui.getUserClient().send("CONNECT SETNAME " + pName);
        
-        StressTest stressTest = new StressTest(21, pIP, pPort);      //erstellt einen Dummy-Player
+        StressTest stressTest = new StressTest(1, pIP, pPort);      //erstellt einen Dummy-Player
     }
 
     /**Gib Namen des Players wieder

@@ -126,6 +126,7 @@ public class Game implements MessageInterpreter{
     }
 
     public void closeThisGame(){
+        System.out.println("-GAME : " + clients[0].toString() + " _ " + clients[1].toString());
         for(int i = 0; i < clients.length; i++){
             clients[i].setGame(null);
         }

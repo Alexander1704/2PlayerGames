@@ -67,6 +67,11 @@ public class UserClient extends Client{
                 gui.getLoginPage().setPlayerName(args[2]);
                 gui.getMenuPage().setPlayerName(args[2]);
             }
+            return;
+        }
+        if(pMessage.startsWith("-ERR")){
+            String[] args = pMessage.split(" ", 2);
+            System.err.println("ClientError occured: " + args[1]);
         }
         if(! processMessages) {
             return;

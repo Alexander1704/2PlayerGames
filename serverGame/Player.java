@@ -82,7 +82,7 @@ public class Player extends clientGame.Player implements Healthy{
         gamePanel.getMessageInterpreter().interpretMessage("RIGHTSIDED " + ID + " " + rightSided);
 
         final int MAX_ANIMATION = 9;
-        TickThread animationThread = new TickThread(20, new Runnable(){
+        TickThread animationThread = new TickThread(15, new Runnable(){
                     @Override 
                     public void run(){
                         if(isMoving()){

@@ -20,6 +20,7 @@ public class StressTest{
                     public void run(){
                         for(int i = 0; i < userClients.length; i++){
                             if(userClients[i].hasConnected() && !userClients[i].inGame()){
+                                FunctionLoader.warte(5000);
                                 userClients[i].send("CONNECT SEARCHGAME");
                             }
                             if(userClients[i].inGame()){
