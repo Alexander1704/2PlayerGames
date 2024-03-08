@@ -30,7 +30,6 @@ public class GUI implements KeyListener{
     private InfoPage infoPage;
     private CreditsPage creditsPage;
     private ExitLoadingPage exitLoadingPage;
-    private PanelTest2 panelTest2;
 
     /**Erstellt ein neues Objekt der Klasse GUI und initialiert dieses
      */
@@ -59,7 +58,6 @@ public class GUI implements KeyListener{
         errorPage = new ErrorPage(this);
         creditsPage = new CreditsPage(this);
         exitLoadingPage = new ExitLoadingPage(this);
-        panelTest2 = new PanelTest2(this);
 
         //Wechsle zur LoginPage
         switchPage(loginPage);
@@ -203,14 +201,6 @@ public class GUI implements KeyListener{
      */
     public void setUserClient(String pIP, int pPort){
         userClient = new UserClient(this, pIP, pPort);
-    }
-
-    /**Gibt die PanelTest2 zurück
-     * 
-     * @return panelTest2
-     */
-    public PanelTest2 getTestPage2(){
-        return panelTest2;
     }
 
     /**Gibt die Größe des gesamte Screens des Computers als Dimension zurück

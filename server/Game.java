@@ -69,10 +69,12 @@ public class Game implements MessageInterpreter{
         this(pServer, clients[0], clients[1]);
     }
 
-    public void userInput(Client a, String input){
-        if(gameState.equals("GAME") || (!input.contains("ability") || gameState.equals("CLOSE_COUNTDOWN"))) {
+    public void userInput(Client a, String input, boolean pFlag){
+        System.out.println("userinput " + input + " with flag " + pFlag);
+        System.out.println(gameState);
+        if((gameState.equals("GAME") || gameState.equals("CLOSE_COUNTDOWN") ) || (gameState.equals("CLOSING") && !input.contains("ability") || !pFlag )) {
             int index = getIndex(clients, a);
-            gameFrame.getUserInput(index, input); 
+            gameFrame.getUserInput(index, input, pFlag); 
         }
     }
 
@@ -138,6 +140,11 @@ public class Game implements MessageInterpreter{
     private void closeCountDown(){
         if(gameState.equals("CLOSING"))return;
         gameState = "CLOSING";
+        
+        for(int i = 0; i < clients.length; i++){
+            userInput(clients[i], "ability", false);
+        }
+        
         for(int i = 11; i >= 0; i--){
             try{
                 sendMessage("GAME CLOSING " + i);

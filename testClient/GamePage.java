@@ -51,7 +51,7 @@ public class GamePage extends Page implements KeyListener{
             gamePanel.add (healthPanel[i]);
         }
 
-        healthPanel[0].setPosition(0., 0); 
+        healthPanel[0].setPosition(0, 0); 
         healthPanel[1].setPosition(1, 0);
 
         mapLabel = new JLabel(); 
@@ -128,16 +128,6 @@ public class GamePage extends Page implements KeyListener{
         for(int i = 0; i < keyPressed.length; i++){
             keyPressed[i] = false;
         }
-        //Wenn eine Taste (WASD) gedrückt wird, sende die jeweilige resultierende Aktion an den Server
-        executeKeyThread = new TickThread(60, new Runnable(){
-                    public void run(){
-                        if(keyPressed[0]) gui.getUserClient().send("USERINPUT jump");
-                        if(keyPressed[1]) gui.getUserClient().send("USERINPUT ability");
-                        if(keyPressed[2]) gui.getUserClient().send("USERINPUT left");
-                        if(keyPressed[3]) gui.getUserClient().send("USERINPUT right");
-                    }
-                });
-        executeKeyThread.start();
     }
 
     @Override
@@ -234,7 +224,6 @@ public class GamePage extends Page implements KeyListener{
     
     @Override
     public void finish(){
-        executeKeyThread.finish();
     }
     
     /**Aktualisiert alle Spieler
@@ -519,14 +508,19 @@ public class GamePage extends Page implements KeyListener{
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        if (key == KeyEvent.VK_W) {
+        if (key == KeyEvent.VK_W && !keyPressed[0]) {
             keyPressed[0] = true;
-        } else if (key == KeyEvent.VK_S) {
+            gui.getUserClient().send("USERINPUT jump true");
+        } else if (key == KeyEvent.VK_S && !keyPressed[1]) {
             keyPressed[1] = true;
-        } else if (key == KeyEvent.VK_A) {
+            gui.getUserClient().send("USERINPUT ability true");
+            System.out.println("client, gamePage: ability -> true");
+        } else if (key == KeyEvent.VK_A && !keyPressed[2]) {
             keyPressed[2] = true;
-        } else if (key == KeyEvent.VK_D) {
+            gui.getUserClient().send("USERINPUT left true");
+        } else if (key == KeyEvent.VK_D && !keyPressed[3]) {
             keyPressed[3] = true;
+            gui.getUserClient().send("USERINPUT right true");
         }
     }
     
@@ -537,7 +531,7 @@ public class GamePage extends Page implements KeyListener{
     public void keyTyped(KeyEvent e) {}
 
     /**Wenn eine Taste nicht mehr gedrückt wird, setze den zugehörigen Boolean-Wert
-     * des Arrays keyPressed (nur für WASD), der anzeigt, ob eine Tast gedrückt wird, auf false
+     * des Arrays keyPressed (nur für WASD), der anzeigt, ob eine Taste gedrückt wird, auf false
      * 
      */
     @Override
@@ -545,12 +539,16 @@ public class GamePage extends Page implements KeyListener{
         int key = e.getKeyCode();
         if (key == KeyEvent.VK_W) {
             keyPressed[0] = false;
+            gui.getUserClient().send("USERINPUT jump false");
         } else if (key == KeyEvent.VK_S) {
             keyPressed[1] = false;
+            gui.getUserClient().send("USERINPUT ability false");
         } else if (key == KeyEvent.VK_A) {
             keyPressed[2] = false;
+            gui.getUserClient().send("USERINPUT left false");
         } else if (key == KeyEvent.VK_D) {
             keyPressed[3] = false;
+            gui.getUserClient().send("USERINPUT right false");
         }
     }
     

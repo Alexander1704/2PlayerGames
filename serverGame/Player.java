@@ -14,7 +14,7 @@ public class Player extends clientGame.Player implements Healthy{
         String bullet_direction;
         PlayerInfo(String name){
             dbc = new DBController();
-            String[] info = dbc.getPlayerInfo("Player");
+            String[] info = dbc.getPlayerInfo(name);
             init(name, info[1], info[2], info[3], info[4]);
         }
 
@@ -50,7 +50,9 @@ public class Player extends clientGame.Player implements Healthy{
     private final double MAX_JUMP_VELO = 0.025;
     private final double POS_ACCURACY = MAX_VELO;
     private final int ID;
+    private GameFrame gamePanel;
     private final PlayerInfo playerInfo;
+    private HealthPanel healthBar;
     private boolean initialized;
     private boolean falling;
     private boolean reloadingBullet;
@@ -58,13 +60,14 @@ public class Player extends clientGame.Player implements Healthy{
     private double xVelo, yVelo;
     private int health;
     private int animationNum;
-    private GameFrame gamePanel;
     public Player(GameFrame pGamePanel, String pName, int pID){
         super(pGamePanel.getGamePanel());
         gamePanel = pGamePanel;
         playerInfo = new PlayerInfo(pName);
         ID = pID;
         initialized = false;
+        setCharacter(pName);
+        System.out.println(playerInfo.getBulletTexture());
         
         xPos = ID == 0 ?  0.1 : 0.9; 
         yPos = 0.5;
@@ -82,7 +85,7 @@ public class Player extends clientGame.Player implements Healthy{
         gamePanel.getMessageInterpreter().interpretMessage("RIGHTSIDED " + ID + " " + rightSided);
 
         final int MAX_ANIMATION = 9;
-        TickThread animationThread = new TickThread(15, new Runnable(){
+        TickThread animationThread = new TickThread(20, new Runnable(){
                     @Override 
                     public void run(){
                         if(isMoving()){
@@ -151,6 +154,10 @@ public class Player extends clientGame.Player implements Healthy{
     public boolean isInitialized(){
         return initialized;
     }
+    
+    public void setHealthBar(HealthPanel pHealthBar){
+        this.healthBar = pHealthBar;
+    }
 
     public synchronized void freeze(int time){
         Thread freezeThread = new Thread(new Runnable(){
@@ -169,6 +176,7 @@ public class Player extends clientGame.Player implements Healthy{
                         gamePanel.getMessageInterpreter().interpretMessage("WITCH " + ID + " true");
                         witched = true;
                         updateImage();
+                        falling = true;
                         FunctionLoader.warte (time);
                         gamePanel.getMessageInterpreter().interpretMessage("WITCH " + ID + " false");
                         witched = false;
@@ -194,6 +202,7 @@ public class Player extends clientGame.Player implements Healthy{
         health += a;
         if(health > 100) health = 100;
         gamePanel.getMessageInterpreter().interpretMessage("HEALTH " + ID  + " " + health);
+        if(healthBar != null) healthBar.setHealth(health);
     }
 
     public void changeX(double a){
@@ -325,5 +334,9 @@ public class Player extends clientGame.Player implements Healthy{
                     gamePanel.addBullet(this, -1);
                 }
         }
+    }
+    
+    public boolean isReloading(){
+        return reloadingBullet;
     }
 }

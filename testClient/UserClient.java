@@ -55,6 +55,7 @@ public class UserClient extends Client{
                         }
                         gui.switchPage(gui.getGamePage());
                         send("GAME INIT " + gui.getMenuPage().getCharacter());
+                        System.out.println("SEND TO SERVER " + "GAME INIT " + gui.getMenuPage().getCharacter());
                     }
                 case "+GAME CLOSED" ->{
                         inGame = false;

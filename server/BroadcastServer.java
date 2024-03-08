@@ -14,7 +14,7 @@ public class BroadcastServer extends Server{
         clientList = new ArrayList<Client>(); 
         gamesList = new ArrayList<Game>();
         waitingList = new ArrayList<Client>();
-        
+
         System.out.println("Server gestartet auf Port " + pPortNum + ".");
 
         TickThread searchGameThread = new TickThread(60, new Runnable() {
@@ -45,8 +45,8 @@ public class BroadcastServer extends Server{
         synchronized(clientList){
             clientList.add(new Client(pClientIP, pClientPort));
         }
-        send(pClientIP, pClientPort, "+SPIELER OK");
-        
+        send(pClientIP, pClientPort, "+SPIELER OK"); 
+
         // System.out.println("There are " + clientList.size() + " clients using this server");
     }
 
@@ -112,7 +112,7 @@ public class BroadcastServer extends Server{
                                                 if(! gamesList.contains(client))waitingList.add(clientList.get(clientIndex));
                                                 else send(client, "-ERR illegalState " + pMessage + clientList.get(clientIndex).toString()); //Client ist noch in Spiel
                                             }
-                                            
+
                                         }
                                     }
                                 }
@@ -141,9 +141,12 @@ public class BroadcastServer extends Server{
                         case "INIT" -> {
                                 synchronized(gamesList){
                                     int gameIndex = gamesList.indexOf(client);
-                                    if(gameIndex != -1) {
-                                        gamesList.get(gameIndex).setPlayer(client, message [1]);
+                                    if(gameIndex == -1) {
+                                        System.err.println("GameNotFound");
+                                        return;
                                     }
+                                    System.out.println("___ " + message[1]);
+                                    gamesList.get(gameIndex).setPlayer(client, message [1]);
                                 }
                             }
                     }
@@ -152,9 +155,10 @@ public class BroadcastServer extends Server{
                 // case "USERINPUT"
             case "USERINPUT"->{
                     synchronized(gamesList){
+                        message = message[1].split(" ", 2);
                         int gameIndex = gamesList.indexOf(client);
                         if(gameIndex != -1) {
-                            gamesList.get(gameIndex).userInput(client, message [1]);
+                            gamesList.get(gameIndex).userInput(client, message [0], Boolean.parseBoolean(message[1]));
                         }
                     }
                 }

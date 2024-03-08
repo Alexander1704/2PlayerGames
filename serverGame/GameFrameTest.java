@@ -16,9 +16,11 @@ public class GameFrameTest{
     GameFrame gameFrame;
     public GameFrameTest(){
         gameFrame = new GameFrame(new MessageInterpreterTest());
-        gameFrame.setPlayer(0, "Player");
-        gameFrame.setPlayer(1, "Player");
+        gameFrame.setPlayer(0, "Python");
+        gameFrame.setPlayer(1, "Teleporter");
         gameFrame.show();
         gameFrame.start();
+        
+        System.out.println(gameFrame.getPlayer1().getCharacter());
     }
 }

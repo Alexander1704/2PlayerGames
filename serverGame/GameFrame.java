@@ -1,6 +1,7 @@
 package serverGame;
 
 import assetLoader.*;
+import clientGame.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -12,23 +13,24 @@ import javax.swing.border.Border;
 
 public class GameFrame implements KeyListener{
     private MessageInterpreter messageInterpreter;
-    JFrame testFrame;
-    JPanel gamePanel;
+    private JFrame testFrame;
+    private JPanel gamePanel;
     private JLabel backgroundLabel;
     private String backgroundImgPath;
     private JLabel mapLabel;
     private String mapImgPath;
-    Player player1;
-    Player player2;
-    Healthbar p1Health;
-    Healthbar p2Health;
-    ArrayList<Bullet> bulletList = new ArrayList<Bullet>();
+    private Player player1;
+    private Player player2;
+    private HealthPanel p1Health;
+    private HealthPanel p2Health;
+    private ArrayList<Bullet> bulletList = new ArrayList<Bullet>();
     private int bulletId;
+    private final String[] INPUTS = {"jump", "ability", "left", "right"};
     private boolean[] keyPressed;
     private int mapNum;
-    BufferedImage bufferedMap;
+    private BufferedImage bufferedMap;
     private final int frameRate = (int) (1000 / 60.0);
-    TickThread gameThread;
+    private TickThread gameThread;
     public GameFrame(MessageInterpreter mI){
         messageInterpreter = mI;
         
@@ -39,7 +41,7 @@ public class GameFrame implements KeyListener{
         testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         testFrame.setPreferredSize(new Dimension(710, 400));
         testFrame.setLocationRelativeTo(null);
-        testFrame.setVisible(false);
+        testFrame.setVisible(true);
         testFrame.pack();
 
         keyPressed = new boolean[8];
@@ -58,11 +60,9 @@ public class GameFrame implements KeyListener{
         testFrame.add(gamePanel);
 
         this.player1 = null;
-
         this.p1Health= null;
 
         this.player2 = null;
-
         p2Health= null;
         
         bulletId = 0;
@@ -84,9 +84,6 @@ public class GameFrame implements KeyListener{
                     scaleComponents();
                 }
             });
-
-        // setPlayer(0, "King");
-        // setPlayer(1, "King");
     }
     
     public void show(){
@@ -104,6 +101,7 @@ public class GameFrame implements KeyListener{
                 });
         gameThread.start();
     }
+    
     public void dispose(){
         testFrame.dispose();
     }
@@ -114,25 +112,28 @@ public class GameFrame implements KeyListener{
     }
 
     public void setPlayer(int id, String character){
+        System.out.println("____----pf" + id + " - " + character);
         if(id == 0) {
             player1 = new Player(this, character, 0);
             gamePanel.add(player1);
             gamePanel.setComponentZOrder(player1, 0);
 
-            p1Health = new Healthbar(gamePanel, player1);
-            p1Health.setForeground(Color.BLUE);
+            p1Health = new HealthPanel(gamePanel);
+            p1Health.setColor(Color.YELLOW);
             gamePanel.add(p1Health);
             gamePanel.setComponentZOrder(p1Health, 0);
+            player1.setHealthBar(p1Health);
         }
         else if (id == 1) {
             player2 = new Player(this, character, 1);
             gamePanel.add(player2);
             gamePanel.setComponentZOrder(player2, 0);
 
-            p2Health = new Healthbar(gamePanel, player2);
-            p2Health.setForeground(Color.RED);
+            p2Health = new HealthPanel(gamePanel);
+            p2Health.setColor(Color.YELLOW);
             gamePanel.add(p2Health);
             gamePanel.setComponentZOrder(p2Health, 0);
+            player2.setHealthBar(p2Health);
         }
         if(isInitialized()) {
             scaleComponents();
@@ -152,8 +153,11 @@ public class GameFrame implements KeyListener{
         for(int i = 0; i < bulletList.size(); i++){
             bulletList.get(i).update();
         }
-        // setLocation(p1Health);
-        // setLocation(p2Health);
+        
+        for(int i = 0; i < INPUTS.length; i++){
+            if(keyPressed[i] && (keyPressed[2] != keyPressed[3] || (i != 2 && i != 3))) player1.getInput(INPUTS[i]);
+            if(keyPressed[INPUTS.length + i] && (keyPressed[INPUTS.length + 2] != keyPressed[INPUTS.length + 3] || (i != INPUTS.length + 2 && i != INPUTS.length + 3))) player2.getInput(INPUTS[i]);
+        }
     }
 
     public void removeBullet(Bullet bullet){
@@ -165,11 +169,7 @@ public class GameFrame implements KeyListener{
                         gamePanel.remove(bullet);
                     }
                 });
-        // if(bullet.getPlayer().getPlayerInfo().getName() == "Teleporter"){
         waitThread.start();
-        // return;
-        // }
-        // gamePanel.remove(bullet);
     }
 
     public void addBullet(Player player, int direction) {
@@ -213,8 +213,10 @@ public class GameFrame implements KeyListener{
 
         player1.updateImage();
         player2.updateImage();
-        p1Health.scale();
-        p2Health.scale();
+        p1Health.update();
+        p2Health.update();
+        FunctionLoader.position(p1Health, 0, 1);
+        FunctionLoader.position(p2Health, 1, 1);
         for(int i = 0; i < bulletList.size(); i++){
             bulletList.get(i).scaleImage();
         }
@@ -224,70 +226,22 @@ public class GameFrame implements KeyListener{
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         if (key == KeyEvent.VK_W) {
-            if(keyPressed[0]) return;
             keyPressed[0] = true;
-            executeKeyThread(e, 0);
         } else if (key == KeyEvent.VK_S) {
-            if(keyPressed[1]) return;
             keyPressed[1] = true;
-            executeKeyThread(e, 1);
         } else if (key == KeyEvent.VK_A) {
             if(keyPressed[2]) return;
             keyPressed[2] = true;
-            executeKeyThread(e, 2);
         } else if (key == KeyEvent.VK_D) {
-            if(keyPressed[3]) return;
             keyPressed[3] = true;
-            executeKeyThread(e, 3);
         } else if (key == KeyEvent.VK_UP) {
-            if(keyPressed[4]) return;
             keyPressed[4] = true;
-            executeKeyThread(e, 4);
         } else if (key == KeyEvent.VK_DOWN) {
-            if(keyPressed[5]) return;
             keyPressed[5] = true;
-            executeKeyThread(e, 5);
         } else if (key == KeyEvent.VK_LEFT) {
-            if(keyPressed[6]) return;
             keyPressed[6] = true;
-            executeKeyThread(e, 6);
         } else if (key == KeyEvent.VK_RIGHT) {
-            if(keyPressed[7]) return;
             keyPressed[7] = true;
-            executeKeyThread(e, 7);
-        }
-    }
-
-    public void executeKeyThread(KeyEvent e, int pressedNum){
-        Thread executeKeyThread = new Thread(new Runnable(){
-                    public void run(){
-                        while(keyPressed[pressedNum] ){
-                            executeKey(e);
-                            warte(frameRate);
-                        }
-                    }
-                });
-        executeKeyThread.start();
-    }
-
-    private void executeKey(KeyEvent e){
-        int key = e.getKeyCode();
-        if (key == KeyEvent.VK_W) {
-            player1.getInput("jump");
-        } else if (key == KeyEvent.VK_S) {
-            player1.getInput("ability");
-        } else if (key == KeyEvent.VK_A) {
-            player1.getInput("left");
-        } else if (key == KeyEvent.VK_D) {
-            player1.getInput("right");
-        } else if (key == KeyEvent.VK_UP) {
-            player2.getInput("jump");
-        } else if (key == KeyEvent.VK_DOWN) {
-            player2.getInput("ability");
-        } else if (key == KeyEvent.VK_LEFT) {
-            player2.getInput("left");
-        } else if (key == KeyEvent.VK_RIGHT) {
-            player2.getInput("right");
         }
     }
 
@@ -318,26 +272,14 @@ public class GameFrame implements KeyListener{
         }
     }
 
-    public void getUserInput(int player, String input){
-        if(player == 0 && player1 != null) player1.getInput(input);
-        if(player == 1 && player2 != null) player2.getInput(input);
-        
-        // int key = -1;
-        // switch(input){
-            // case "jump" -> key = 0;
-            // case "ability" -> key = 1;
-            // case "left" -> key = 2;
-            // case "right" -> key = 3;
-        // }
-        
-        // if(player == 0) key = -1;
-        // else if(player == 1) key += 4;
-        
-        // if(key == -1) return;
-        
-        // if(keyPressed[key]) return;
-        // keyPressed[key] = true;
-        // executeKeyThread(e, key);
+    public void getUserInput(int player, String pUserInput, boolean pFlag){
+        for(int i = 0; i < INPUTS.length; i++){
+            if(INPUTS[i].equals(pUserInput)){
+                if(player == 0 && player1 != null) keyPressed[i] = pFlag;
+                else if(player == 1 && player2 != null) keyPressed[INPUTS.length + i] = pFlag;
+                return;
+            }
+        }
     }
 
     public Player getPlayer(int player){
