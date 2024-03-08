@@ -153,10 +153,10 @@ public class GameFrame implements KeyListener{
         for(int i = 0; i < bulletList.size(); i++){
             bulletList.get(i).update();
         }
-        
+
         for(int i = 0; i < INPUTS.length; i++){
             if(keyPressed[i] && (keyPressed[2] != keyPressed[3] || (i != 2 && i != 3))) player1.getInput(INPUTS[i]);
-            if(keyPressed[INPUTS.length + i] && (keyPressed[INPUTS.length + 2] != keyPressed[INPUTS.length + 3] || (i != INPUTS.length + 2 && i != INPUTS.length + 3))) player2.getInput(INPUTS[i]);
+            if(keyPressed[INPUTS.length + i] && (keyPressed[6] != keyPressed[7] || (i != 2 && i != 3))) player2.getInput(INPUTS[i]);
         }
     }
 
@@ -230,7 +230,6 @@ public class GameFrame implements KeyListener{
         } else if (key == KeyEvent.VK_S) {
             keyPressed[1] = true;
         } else if (key == KeyEvent.VK_A) {
-            if(keyPressed[2]) return;
             keyPressed[2] = true;
         } else if (key == KeyEvent.VK_D) {
             keyPressed[3] = true;

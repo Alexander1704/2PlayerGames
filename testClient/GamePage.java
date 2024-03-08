@@ -28,6 +28,7 @@ public class GamePage extends Page implements KeyListener{
     private Banner player0Banner;
     private Banner player1Banner;
     private int mapNum;
+    private Sound gameMusic;
 
     /**Erstellt ein neues Objekt der Klasse GamePage und initialiert dieses
      */
@@ -99,6 +100,7 @@ public class GamePage extends Page implements KeyListener{
         mapNum = 0;
         keyPressed = new boolean[4];
         
+        gameMusic = new Sound("game music.wav");
         resized();
     }
 
@@ -224,6 +226,7 @@ public class GamePage extends Page implements KeyListener{
     
     @Override
     public void finish(){
+        gameMusic.stopSound();
     }
     
     /**Aktualisiert alle Spieler
@@ -390,6 +393,7 @@ public class GamePage extends Page implements KeyListener{
                         }
                     });
             hideThread.start();
+            gameMusic.loop();
         }
         startingLabel.setVisible(true);
         FunctionLoader.scale(startingLabel, 0.2, 0.3);
@@ -483,13 +487,18 @@ public class GamePage extends Page implements KeyListener{
     public void gameWon(boolean pWon){
         Thread warte = new Thread(new Runnable(){
                     public void run(){
+                        gameMusic.stopSound();
                         if(pWon){
                             winnerLabel.setText("YOU WON!");
                             winnerLabel.setForeground(Color.YELLOW);
+                            Sound winSound = new Sound("winning.wav");
+                            winSound.playSound();
                         }
                         else {
                             winnerLabel.setText("YOU LOST!");
                             winnerLabel.setForeground(Color.RED);
+                            Sound looseSound = new Sound("death" + (1 + (int) (Math.random() * 2)) + ".wav");
+                            looseSound.playSound();
                         }
                         winnerLabel.setVisible(true);
                     }

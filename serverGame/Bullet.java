@@ -31,8 +31,6 @@ public class Bullet extends JLabel implements Positionable{
         scaleImage();
         init();
 
-        this.update();
-
         if(!contains(dontCheck, getPlayerInfo().getName()) && gamePanel.checkTop(this)) {
             gamePanel.removeBullet(this);
             return;

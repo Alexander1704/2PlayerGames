@@ -7,11 +7,11 @@ import java.awt.*;
 
 public class Bullet extends JLabel implements Positionable{
     private JPanel panel;
-    final int ID;
-    final boolean rightSided;
-    String texture;
-    double x; 
-    double y;
+    private final int ID;
+    private final boolean rightSided;
+    private String texture;
+    private double x; 
+    private double y;
     public Bullet(JPanel pPanel, int id, String texture, double x, double y, boolean rightSided){
         this.panel = pPanel;
         this.ID = id;

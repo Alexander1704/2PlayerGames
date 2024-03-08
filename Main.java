@@ -8,5 +8,5 @@ public class Main{
     
     public static void main(){
         testClient.GUI.main(new String[0]);
-    }
+    } 
 }

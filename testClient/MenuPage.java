@@ -24,6 +24,7 @@ public class MenuPage extends Page {
     private JButton nextPlayerButton;
     private JButton previousPlayerButton;
     private JButton creditsButton;
+    private Sound menuMusic;
     
     /**Erstellt ein neues Objekt der Klasse MenuPage und initialiert dieses
      */
@@ -32,7 +33,7 @@ public class MenuPage extends Page {
         setBackground(new Color(94, 144, 252));
         this.gui = gui;
 
-        character = "Player";
+        character = "Sword Man";
         characterList = gui.getDBController().getPlayerNames();
         
         playerName = new JLabel("PLAYER");
@@ -80,10 +81,15 @@ public class MenuPage extends Page {
         creditsButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
         creditsButton.setFont(FontLoader.loadFont("LilitaOne-Regular.ttf",25));
         add(creditsButton);
+        
+        menuMusic = new Sound("menu music.wav");
 
         nextPlayerButton.addActionListener(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e){
+                    Sound characterChoosingSound = new Sound("character change.wav");
+                    characterChoosingSound.playSound();
+                    
                     int index = characterList.indexOf(character);
                     try{
                         setCharacter(characterList.get(index + 1));
@@ -96,6 +102,9 @@ public class MenuPage extends Page {
         previousPlayerButton.addActionListener(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e){
+                    Sound characterChoosingSound = new Sound("character change.wav");
+                    characterChoosingSound.playSound();
+                    
                     int index = characterList.indexOf(character);
                     try{
                         setCharacter(characterList.get(index - 1));
@@ -108,6 +117,9 @@ public class MenuPage extends Page {
         playButton.addActionListener(new ActionListener(){
                 @Override 
                 public void actionPerformed(ActionEvent e){
+                    Sound playButtonSound = new Sound("elect.wav");
+                    playButtonSound.playSound();
+                    
                     Thread leaveThread = new Thread(new Runnable(){
                        @Override
                        public void run(){
@@ -133,11 +145,19 @@ public class MenuPage extends Page {
     @Override
     public void start() {
         playerName.setText(gui.getLoginPage().getPlayerName());
+        if(!menuMusic.isPlaying()) menuMusic.loop();
     }
     
     @Override
     public void finish(){
-        
+        Thread stopSound = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                FunctionLoader.warte(100);
+                if(gui.getCurrentPage() != gui.getMenuPage() && gui.getCurrentPage() != gui.getCreditsPage()) menuMusic.stopSound();
+            }
+        });
+        stopSound.start();
     }
 
     @Override

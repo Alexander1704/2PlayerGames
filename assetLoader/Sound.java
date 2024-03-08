@@ -13,7 +13,7 @@ import javax.sound.sampled.*;
 /**Mithilfe des Klasse Sound kann eine Sounddatei abgespielt werden.
  */
 public class Sound {
-    private AudioClip clip;
+    private Clip clip;
     private URL url;
 
     /**Konstruktor, der ein neues Objekt der Klasse Sound erstellt und es initialisiert
@@ -36,7 +36,7 @@ public class Sound {
     public void playSound(){
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-            Clip clip = AudioSystem.getClip();
+            clip = AudioSystem.getClip();
             clip.open(audioIn);
             clip.start();
         } catch (UnsupportedAudioFileException e) {
@@ -55,5 +55,29 @@ public class Sound {
         if (clip != null) {
             clip.stop();
         }
+    }
+
+    /**Spiele Sound in einem neuen Thread in einer Schleife
+     */
+    public void loop(){
+        try {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+            clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.loop(clip.LOOP_CONTINUOUSLY);
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+    /**Gibt einen Wahrheitswert zurück, ob gerade der Sound gespielt wird
+     * 
+     * @return playing Sound
+     */
+    public boolean isPlaying(){
+        return clip != null && clip.isRunning();
     }
 }
